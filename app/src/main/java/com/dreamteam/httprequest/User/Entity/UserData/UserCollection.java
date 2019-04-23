@@ -1,4 +1,4 @@
-package com.dreamteam.dreamteam.User.Entity.UserData;
+package com.dreamteam.httprequest.User.Entity.UserData;
 
 import java.util.ArrayList;
 
