@@ -1,4 +1,4 @@
 package com.dreamteam.httprequest.Interfaces;
 
-public interface AddGroupFromHTTPManagerInterface {
+public interface AddGroupFromHTTPManagerInterface extends OutputHTTPManagerInterface{
 }

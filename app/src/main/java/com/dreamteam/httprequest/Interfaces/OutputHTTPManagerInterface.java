@@ -1,7 +1,8 @@
-package com.dreamteam.httprequest;
+package com.dreamteam.httprequest.Interfaces;
 
 import org.json.JSONObject;
 
 public interface OutputHTTPManagerInterface {
-    public void responce(JSONObject jsonObject, String type);
+    void response(byte [] byteArray, String type);
+    void error(Throwable t);
 }

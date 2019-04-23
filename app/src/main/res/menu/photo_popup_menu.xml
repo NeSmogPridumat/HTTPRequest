@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <item
+        android:id="@+id/make_photo_popup"
+        android:icon="@mipmap/ic_launcher"
+        android:title="@string/add_photo"/>
+    <item
+        android:id="@+id/get_from_gallery_popup"
+        android:title="@string/get_from_gallery"/>
+    <item
+        android:id="@+id/delete_image_popup"
+        android:title="@string/delete_photo"/>
 </menu>

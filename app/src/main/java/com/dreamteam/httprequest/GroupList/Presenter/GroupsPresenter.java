@@ -1,26 +1,33 @@
 package com.dreamteam.httprequest.GroupList.Presenter;
 
 import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
+import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
-import com.dreamteam.httprequest.Group.View.GroupController;
-import com.dreamteam.httprequest.GroupList.Interactor.GroupInteractor;
-import com.dreamteam.httprequest.GroupList.Protocols.GroupPresenterInterface;
-import com.dreamteam.httprequest.GroupList.Protocols.GroupViewInterface;
-import com.dreamteam.httprequest.Router;
+import com.dreamteam.httprequest.GroupList.Interactor.GroupsInteractor;
+import com.dreamteam.httprequest.GroupList.Protocols.GroupsPresenterInterface;
+import com.dreamteam.httprequest.GroupList.Protocols.GroupsViewInterface;
+import com.dreamteam.httprequest.GroupList.RouterGroupList;
+import com.dreamteam.httprequest.MainActivity;
+import com.dreamteam.httprequest.SelectedList.SelectListData;
 
 import java.util.ArrayList;
 
-public class GroupPresenter implements GroupPresenterInterface {
+public class GroupsPresenter implements GroupsPresenterInterface {
 
-    private GroupViewInterface delegate;
-    private GroupInteractor groupInteractor = new GroupInteractor(this);
+    private GroupsViewInterface delegate;
+    private MainActivity activity;
+    private GroupsInteractor groupsInteractor = new GroupsInteractor(this);
+    private RouterGroupList routerGroupList;
 
-    public GroupPresenter(GroupViewInterface delegate){
+    private final String type = "Group";
+
+    public GroupsPresenter(GroupsViewInterface delegate, MainActivity activity){
         this.delegate = delegate;
+        this.activity = activity;
+        routerGroupList = new RouterGroupList(activity);
     }
 
     @Override
@@ -34,20 +41,78 @@ public class GroupPresenter implements GroupPresenterInterface {
     }
 
     @Override
+    public void answerDeleteGroups() {
+        routerGroupList.showGroupList();
+    }
+
+    @Override
     public void error(String error) {
 
     }
 
+    @Override
+    public void answerAddGroup() {
+        routerGroupList.showGroupList();
+    }
+
     public void getGroups(String id) {
-        groupInteractor.getGroups(id);
+        groupsInteractor.getGroups(id);
+    }
+
+    public void getGroup(String id){
+
+        routerGroupList.openGroup(id);
+//        router.changeFragment(controller);
+    }
+
+    public void showAddGroup(){
+        InfoProfileData infoProfileData = null;
+        routerGroupList.showAddGroup(infoProfileData, this, type);
     }
 
 
-    public void openGroup(Group group, Router delegate){
-        delegate.getGroup(group);
-        Log.i("GROUP_PRESENTER", group.content.simpleData.title + " " + group.content.simpleData.description);
+    //отправляем запрос на показ списка с checkBox
+    public void showSelectedList(ArrayList<Group> groups, MainActivity activity, String TYPE){
+        ArrayList<SelectListData> selectListData = new ArrayList<>();
+        for (int i = 0; i < groups.size(); i++){
+            selectListData.add(new SelectListData().initFromGroup(groups.get(i)));
+        }
+        routerGroupList.showSelectList(selectListData, this, activity, TYPE);
+    }
 
+    @Override
+    public void showDialog() {
+        //для показа диалога
+    }
+
+    @Override
+    public void answerDialog(int i) {
+        //получение ответа от диалога
+    }
+
+    @Override
+    public void forResult(Bitmap bitmap) {
+
+    }
+
+    //ответ на список select
+    @Override
+    public void inputSelect(ArrayList<SelectListData> arrayList, String type) {
+        groupsInteractor.inputSelect(arrayList, type);
+
+    }
+
+    @Override
+    public void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo) {
+        Group group = new Group();
+        group.content.simpleData.title = infoProfileData.title;
+        group.content.simpleData.description = infoProfileData.description;
+
+        Bitmap bitmap = infoProfileData.imageData;
+        groupsInteractor.addGroup(group, bitmap, requestInfo);
     }
 }
+
+
 
 

@@ -1,14 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".EditProfile.View.EditProfileController">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
+        android:id="@+id/edit_profile_linear"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        tools:context=".EditProfileController">
 
-</FrameLayout>
+        <ImageView
+            android:id="@+id/edit_user_image"
+            android:layout_width="match_parent"
+            android:layout_height="238dp" />
+
+        <TextView
+            android:id="@+id/edit_name_user_text_view"
+            android:text="@string/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"/>
+
+        <EditText
+            android:id="@+id/edit_name_user_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_new_name"
+            android:layout_marginTop="6dp"
+            android:inputType="textPersonName"/>
+
+        <TextView
+            android:id="@+id/edit_surname_user_text_view"
+            android:text="@string/surname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"/>
+
+        <EditText
+            android:id="@+id/edit_surname_user_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_new_surname"
+            android:layout_marginTop="6dp"
+            android:inputType="textPersonName"/>
+
+        <Button
+            android:id="@+id/save_profile_button"
+            android:text="@string/save"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</ScrollView>
