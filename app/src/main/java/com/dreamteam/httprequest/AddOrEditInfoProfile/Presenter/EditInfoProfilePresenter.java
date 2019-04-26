@@ -10,7 +10,7 @@ import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.DialogConfig;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
-import com.dreamteam.httprequest.SelectedList.SelectListData;
+import com.dreamteam.httprequest.SelectedList.SelectData;
 
 import java.util.ArrayList;
 
@@ -66,7 +66,7 @@ public class EditInfoProfilePresenter implements PresenterInterface {
     }
 
     @Override
-    public void inputSelect(ArrayList<SelectListData> arrayList, String type) {
+    public void inputSelect(ArrayList<SelectData> arrayList, String type) {
 
     }
 

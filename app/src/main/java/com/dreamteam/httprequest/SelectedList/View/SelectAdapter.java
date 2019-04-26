@@ -1,5 +1,6 @@
 package com.dreamteam.httprequest.SelectedList.View;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
@@ -7,21 +8,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
-import com.dreamteam.httprequest.GroupList.View.GroupHolder;
 import com.dreamteam.httprequest.R;
-import com.dreamteam.httprequest.SelectedList.SelectListData;
+import com.dreamteam.httprequest.SelectedList.SelectData;
 
 import java.util.ArrayList;
 
 public class SelectAdapter extends RecyclerView.Adapter<SelectHolder> {
 
-    public ArrayList<SelectListData> selectCollection;
+    public ArrayList<SelectData> selectCollection;
     ArrayList<SelectHolder> selectHolders = new ArrayList<>();
     SparseBooleanArray checkArray = new SparseBooleanArray();
 
 
-    public SelectAdapter(ArrayList<SelectListData> selectCollection){
+    public SelectAdapter(ArrayList<SelectData> selectCollection){
         this.selectCollection = selectCollection;
     }
 
@@ -29,7 +28,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectHolder> {
     @Override
     public SelectHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
-        View view = layoutInflater.inflate(R.layout.selected_list_item_group, viewGroup, false);
+        View view = layoutInflater.inflate(R.layout.selected_list_item, viewGroup, false);
         SelectHolder newSelectHolder = new SelectHolder(view);
         selectHolders.add(newSelectHolder);
         return newSelectHolder;
@@ -37,14 +36,9 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull SelectHolder selectHolder, int i) {
-        SelectListData selectListData = selectCollection.get(i);
+        SelectData selectData = selectCollection.get(i);
         selectHolder.checkBox.setChecked(checkArray.get(i));
-        selectHolder.bindGroup(selectListData);
-//        if(selectCollection.get(i).check){
-//            selectHolder.checkBox.setChecked(checkArray.get(i));
-//        } else {
-//            selectHolder.checkBox.setChecked(false);
-//        }
+        selectHolder.bindGroup(selectData);
     }
 
     @Override
@@ -54,5 +48,15 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectHolder> {
             size = selectCollection.size();
         }
         return size;
+    }
+
+    public  void changeItem(String id, Bitmap bitmap){
+        for (int i = 0; i < selectCollection.size(); i ++){
+            SelectData selectData = selectCollection.get(i);
+            if (selectData.id.equals(id)){
+                selectData.image = bitmap;
+            }
+            notifyItemChanged(i);
+        }
     }
 }

@@ -39,9 +39,11 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     Bitmap bitmapU;
     String errors;
     String userID;
+    boolean root;
 
-    public UserFragment(String userID) {
+    public UserFragment(String userID, boolean root) {
         this.userID = userID;
+        this.root = root;
     }
 
     @Override
@@ -64,8 +66,12 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+
         activity = (MainActivity) getActivity();
+
+        if (root == true) {
+            setHasOptionsMenu(true);
+        }
         presenterUser = new PresenterUser(this, activity);
     }
 
@@ -73,6 +79,16 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     public void onStart() {
         presenterUser.getUser(userID);
         super.onStart();
+        groupsRadioButton.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                if (activity.userID.equals(userID)) {
+                   activity.bottomNavigationView.setSelectedItemId(R.id.groups);
+                }else {
+                    presenterUser.getGroups(userID);
+                }
+                groupsRadioButton.setChecked(false);
+            }
+        });
     }
 
     @Override
@@ -86,6 +102,7 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         userName.setText(user.content.simpleData.name);
         userSurName.setText(user.content.simpleData.surname);
         this.user = user;
+        activity.setActionBarTitle(user.content.simpleData.name);
     }
 
     @Override

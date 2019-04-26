@@ -1,7 +1,6 @@
 package com.dreamteam.httprequest.GroupList.Presenter;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
 import com.dreamteam.httprequest.Data.RequestInfo;
@@ -11,7 +10,7 @@ import com.dreamteam.httprequest.GroupList.Protocols.GroupsPresenterInterface;
 import com.dreamteam.httprequest.GroupList.Protocols.GroupsViewInterface;
 import com.dreamteam.httprequest.GroupList.RouterGroupList;
 import com.dreamteam.httprequest.MainActivity;
-import com.dreamteam.httprequest.SelectedList.SelectListData;
+import com.dreamteam.httprequest.SelectedList.SelectData;
 
 import java.util.ArrayList;
 
@@ -73,11 +72,11 @@ public class GroupsPresenter implements GroupsPresenterInterface {
 
     //отправляем запрос на показ списка с checkBox
     public void showSelectedList(ArrayList<Group> groups, MainActivity activity, String TYPE){
-        ArrayList<SelectListData> selectListData = new ArrayList<>();
+        ArrayList<SelectData> selectData = new ArrayList<>();
         for (int i = 0; i < groups.size(); i++){
-            selectListData.add(new SelectListData().initFromGroup(groups.get(i)));
+            selectData.add(new SelectData().initFromGroup(groups.get(i)));
         }
-        routerGroupList.showSelectList(selectListData, this, activity, TYPE);
+        routerGroupList.showSelectList(selectData, this, activity, TYPE);
     }
 
     @Override
@@ -97,7 +96,7 @@ public class GroupsPresenter implements GroupsPresenterInterface {
 
     //ответ на список select
     @Override
-    public void inputSelect(ArrayList<SelectListData> arrayList, String type) {
+    public void inputSelect(ArrayList<SelectData> arrayList, String type) {
         groupsInteractor.inputSelect(arrayList, type);
 
     }

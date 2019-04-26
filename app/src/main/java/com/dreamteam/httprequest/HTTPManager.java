@@ -83,7 +83,7 @@ public class HTTPManager {
     public ByteArrayOutputStream readDataFromRequestStream (InputStream inputStream) throws IOException {//получение информации с сервера
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int bytesRead;
-        byte[] buffer = new byte[1024];
+        byte[] buffer = new byte[8024];
         while ((bytesRead = inputStream.read(buffer)) > 0) {//--------------------------------------программа многократно вызывает read, пока в подключении не кончатся данные
             out.write(buffer, 0, bytesRead);
         }
@@ -131,7 +131,6 @@ public class HTTPManager {
         //TODO: возможно нужно вынести
         closeUrlConnect(httpURLConnection);
         sendDelegate(byteArray, error, type, delegate);
-
         byteArray = null;
     }
 

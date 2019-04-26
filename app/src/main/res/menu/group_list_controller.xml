@@ -4,11 +4,8 @@
     <item
         android:id="@+id/add_item_edit"
         android:title="@string/add_group"
-        app:showAsAction="never"
+        android:icon="@drawable/add"
+        app:showAsAction="ifRoom"
         />
-    <item
-        android:id="@+id/delete_item_edit"
-        android:title="@string/delete_group"
-        app:showAsAction="never"
-        />
+
 </menu>

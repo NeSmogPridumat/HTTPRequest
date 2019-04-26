@@ -3,7 +3,7 @@ package com.dreamteam.httprequest.GroupList;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
-import com.dreamteam.httprequest.SelectedList.SelectListData;
+import com.dreamteam.httprequest.SelectedList.SelectData;
 
 import java.util.ArrayList;
 
@@ -20,13 +20,14 @@ public class RouterGroupList {
     }
 
     //показать список с checkBox
-    public void showSelectList(ArrayList<SelectListData> selectListData, PresenterInterface delegate, MainActivity activity, String TYPE){
-        activity.openSelectList(selectListData,delegate, TYPE);
+    public void showSelectList(ArrayList<SelectData> selectData, PresenterInterface delegate, MainActivity activity, String TYPE){
+        activity.openSelectList(selectData,delegate, TYPE);
     }
 
     public void openGroup(String id){
         activity.openGroup(id);
     }
+
     public void showAddGroup(InfoProfileData infoProfileData, PresenterInterface delegate, String type){
         activity.openEditProfile(infoProfileData, delegate, type);
     }

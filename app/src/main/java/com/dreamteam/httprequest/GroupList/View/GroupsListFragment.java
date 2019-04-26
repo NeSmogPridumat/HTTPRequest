@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,8 +21,6 @@ import android.view.ViewGroup;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.GroupList.Presenter.GroupsPresenter;
 import com.dreamteam.httprequest.GroupList.Protocols.GroupsViewInterface;
-import com.dreamteam.httprequest.GroupList.View.GroupAdapter;
-import com.dreamteam.httprequest.GroupList.View.RecyclerItemClickListener;
 import com.dreamteam.httprequest.Interfaces.OnBackPressedListener;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
@@ -48,9 +45,9 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
     MenuInflater inflater;
     Menu menu;
 
-    SparseBooleanArray checkedArray = new SparseBooleanArray();
+//    SparseBooleanArray checkedArray = new SparseBooleanArray();
 
-//    boolean deleteOn;
+    boolean deleteOn;
 
     ArrayList<Group> groups = new ArrayList<>();
 
@@ -75,8 +72,14 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
         setHasOptionsMenu(true);
         activity = (MainActivity) getActivity();
         groupsPresenter = new GroupsPresenter(this, activity);
-//        deleteOn = false;
+        deleteOn = false;
         adapter = new GroupAdapter(groups);
+    }
+
+    @Override
+    public void onStart() {
+        activity.setActionBarTitle("List Group");
+        super.onStart();
     }
 
     @Override
@@ -84,11 +87,11 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
         this.inflater = inflater;
         this.menu = menu;
         super.onCreateOptionsMenu(menu, inflater);
-//        if (!deleteOn) {
-//            inflater.inflate(R.menu.group_list_controller, menu);
-//        } else {
-//            inflater.inflate(R.menu.delete_group_list_controller, menu);
-//        }
+        if (!deleteOn) {
+            inflater.inflate(R.menu.group_list_controller, menu);
+        } else {
+            inflater.inflate(R.menu.delete_select_list_controller, menu);
+        }
     }
 
     @Override
@@ -96,18 +99,6 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
         switch (item.getItemId()){
             case R.id.add_item_edit:
                 groupsPresenter.showAddGroup();
-                break;
-
-                //запрос списка с checkBox
-            case R.id.delete_item_edit:
-                String TYPE = "Delete";
-                groupsPresenter.showSelectedList(groups,activity, TYPE);
-
-//                adapter.animationOn();
-//                menu.clear();
-//                inflater.inflate(R.menu.delete_group_list_controller, menu);
-//
-//                deleteOn = true;
                 break;
 
 //            case R.id.remove_select_list_edit:
@@ -132,9 +123,6 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
         groupsRecyclerView.setAdapter(adapter);
         final Context context = getContext();
 
-        for (int i = 0; i < groupCollection.size(); i++){
-            checkedArray.put(i, false);
-        }
 
         //TODO: внедрить измененное состояние для флажка и синхронизировать недавно обновленное состояние с флагом isChecked текущего объекта. Когда вы связываете свой держатель вида, проверьте, является ли флаг истинным или ложным, и обновите макет в соответствии с флагом.
         groupsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), groupsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
@@ -142,39 +130,10 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
             public void onItemClick(View view, int position) {
 
                 MainActivity activityAction = (MainActivity) getActivity();
-//                if(!deleteOn) {
                     activityAction = (MainActivity)context;
                     activityAction.getGroup(groupCollection.get(position).id);
 
-//                    adapter.notifyItemChanged(position);
-//                } else if (deleteOn){
-//                    Log.i("Shhhhiiiit", String.valueOf(position));
-//                    if (!checkedArray.valueAt(position)){
-//                        checkedArray.append(position, true);
-//                    } else {
-//                        checkedArray.append(position, false);
-//                    }
-//
-//                    adapter.checkArray = checkedArray;
-//                    adapter.notifyItemChanged(position);
-
-
-//                    if (adapter.groupHolders.get(position).checkBox.isChecked()) {
-//                        adapter.groupHolders.get(position).checkBox.setChecked(false);
-//                    } else {
-//                        adapter.groupHolders.get(position).checkBox.setChecked(true);
-//                    }
-//                }
-
             }
-
-//            public void checked (int position){
-//                if (adapter.groupHolders.get(position).checkBox.isChecked()) {
-//                    adapter.groupHolders.get(position).checkBox.setChecked(false);
-//                } else {
-//                    adapter.groupHolders.get(position).checkBox.setChecked(true);
-//                }
-//            }
 
 
             @Override

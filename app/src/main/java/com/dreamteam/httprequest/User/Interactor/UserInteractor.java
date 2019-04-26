@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
 
+import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager;
@@ -24,10 +25,8 @@ import java.util.ArrayList;
 public class UserInteractor implements UserFromHTTPManagerInterface {
 
     public final static String TAG = "UserInteractor";
-    private String GET_GROUP_TYPE = "groups";
-    final String PUT_USER = "putUser";
-    final String IMAGE_TYPE = "image";
-    final String PREFIX = "data:image/jpeg;base64,";
+
+    ConstantConfig constantConfig = new ConstantConfig();
 
     HTTPConfig config = new HTTPConfig();
 
@@ -44,18 +43,17 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 //----------------------------------ОТПРАВКА В HTTPMANAGER---------------------------------------//
 
     public void getUser(String id) {//----------------------------------отправка запроса на получение User по id
-        final String path = config.serverURL + config.userPORT + config.reqUser + "?id=" + id;
+        final String path = config.serverURL + config.userPORT + config.reqUser + httpConfig.ID_PARAM + id;
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override
             public void run() {
-                httpManager.getRequest(path, "user", UserInteractor.this);//----------отправка в HTTPManager
+                httpManager.getRequest(path, constantConfig.USER_TYPE, UserInteractor.this);//----------отправка в HTTPManager
             }
         }).start();
     }
 
 
     public void postUser(String name, String surname) {//--------------отправка post-запроса на сервер
-        final String type = "postUser";
         final User user = createUser(name, surname);
         Gson gson = new Gson();
         final String jsonObject = gson.toJson(user);
@@ -64,7 +62,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
             @Override
             public void run() {
                 try {
-                    httpManager.postRequest(path, jsonObject, type, UserInteractor.this);
+                    httpManager.postRequest(path, jsonObject, constantConfig.POST_USER, UserInteractor.this);
                 } catch (Exception error) {
                     error(error);
                 }
@@ -75,25 +73,27 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 
     public void getAfterPostUser(byte[] byteArray) {
         final User user = createUserOfBytes(byteArray);
-        String path = config.serverURL + config.userPORT + config.reqUser + "?id=" + user.id;
-        httpManager.getRequest(path, "user", UserInteractor.this);
+        String path = config.serverURL + config.userPORT + config.reqUser + httpConfig.ID_PARAM + user.id;
+        httpManager.getRequest(path, constantConfig.USER_TYPE, UserInteractor.this);
     }
 
 //----------------------------------------ПОЛУЧЕНИЕ И ОБРАБОТКА ДАННЫХ-----------------------------//
 
     @Override
     public void response(byte[] byteArray, String type) {//----------------------------------------получение ответа от HTTPManager и распределение по типу
-        if (type == "user") {
+        if (type.equals(constantConfig.USER_TYPE)) {
             getUserResponse(byteArray);
-        } else if (type == "postUser") {
+        } else if (type.equals(constantConfig.POST_USER)) {
             //TODO:возможно вынести в отдельный метод (либо совместить с getUser?)
             getAfterPostUser(byteArray);
-        } else if (type == "image") {
+        } else if (type.equals(constantConfig.IMAGE_TYPE)) {
             getImage(byteArray);
-        } else if (type == GET_GROUP_TYPE) {
+        } else if (type.equals(constantConfig.GET_GROUP_TYPE)) {
             prepareGetGroupsResponse(byteArray);
-        }else if (type.equals(PUT_USER)){
+        }else if (type.equals(constantConfig.PUT_USER)){
             getUserEditResponse();
+        } else if (type.equals(constantConfig.GET_GROUP_FOR_LIST_TYPE)){
+            prepareGetGroupsForListResponse(byteArray);
         }
     }
 
@@ -146,10 +146,9 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 
     public void getImageResponse(User user) {//------------------------------------------------------получение картинки
         try {
-            String type = "image";
             String imageUrl = config.serverURL + config.userPORT + user.content.mediaData.image;
             //Log.i(TAG, "Поток " + Thread.currentThread().getName());
-            httpManager.getRequest(imageUrl, type, UserInteractor.this);
+            httpManager.getRequest(imageUrl, constantConfig.IMAGE_TYPE, UserInteractor.this);
         } catch (Exception ioe) {
             Log.e(TAG, "Error downloading image", ioe);
         }
@@ -175,6 +174,23 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 
     }
 
+    private void prepareGetGroupsForListResponse (byte[] byteArray){
+        final ArrayList<Group> groupCollection = createGroupsOfBytes(byteArray);
+
+        if (groupCollection != null){
+            Handler mainHandler = new Handler(Looper.getMainLooper());
+            Runnable myRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    delegate.answerGetGroupsForList(groupCollection);
+                }
+            };
+            mainHandler.post(myRunnable);
+        }
+
+
+    }
+
     public void getImage(byte[] byteArray) {//-------------------------------------------------------получение картинки(преобразование в bitmap)
         if(byteArray != null) {
             final Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
@@ -193,12 +209,12 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 
     public void getGroups (String userId){
         final String path = httpConfig.serverURL + httpConfig.groupPORT + httpConfig.reqGroup +
-                httpConfig.reqUser + "?userID=" + userId;
+                httpConfig.reqUser + httpConfig.USER_ID_PARAM + userId;
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                httpManager.getRequest(path, GET_GROUP_TYPE, UserInteractor.this);
+                httpManager.getRequest(path, constantConfig.GET_GROUP_TYPE, UserInteractor.this);
             }
         }).start();
     }
@@ -236,7 +252,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
                         user.content.mediaData.image = decodeBitmapInBase64(bitmap);
                     }
                     final String jsonObject = gson.toJson(user);
-                    httpManager.putRequest(urlPath, jsonObject, PUT_USER, UserInteractor.this);
+                    httpManager.putRequest(urlPath, jsonObject, constantConfig.PUT_USER, UserInteractor.this);
                 } catch (Exception error) {
                     error(error);
                 }
@@ -250,7 +266,18 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
         // Получаем изображение из потока в виде байтов
         byte[] bytes = byteArrayOutputStream.toByteArray();
-        return PREFIX + Base64.encodeToString(bytes, Base64.DEFAULT);
+        return constantConfig.PREFIX + Base64.encodeToString(bytes, Base64.DEFAULT);
+    }
+
+    public void getGroupForList (String userID){
+        final String path = httpConfig.serverURL + httpConfig.groupPORT + httpConfig.reqGroup +
+            httpConfig.reqUser + httpConfig.USER_ID_PARAM + userID;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                httpManager.getRequest(path, constantConfig.GET_GROUP_FOR_LIST_TYPE, UserInteractor.this);
+            }
+        }).start();
     }
 }
 

@@ -9,9 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.R;
-import com.dreamteam.httprequest.SelectedList.SelectListData;
+import com.dreamteam.httprequest.SelectedList.SelectData;
 
 public class SelectHolder extends RecyclerView.ViewHolder {
 
@@ -20,8 +19,7 @@ public class SelectHolder extends RecyclerView.ViewHolder {
     public LinearLayout linearLayout;
     public CheckBox checkBox;
 
-    private SelectListData selectListData;
-
+    private SelectData selectData;
 
     public SelectHolder(@NonNull View item) {
         super(item);
@@ -31,14 +29,14 @@ public class SelectHolder extends RecyclerView.ViewHolder {
         checkBox = item.findViewById(R.id.select_list_checkbox);
     }
 
-    public void bindGroup(SelectListData selectListData){
-        this.selectListData = selectListData;
-        titleTextView.setText(selectListData.title);
-        descriptionTextView.setText(selectListData.description);
+    public void bindGroup(SelectData selectData){
+        this.selectData = selectData;
+        titleTextView.setText(selectData.title);
+        descriptionTextView.setText(selectData.description);
 
-        checkBox.setChecked(selectListData.check);
+        checkBox.setChecked(selectData.check);
 
-        Bitmap imageData = selectListData.image;
+        Bitmap imageData = selectData.image;
         imageView.setImageBitmap(imageData);
     }
 }

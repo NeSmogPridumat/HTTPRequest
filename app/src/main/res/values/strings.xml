@@ -31,4 +31,11 @@
     <string name="surname">Surname:</string>
     <string name="enter_new_surname">Enter new surname</string>
     <string name="save">Save</string>
+    <string name="add_user">Add User</string>
+    <string name="delete_user">Delete User</string>
+    <string name="add_subgroup">Add Subgroup</string>
+    <string name="change_admin">Change Admin</string>
+    <string name="exit_the_group">Exit the Group</string>
+  <string name="sign_in">Sign in</string>
+    <string name="registration">Registration</string>
 </resources>

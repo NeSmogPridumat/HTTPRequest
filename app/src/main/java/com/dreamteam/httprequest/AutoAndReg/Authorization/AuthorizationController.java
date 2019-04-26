@@ -1,4 +1,4 @@
-package com.dreamteam.httprequest.Authorization;
+package com.dreamteam.httprequest.AutoAndReg.Authorization;
 
 
 import android.os.Bundle;
@@ -11,6 +11,11 @@ import android.widget.EditText;
 
 import com.dreamteam.httprequest.R;
 
+//TODO: порт 9000
+
+//create new login
+//enable user auth
+//user autoriz
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,7 +23,7 @@ import com.dreamteam.httprequest.R;
 public class AuthorizationController extends Fragment {
 
     private EditText loginEditText, passwordEditText;
-    private Button authorizationButton;
+    private Button authorizationButton, registrationButton;
 
 
     public AuthorizationController() {
@@ -34,7 +39,14 @@ public class AuthorizationController extends Fragment {
         loginEditText = view.findViewById(R.id.login);
         passwordEditText = view.findViewById(R.id.password);
         authorizationButton = view.findViewById(R.id.authorization_button);
+        registrationButton = view.findViewById(R.id.authorization_registration_button);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+
+        super.onStart();
     }
 
 }

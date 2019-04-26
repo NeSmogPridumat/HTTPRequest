@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest;
 
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -12,13 +11,15 @@ import android.view.MenuItem;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.View.EditInfoProfileController;
-import com.dreamteam.httprequest.Authorization.AuthorizationController;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.AuthorizationController;
 import com.dreamteam.httprequest.Group.Protocols.ActivityAction;
 import com.dreamteam.httprequest.Group.View.GroupController;
 import com.dreamteam.httprequest.GroupList.View.GroupsListFragment;
 import com.dreamteam.httprequest.Interfaces.OnBackPressedListener;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
-import com.dreamteam.httprequest.SelectedList.SelectListData;
+import com.dreamteam.httprequest.ObjectList.ObjectData;
+import com.dreamteam.httprequest.ObjectList.View.ObjectListController;
+import com.dreamteam.httprequest.SelectedList.SelectData;
 import com.dreamteam.httprequest.SelectedList.View.SelectedListController;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.dreamteam.httprequest.User.View.UserFragment;
@@ -29,15 +30,9 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
     GroupController groupController;
 
-    final String userID = "328d21d2-9797-4802-9f5d-0e0b3f204866";
+    public final String userID = "328d21d2-9797-4802-9f5d-0e0b3f204866";
 
-    BottomNavigationView bottomNavigationView;
-
-//    private final String BLANK_TEST = "BlankTest";
-//    private final String GROUP_LIST = "GroupList";
-//    private final String USER_FRAGMENT = "UserFragment";
-//    private final String GROUP_CONTROLLER = "GroupController";
-//    private final String EDIT_PROFILE_CONTROLLER = "EditProfileController";
+    public BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
                     switch (menuItem.getItemId()) {
 
+                        case R.id.activities:
+                            clearMainActivity();
+
                         case R.id.groups:
                             clearMainActivity();
 //                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new GroupsListFragment()).commit();
@@ -61,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
                         case R.id.profile:
                             clearMainActivity();
-                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UserFragment(userID)).commit();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UserFragment(userID, true)).commit();
                             break;
 
                         case R.id.notification:
@@ -88,24 +86,13 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     }
 
     public void changeFragment(Fragment fragment, String type) {
-//        if(getSupportFragmentManager().findFragmentByTag(type)== null){
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.fragment_container, fragment, type)
-//                    .commit();
-//        } else {
+
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-//        }
     }
 
     public void changeFragmentWitchBackstack(Fragment fragment, String type) {
-//        if(getSupportFragmentManager().findFragmentByTag(type)== null){
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.fragment_container, fragment, type)
-//                    .addToBackStack(null)
-//                    .commit();
-//        } else {
+
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, type).addToBackStack(null).commit();
-//        }
     }
 //    {
 //        creatorID : "asda",
@@ -121,18 +108,21 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         changeFragmentWitchBackstack(controller, "");//TODO: задать в backstack
     }
 
+    public void openGroupAfterSelect (String id){
+        //так как после выбора элементов и совершения действия, нам, при нажатии кнопки назад, надо будет сбросить два шага назад
+        FragmentManager fm = getSupportFragmentManager();
+        for(int i = 0; i < 20; ++i) {
+            fm.popBackStack();
+        }
+        changeFragmentWitchBackstack(new GroupController(id), null);
+    }
+
     @Override
     public void getGroup(String id) {
         groupController = new GroupController(id);
-//        if (getSupportFragmentManager().findFragmentByTag(GROUP_CONTROLLER) == null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .replace(R.id.fragment_container, groupController, GROUP_CONTROLLER)
-//                    .addToBackStack(null)
-//                    .commit();
-//        } else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, groupController, null).addToBackStack(null).commit();
-//        }
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, groupController, null).addToBackStack(null).commit();
     }
+
 
     @Override
     public void showFragment (PresenterInterface delegate, int i){ //TODO: получается метод только для вызова ActivityForResultFragment из-за передачи аргументов
@@ -146,17 +136,16 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
                 .commit();
     }
 
+
     public void showDialog(Bundle bundle, PresenterInterface delegate){
         CustomDialogFragment dialogFragment = new CustomDialogFragment(delegate);
         dialogFragment.setArguments(bundle);
         dialogFragment.show(getSupportFragmentManager(), "MyDialog");
-//        getSupportFragmentManager().beginTransaction()
-//                .show(dialogFragment)
-//                .commit();
+
     }
 
     public void showUser (User user){
-        changeFragment(new UserFragment(user.id), null);
+        changeFragment(new UserFragment(user.id, false), null);
     }
 
     public void openGroupList(){
@@ -164,8 +153,9 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     }
 
     //открыть список с полученными даннами и checkBox
-    public void openSelectList (ArrayList<SelectListData> selectListData, PresenterInterface delegate, String TYPE){
-        changeFragmentWitchBackstack(new SelectedListController(selectListData, delegate, TYPE), null);
+    public void openSelectList (ArrayList<SelectData> selectData,
+        PresenterInterface delegate, String TYPE){
+        changeFragmentWitchBackstack(new SelectedListController(selectData, delegate, TYPE), null);
     }
 
     public void openEditProfile (InfoProfileData infoProfileData, PresenterInterface delegate, String type){
@@ -202,8 +192,21 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     }
 
     public void openProfile(){
-        changeFragment(new UserFragment(userID), null);
+        changeFragment(new UserFragment(userID, false), null);
     }
-//        animator.setDuration(500);
-//        animator.start();
+
+    public void openUser(String userID){
+        changeFragmentWitchBackstack(new UserFragment(userID, false), null);
+    }
+
+
+    public void openObjectList(ArrayList<ObjectData> objectDataArrayList, PresenterInterface delegate, String type){
+        changeFragmentWitchBackstack(new ObjectListController(objectDataArrayList, type), null);
+    }
+
+    //метод для получения к заголовку ActionBar'a
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
 }

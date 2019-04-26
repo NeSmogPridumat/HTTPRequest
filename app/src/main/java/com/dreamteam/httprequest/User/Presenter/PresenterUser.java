@@ -5,10 +5,12 @@ import android.util.Log;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
 import com.dreamteam.httprequest.Data.RequestInfo;
+import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.MainActivity;
+import com.dreamteam.httprequest.ObjectList.ObjectData;
 import com.dreamteam.httprequest.User.Protocols.PresenterUserInterface;
 import com.dreamteam.httprequest.User.Router;
-import com.dreamteam.httprequest.SelectedList.SelectListData;
+import com.dreamteam.httprequest.SelectedList.SelectData;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.dreamteam.httprequest.User.Interactor.UserInteractor;
 import com.dreamteam.httprequest.User.Protocols.ViewUserInterface;
@@ -54,7 +56,21 @@ public class PresenterUser implements PresenterUserInterface {
 
     @Override
     public void openUser() {
-        router.openUser();
+        router.openProfile();
+    }
+
+    @Override public void answerGetGroupsForList(ArrayList<Group> groups) {
+        ArrayList<ObjectData> objectDataArrayList = new ArrayList<>();
+        for (int i = 0; i < groups.size(); i++){
+            ObjectData objectData = new ObjectData();
+            objectData.id = groups.get(i).id;
+            objectData.title = groups.get(i).content.simpleData.title;
+            objectData.description = groups.get(i).content.simpleData.description;
+            objectData.image = groups.get(i).content.mediaData.image;
+            objectDataArrayList.add(objectData);
+        }
+        router.openGroupList(objectDataArrayList, this,"Group");
+
     }
 
     public void getUser(String id){
@@ -65,9 +81,6 @@ public class PresenterUser implements PresenterUserInterface {
         userInteractor.postUser(name, surname);
     }
 
-    public void getUsers (){
-
-    }
 
     //отправка на объекта на изменение
     public void showEditProfile(User user, Bitmap bitmap){
@@ -95,7 +108,7 @@ public class PresenterUser implements PresenterUserInterface {
     }
 
     @Override
-    public void inputSelect(ArrayList<SelectListData> arrayList, String type) {
+    public void inputSelect(ArrayList<SelectData> arrayList, String type) {
 
     }
 
@@ -109,5 +122,9 @@ public class PresenterUser implements PresenterUserInterface {
         Bitmap bitmap = infoProfileData.imageData;
 
         userInteractor.putUser(user, bitmap);
+    }
+
+    public void getGroups(String userID){
+        userInteractor.getGroupForList(userID);
     }
 }
