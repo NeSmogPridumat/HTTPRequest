@@ -131,11 +131,13 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
                 } else {//---------------------------------------------------------------------------------код отправки изменеий на сервер
                     infoProfileData.title = titleEditTextView.getText().toString();
                     infoProfileData.description = descriptionEditTextView.getText().toString();
-
-                    infoProfileData.imageData = ((BitmapDrawable)editImageView.getDrawable()).getBitmap();
-
+                    if (((BitmapDrawable)editImageView.getDrawable()).getBitmap() != null) {
+                        infoProfileData.imageData = ((BitmapDrawable) editImageView.getDrawable()).getBitmap();
+                    } else {
+                        infoProfileData.imageData = null;
+                    }
                     //отправка данных на изменение
-                    editProfilePresenter.editInfo(infoProfileData, requestInfo);
+                    delegate.editInfo(infoProfileData, requestInfo);
                 }
             }
         });

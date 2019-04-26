@@ -11,8 +11,10 @@ import android.view.MenuItem;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.View.EditInfoProfileController;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.AuthorizationController;
-import com.dreamteam.httprequest.AutoAndReg.Registration.View.RegistrationController;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.View.KeyRegistrationController;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.View.RegistrationController;
 import com.dreamteam.httprequest.Group.Protocols.ActivityAction;
 import com.dreamteam.httprequest.Group.View.GroupController;
 import com.dreamteam.httprequest.GroupList.View.GroupsListFragment;
@@ -34,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     public final String userID = "328d21d2-9797-4802-9f5d-0e0b3f204866";
 
     public BottomNavigationView bottomNavigationView;
+
+    public AuthDataObject authDataObject= new AuthDataObject();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,6 +211,10 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
     public void openRegistration(){
         changeFragmentWitchBackstack(new RegistrationController(), null);
+    }
+
+    public void openKeyRegistration(){
+        changeFragment(new KeyRegistrationController(), null);
     }
 
     //метод для получения к заголовку ActionBar'a

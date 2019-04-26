@@ -1,17 +1,78 @@
 package com.dreamteam.httprequest.AutoAndReg.Authorization.Presenter;
 
-import com.dreamteam.httprequest.AutoAndReg.Authorization.AuthorizationRouter;
-import com.dreamteam.httprequest.MainActivity;
+import android.graphics.Bitmap;
 
-public class AuthorizationPresenter {
+import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.AuthorizationRouter;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Interactor.AuthorizationInteractor;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationPresenterInterface;
+import com.dreamteam.httprequest.Data.RequestInfo;
+import com.dreamteam.httprequest.MainActivity;
+import com.dreamteam.httprequest.SelectedList.SelectData;
+
+import java.util.ArrayList;
+
+public class AuthorizationPresenter implements AuthorizationPresenterInterface {
 
     private AuthorizationRouter router;
+    private AuthorizationInteractor authorizationInteractor;
+    private AuthDataObject authDataObject;
 
     public AuthorizationPresenter(MainActivity activity){
         router = new AuthorizationRouter(activity);
+        authorizationInteractor = new AuthorizationInteractor(this);
+    }
+
+    public void createLogin(String login, String password){
+        authorizationInteractor.createLogin(login, password);
+    }
+
+    @Override
+    public void answerCreateLogin(boolean answer, AuthDataObject authDataObject) {
+        if (answer == true ) {
+            router.getKeyLogin(authDataObject);
+        }
+    }
+
+    @Override
+    public void answerEnableUserAuth(boolean answer, AuthDataObject authDataObject) {
+        if (answer == true ) {
+            router.createUserToAuth(authDataObject, this);
+        }
     }
 
     public void getRegistration(){
         router.getRegistration();
+    }
+
+    public void enableUserAuth(String key, AuthDataObject authDataObject){
+        authorizationInteractor.enableUserAuth(key, authDataObject);
+    }
+
+    @Override
+    public void showDialog() {
+
+    }
+
+    @Override
+    public void answerDialog(int i) {
+
+    }
+
+    @Override
+    public void forResult(Bitmap bitmap) {
+
+    }
+
+    @Override
+    public void inputSelect(ArrayList<SelectData> arrayList, String type) {
+
+    }
+
+    @Override
+    public void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo) {
+        authDataObject = router.getAuthDataObject();
+        authorizationInteractor.createUserToAuth(infoProfileData, authDataObject);
     }
 }

@@ -104,7 +104,7 @@ public class HTTPManager {
                         "\nERROR CODE - " + responseCode + " RESPONSE MESSAGE : " + message);
             }
         } catch (Exception error){
-            Log.e(TAG,  error.getMessage());
+            Log.e(TAG,  error.getMessage().toString());
         }
         return result;
     }
