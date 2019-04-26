@@ -1,7 +1,8 @@
-package com.dreamteam.httprequest.AutoAndReg.Authorization;
+package com.dreamteam.httprequest.AutoAndReg.Authorization.View;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Presenter.AuthorizationPresenter;
+import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
 
 //TODO: порт 9000
@@ -24,6 +27,8 @@ public class AuthorizationController extends Fragment {
 
     private EditText loginEditText, passwordEditText;
     private Button authorizationButton, registrationButton;
+
+     private AuthorizationPresenter authorizationPresenter;
 
 
     public AuthorizationController() {
@@ -44,8 +49,21 @@ public class AuthorizationController extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        MainActivity activity = (MainActivity) getActivity();
+        authorizationPresenter = new AuthorizationPresenter(activity);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public void onStart() {
 
+        registrationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                authorizationPresenter.getRegistration();
+            }
+        });
         super.onStart();
     }
 

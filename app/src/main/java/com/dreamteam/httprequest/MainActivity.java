@@ -11,7 +11,8 @@ import android.view.MenuItem;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.View.EditInfoProfileController;
-import com.dreamteam.httprequest.AutoAndReg.Authorization.AuthorizationController;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.View.AuthorizationController;
+import com.dreamteam.httprequest.AutoAndReg.Registration.View.RegistrationController;
 import com.dreamteam.httprequest.Group.Protocols.ActivityAction;
 import com.dreamteam.httprequest.Group.View.GroupController;
 import com.dreamteam.httprequest.GroupList.View.GroupsListFragment;
@@ -202,6 +203,10 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
     public void openObjectList(ArrayList<ObjectData> objectDataArrayList, PresenterInterface delegate, String type){
         changeFragmentWitchBackstack(new ObjectListController(objectDataArrayList, type), null);
+    }
+
+    public void openRegistration(){
+        changeFragmentWitchBackstack(new RegistrationController(), null);
     }
 
     //метод для получения к заголовку ActionBar'a

@@ -36,6 +36,7 @@
     <string name="add_subgroup">Add Subgroup</string>
     <string name="change_admin">Change Admin</string>
     <string name="exit_the_group">Exit the Group</string>
-  <string name="sign_in">Sign in</string>
+    <string name="sign_in">Sign in</string>
     <string name="registration">Registration</string>
+    <string name="password">Password</string>
 </resources>
