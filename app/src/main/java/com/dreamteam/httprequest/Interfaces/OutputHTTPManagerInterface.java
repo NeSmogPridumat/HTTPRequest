@@ -5,4 +5,5 @@ import org.json.JSONObject;
 public interface OutputHTTPManagerInterface {
     void response(byte [] byteArray, String type);
     void error(Throwable t);
+    void errorHanding(int resposeCode);
 }

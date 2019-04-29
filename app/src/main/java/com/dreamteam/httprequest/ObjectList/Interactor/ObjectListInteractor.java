@@ -71,4 +71,9 @@ public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface 
   @Override public void error(Throwable t) {
 
   }
+
+  @Override
+  public void errorHanding(int resposeCode) {
+
+  }
 }

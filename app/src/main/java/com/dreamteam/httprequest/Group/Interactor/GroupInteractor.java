@@ -231,6 +231,11 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
 
     }
 
+    @Override
+    public void errorHanding(int resposeCode) {
+
+    }
+
     private void prepareAddSubgroupResponse (byte[] byteArray){
         try {
             final Group group = createGroupOfBytes(byteArray);

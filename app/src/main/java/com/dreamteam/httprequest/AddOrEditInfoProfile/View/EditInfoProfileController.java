@@ -66,6 +66,7 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
         descriptionTextView = view.findViewById(R.id.description_edit_info_profile_text_view);
         descriptionEditTextView = view.findViewById(R.id.description_edit_info_profile_edit_text);
         editImageView = view.findViewById(R.id.edit_info_profile_image);
+        editImageView.setImageBitmap(null);
         saveButton = view.findViewById(R.id.save_profile_info_button);
 
         //если один тип - задаем один вариант отображения вью, если другой тип  - другой

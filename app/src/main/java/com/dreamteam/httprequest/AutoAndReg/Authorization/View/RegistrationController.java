@@ -52,6 +52,7 @@ public class RegistrationController extends Fragment {
 
     @Override
     public void onStart() {
+        //слушатель на кнопку, проверяет заполнены ли логин и пароль и отправляет данные на сервер
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

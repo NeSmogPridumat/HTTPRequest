@@ -164,9 +164,9 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
             delegate.forResult(bitmap);
 
         } else if (requestCode == dialogConfig.GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
+            //получаем Bitmap из интента (data.getData())
+//            bitmap = BitmapFactory.decodeFile(data.getData().getEncodedPath().toString());
             try {
-
-                //получаем Bitmap из интента (data.getData())
                 bitmap = MediaStore.Images.Media.getBitmap(
                         this.getActivity().getContentResolver(), data.getData());
             } catch (IOException e) {

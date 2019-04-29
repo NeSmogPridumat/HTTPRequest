@@ -109,6 +109,11 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
 
     }
 
+    @Override
+    public void errorHanding(int resposeCode) {
+
+    }
+
     //-----------------------Обработка данных из HTTP MANAGER-------------------------------------//
 
     private synchronized void prepareGetBitmapOfByte(final String groupID, byte[] byteArray){

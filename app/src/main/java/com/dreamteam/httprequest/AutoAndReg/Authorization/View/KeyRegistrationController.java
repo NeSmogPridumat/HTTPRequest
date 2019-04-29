@@ -53,6 +53,7 @@ public class KeyRegistrationController extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    //льправляем введенный ключ на проверку
     @Override
     public void onStart() {
         enterKeyButton.setOnClickListener(new View.OnClickListener() {

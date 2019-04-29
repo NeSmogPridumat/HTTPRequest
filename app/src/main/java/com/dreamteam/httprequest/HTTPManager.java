@@ -2,6 +2,7 @@ package com.dreamteam.httprequest;
 
 import android.util.Log;
 
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.Token;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
 
 import java.io.ByteArrayOutputStream;
@@ -14,8 +15,8 @@ import java.net.URL;
 
 public class HTTPManager {
 
-
     private static HTTPManager httpManager;
+    public Token token;
 
     public static HTTPManager get(){
         if (httpManager == null){
@@ -92,7 +93,7 @@ public class HTTPManager {
 
     }
 
-    private boolean isUrlConnect (HttpURLConnection urlConnection){//-------------------------------проверка ответа сервера
+    private boolean isUrlConnect (HttpURLConnection urlConnection, OutputHTTPManagerInterface delegate){//-------------------------------проверка ответа сервера
         boolean result = false;
         try{
             if (urlConnection.getResponseCode() == 200){
@@ -102,6 +103,7 @@ public class HTTPManager {
                 int responseCode = urlConnection.getResponseCode();
                 Log.i("RESPONSE ERROR", "URL - " + urlConnection.getURL() +
                         "\nERROR CODE - " + responseCode + " RESPONSE MESSAGE : " + message);
+                errorHanding(responseCode, delegate);
             }
         } catch (Exception error){
             Log.e(TAG,  error.getMessage().toString());
@@ -115,12 +117,16 @@ public class HTTPManager {
         }
     }
 
+    private void errorHanding(int responseCode, OutputHTTPManagerInterface delegate){
+        delegate.errorHanding(responseCode);
+    }
+
     //---------------------------------------RESPONCE------------------------------------------------//
 
     private void prepareResponce(HttpURLConnection httpURLConnection, String type, OutputHTTPManagerInterface delegate){
         byte [] byteArray = null;
         Exception error = null;
-        if (isUrlConnect(httpURLConnection)) {
+        if (isUrlConnect(httpURLConnection, delegate)) {
             try {
                 byteArray = readDataFromRequestStream(httpURLConnection.getInputStream()).toByteArray();
             } catch (Exception e) {
@@ -147,7 +153,9 @@ public class HTTPManager {
     private void settingResponseGeneral(HttpURLConnection httpURLConnection){
         httpURLConnection.setRequestProperty ("Cache-Control", "no-cache");
         httpURLConnection.setUseCaches(false);//если true, то соединению разоешается использовать любой доступный кэш. Если false, кэши должны игнорироваться. По умолчанию стоит true
-        //httpURLConnection.setRequestProperty("Authorizaction", "Auth:test");
+        if(token != null) {
+            httpURLConnection.setRequestProperty("Authorizaction", "Jwt" + token.token);
+        }
         httpURLConnection.setDefaultUseCaches(false);
     }
 

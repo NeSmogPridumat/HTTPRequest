@@ -4,6 +4,12 @@
     <item
         android:id="@+id/menu_item_edit"
         android:title="Edit"
-        app:showAsAction="ifRoom"
+        app:showAsAction="never"
+        />
+
+    <item
+        android:id="@+id/exit_menu_item_edit"
+        android:title="@string/exit"
+        app:showAsAction="never"
         />
 </menu>

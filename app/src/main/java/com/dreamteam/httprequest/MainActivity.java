@@ -1,5 +1,6 @@
 package com.dreamteam.httprequest;
 
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -32,17 +33,19 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements ActivityAction {
 
     GroupController groupController;
+    SharedPreferences sharedPreferences;
 
-    public final String userID = "328d21d2-9797-4802-9f5d-0e0b3f204866";
+    public String userID;// = "328d21d2-9797-4802-9f5d-0e0b3f204866";
 
     public BottomNavigationView bottomNavigationView;
 
-    public AuthDataObject authDataObject= new AuthDataObject();
+    public AuthDataObject authDataObject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        authDataObject= new AuthDataObject();
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
@@ -55,11 +58,13 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
                         case R.id.activities:
                             clearMainActivity();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AuthorizationController()).commit();
+                            break;
 
                         case R.id.groups:
                             clearMainActivity();
 //                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new GroupsListFragment()).commit();
-                            changeFragment(new GroupsListFragment(), null);
+                            changeFragment(new GroupsListFragment(userID), null);
                             break;
 
                         case R.id.profile:
@@ -69,13 +74,29 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
                         case R.id.notification:
                             clearMainActivity();
-                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AuthorizationController()).commit();
                             break;
                     }
+
                     return true;
                 }
             });
+
+        bottomNavigationView.setSelectedItemId(R.id.activities);
+        sharedPreferences = getPreferences(MODE_PRIVATE);
+        userID = sharedPreferences.getString("userID", null);
+        boolean isStart = sharedPreferences.getBoolean("isStart", false);
+        if (isStart){
+            sharedPreferences.getString("userID", null);
+            bottomNavigationView.setSelectedItemId(R.id.profile);
+        } else {
+            SharedPreferences.Editor e = sharedPreferences.edit();
+            e.putBoolean("isStart", true);
+            e.commit();
+            bottomNavigationView.setSelectedItemId(R.id.activities);
+        }
     }
+
+
 
     public void clearMainActivity(){
 
@@ -154,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     }
 
     public void openGroupList(){
-        changeFragment(new GroupsListFragment(), null);
+        changeFragment(new GroupsListFragment(userID), null);
     }
 
     //открыть список с полученными даннами и checkBox
@@ -209,10 +230,12 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         changeFragmentWitchBackstack(new ObjectListController(objectDataArrayList, type), null);
     }
 
+    //открытие контроллера для регистрации
     public void openRegistration(){
         changeFragmentWitchBackstack(new RegistrationController(), null);
     }
 
+    //открытие контроллера для ввода ключа регистрации
     public void openKeyRegistration(){
         changeFragment(new KeyRegistrationController(), null);
     }
@@ -220,6 +243,25 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     //метод для получения к заголовку ActionBar'a
     public void setActionBarTitle(String title) {
         getSupportActionBar().setTitle(title);
+    }
+
+    public void saveSharedPreferences (String userID){
+
+        //с помощью метода getPreferences получаем объект sPref класса SharedPreferences, который позволяет работать с данными (читать и писать).Константа MODE_PRIVATE используется для настройки доступа и означает, что после сохранения, данные будут видны только этому приложению
+        sharedPreferences = getPreferences(MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("userID", userID);
+        editor.commit();
+    }
+
+    public void exitLogin(){
+        sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.commit();
+        bottomNavigationView.setSelectedItemId(R.id.activities);
     }
 
 }

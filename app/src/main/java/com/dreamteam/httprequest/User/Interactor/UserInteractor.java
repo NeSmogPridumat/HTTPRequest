@@ -116,6 +116,11 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         Log.e(TAG, "Failed server" + t.toString());
     }
 
+    @Override
+    public void errorHanding(int resposeCode) {
+
+    }
+
 
     public void getUserResponse(byte[] byteArray) {//----------------------------------------------получение json ответа, преобразование его в User и вывод в основной поток
         Log.i("UserInteractor", "jsonString");

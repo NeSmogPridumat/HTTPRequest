@@ -45,13 +45,16 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
     MenuInflater inflater;
     Menu menu;
 
+    private String userID;
+
 //    SparseBooleanArray checkedArray = new SparseBooleanArray();
 
     boolean deleteOn;
 
     ArrayList<Group> groups = new ArrayList<>();
 
-    public GroupsListFragment() {
+    public GroupsListFragment(String userID) {
+        this.userID = userID;
 
     }
 
@@ -61,7 +64,7 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
         View view = inflater.inflate(R.layout.fragment_groups_list, container, false);
         groupsRecyclerView = view.findViewById(R.id.groups_recycler_view);
         groupsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        groupsPresenter.getGroups("328d21d2-9797-4802-9f5d-0e0b3f204866");//здесь ID User'а
+        groupsPresenter.getGroups(userID);//здесь ID User'а
         return view;
 
     }

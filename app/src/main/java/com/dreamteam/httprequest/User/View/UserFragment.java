@@ -109,7 +109,6 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     public void ViewImage(Bitmap bitmap) {
         bitmapU = bitmap;
         userImage.setImageBitmap(bitmapU);
-//        user.content.mediaData.bitmap = bitmapU;
     }
 
     @Override
@@ -127,8 +126,10 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         switch (item.getItemId()){
             case R.id.menu_item_edit:
                 presenterUser.showEditProfile(user, bitmapU);
-//                MainActivity activityAction = (MainActivity) getActivity();
-//                activityAction.editProfile(user, bitmapU);//запуск метода Activity
+                break;
+
+            case R.id.exit_menu_item_edit:
+                activity.exitLogin();//TODO
         }
         return super.onOptionsItemSelected(item);
     }

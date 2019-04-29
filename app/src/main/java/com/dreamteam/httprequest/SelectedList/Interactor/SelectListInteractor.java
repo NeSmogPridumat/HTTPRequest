@@ -49,6 +49,11 @@ public class SelectListInteractor implements SelectListHTTPManagerInterface {
 
     }
 
+    @Override
+    public void errorHanding(int resposeCode) {
+
+    }
+
     private String[] parsingStringType(String string){//--------------------------------------------разбор строки (getImageGroupType + ":" + groupID)
         String delimiter = ":";
         return string.split(delimiter);

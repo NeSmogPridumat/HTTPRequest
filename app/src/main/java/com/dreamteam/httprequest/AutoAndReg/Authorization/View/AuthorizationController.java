@@ -1,6 +1,7 @@
 package com.dreamteam.httprequest.AutoAndReg.Authorization.View;
 
 
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -58,10 +59,30 @@ public class AuthorizationController extends Fragment {
     @Override
     public void onStart() {
 
+        //кнопка для регистрации, перекидывает на фрагмент для регистрации
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 authorizationPresenter.getRegistration();
+            }
+        });
+
+        authorizationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ((loginEditText.getText().toString().equals("")))//-----------------------------------проверка на заполнение поля
+                {
+                    loginEditText.setError("Заполните поле");
+                    loginEditText.requestFocus();
+                } else if (passwordEditText.getText().toString().equals("")){
+                    passwordEditText.setError("Заполниет поле");
+                    passwordEditText.requestFocus();
+                } else {//---------------------------------------------------------------------------------код отправки изменеий на сервер
+                    MainActivity activity = (MainActivity) getActivity();
+                    activity.authDataObject.authData.login = loginEditText.getText().toString();
+                    activity.authDataObject.authData.pass = loginEditText.getText().toString();
+                    authorizationPresenter.enterUser(loginEditText.getText().toString(), passwordEditText.getText().toString());
+                }
             }
         });
         super.onStart();
