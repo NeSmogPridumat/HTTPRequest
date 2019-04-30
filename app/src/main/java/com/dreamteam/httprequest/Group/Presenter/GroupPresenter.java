@@ -43,7 +43,7 @@ public class GroupPresenter implements GroupPresenterInterface {
     //============================ОТПРАВКА В INTERACTOR==========================================//
 
     public void getGroup(String id){
-        groupInteractor.getGroup(id);
+        groupInteractor.getGroup(id, userID);
         Log.i("GROUP_PRESENTER", id);
         groupID = id;
     }
@@ -131,7 +131,6 @@ public class GroupPresenter implements GroupPresenterInterface {
         } else if (type.equals(ADMIN)){
 
         }
-
     }
 
     public void showAddGroup(){
@@ -144,8 +143,8 @@ public class GroupPresenter implements GroupPresenterInterface {
         groupInteractor.checkListAddAdmin();
     }
 
-    public void deleteGroup(Group group){
-        groupInteractor.deleteGroup(group);
+    public void deleteGroup(RequestInfo requestInfo){
+        groupInteractor.deleteGroup(requestInfo);
     }
 
     @Override
@@ -173,11 +172,13 @@ public class GroupPresenter implements GroupPresenterInterface {
         groupInteractor.addGroup(group, bitmap, requestInfo);
     }
 
-    public void exitGroup(){
+    public void exitGroup(RequestInfo requestInfo){
         SelectData selectData = new SelectData();
         selectData.id = userID;
-        groupInteractor.exitGroup(selectData, groupID);
+//        groupInteractor.exitGroup(selectData, groupID);
+        groupInteractor.exitGroup(requestInfo);
     }
+
 
     public void getMembers (String groupID){
         groupInteractor.getUserForList(groupID);

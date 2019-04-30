@@ -43,7 +43,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 //----------------------------------ОТПРАВКА В HTTPMANAGER---------------------------------------//
 
     public void getUser(String id) {//----------------------------------отправка запроса на получение User по id
-        final String path = config.serverURL + config.userPORT + config.reqUser + httpConfig.ID_PARAM + id;
+        final String path = config.serverURL + config.SERVER_GETTER + config.reqUser + httpConfig.ID_PARAM + id;
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override
             public void run() {
@@ -57,7 +57,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         final User user = createUser(name, surname);
         Gson gson = new Gson();
         final String jsonObject = gson.toJson(user);
-        final String path = config.serverURL + config.userPORT + config.reqUser;
+        final String path = config.serverURL + config.SERVER_SETTER + config.reqUser;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -73,7 +73,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 
     public void getAfterPostUser(byte[] byteArray) {
         final User user = createUserOfBytes(byteArray);
-        String path = config.serverURL + config.userPORT + config.reqUser + httpConfig.ID_PARAM + user.id;
+        String path = config.serverURL + config.SERVER_GETTER + config.reqUser + httpConfig.ID_PARAM + user.id;
         httpManager.getRequest(path, constantConfig.USER_TYPE, UserInteractor.this);
     }
 
@@ -151,7 +151,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 
     public void getImageResponse(User user) {//------------------------------------------------------получение картинки
         try {
-            String imageUrl = config.serverURL + config.userPORT + user.content.mediaData.image;
+            String imageUrl = config.serverURL + config.SERVER_GETTER + user.content.mediaData.image;
             //Log.i(TAG, "Поток " + Thread.currentThread().getName());
             httpManager.getRequest(imageUrl, constantConfig.IMAGE_TYPE, UserInteractor.this);
         } catch (Exception ioe) {
@@ -213,7 +213,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     }
 
     public void getGroups (String userId){
-        final String path = httpConfig.serverURL + httpConfig.groupPORT + httpConfig.reqGroup +
+        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqGroup +
                 httpConfig.reqUser + httpConfig.USER_ID_PARAM + userId;
 
         new Thread(new Runnable() {
@@ -247,7 +247,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     //запрос на изменение объекта
     public void putUser(final User user, final Bitmap bitmap){//------------------------------------Отправка User
 
-        final String urlPath = config.serverURL + config.userPORT + config.reqUser;
+        final String urlPath = config.serverURL + config.SERVER_SETTER + config.reqUser;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -275,7 +275,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     }
 
     public void getGroupForList (String userID){
-        final String path = httpConfig.serverURL + httpConfig.groupPORT + httpConfig.reqGroup +
+        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqGroup +
             httpConfig.reqUser + httpConfig.USER_ID_PARAM + userID;
         new Thread(new Runnable() {
             @Override

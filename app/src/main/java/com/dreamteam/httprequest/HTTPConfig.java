@@ -1,10 +1,10 @@
 package com.dreamteam.httprequest;
 
 public class HTTPConfig {
-    public String serverURL = "http://192.168.0.100:";
-    public String serverPORT = "8888";
-    public String userPORT = serverPORT;
-    public String groupPORT = serverPORT;
+    public String serverURL = "http://89.189.159.160:";
+    public String SERVER_GETTER = "8100";
+    public String SERVER_SETTER = "8000";
+    public String SERVER_AUTH = "9000";
 
     // REQUEST TYPE PATH
     public String reqUser = "/user";

@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.Group.Presenter.GroupPresenter;
 import com.dreamteam.httprequest.Group.Protocols.GroupViewInterface;
@@ -141,7 +142,11 @@ public class GroupController extends Fragment implements GroupViewInterface {
                 break;
 
             case  R.id.delete_group:
-                groupPresenter.deleteGroup(group);
+                RequestInfo requestInfo = new RequestInfo();
+                requestInfo.creatorID = activity.userID;
+                requestInfo.groupCreatorID = groupID;
+                requestInfo.groupID = groupID;
+                groupPresenter.deleteGroup(requestInfo);
                 break;
 
             case R.id.change_admin:
@@ -149,7 +154,10 @@ public class GroupController extends Fragment implements GroupViewInterface {
                 break;
 
             case R.id.exit_group:
-                groupPresenter.exitGroup();
+                RequestInfo requestInfoExit = new RequestInfo();
+                requestInfoExit.creatorID = activity.userID;
+                requestInfoExit.groupID = groupID;
+                groupPresenter.exitGroup(requestInfoExit);
         }
         return super.onOptionsItemSelected(item);
     }

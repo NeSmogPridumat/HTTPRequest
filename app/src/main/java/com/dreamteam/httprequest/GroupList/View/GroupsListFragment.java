@@ -51,7 +51,7 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
 
     boolean deleteOn;
 
-    ArrayList<Group> groups = new ArrayList<>();
+    private ArrayList<Group> groups = new ArrayList<>();
 
     public GroupsListFragment(String userID) {
         this.userID = userID;

@@ -154,7 +154,7 @@ public class HTTPManager {
         httpURLConnection.setRequestProperty ("Cache-Control", "no-cache");
         httpURLConnection.setUseCaches(false);//если true, то соединению разоешается использовать любой доступный кэш. Если false, кэши должны игнорироваться. По умолчанию стоит true
         if(token != null) {
-            httpURLConnection.setRequestProperty("Authorizaction", "Jwt" + token.token);
+//            httpURLConnection.setRequestProperty("Authorizaction", "Jwt" + token.token);
         }
         httpURLConnection.setDefaultUseCaches(false);
     }

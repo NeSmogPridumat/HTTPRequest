@@ -6,11 +6,9 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.dreamteam.httprequest.Data.ConstantConfig;
-import com.dreamteam.httprequest.GroupList.Interactor.GroupsInteractor;
 import com.dreamteam.httprequest.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.SelectListHTTPManagerInterface;
-import com.dreamteam.httprequest.SelectedList.Preseter.SelectListPresenter;
 import com.dreamteam.httprequest.SelectedList.Protocols.SelectListPresenterInterface;
 
 public class SelectListInteractor implements SelectListHTTPManagerInterface {
@@ -30,7 +28,7 @@ public class SelectListInteractor implements SelectListHTTPManagerInterface {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String pathImage = httpConfig.serverURL + httpConfig.groupPORT +imageURL;
+                String pathImage = httpConfig.serverURL + httpConfig.SERVER_GETTER +imageURL;
                 httpManager.getRequest(pathImage,constantConfig.IMAGE_TYPE + ":" + id, SelectListInteractor.this);
             }
         }).start();

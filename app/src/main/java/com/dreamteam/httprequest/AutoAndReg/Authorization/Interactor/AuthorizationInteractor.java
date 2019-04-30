@@ -15,7 +15,6 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.Authorizatio
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager;
-import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
@@ -46,7 +45,7 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
         authDataObject.authData.pass = password;
         Gson gson = new Gson();
         final String jsonObject = gson.toJson(authDataObject);
-        final String path = httpConfig.serverURL + "9000" + httpConfig.AUTH + httpConfig.CREATE;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH + httpConfig.CREATE;
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -146,7 +145,7 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
 
     public void enableUserAuth (String key, final AuthDataObject authDataObject){
         authDataObject.authData.key = key;
-        final String path = httpConfig.serverURL + "9000" + httpConfig.AUTH + httpConfig.ENABLE;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH + httpConfig.ENABLE;
 
         new Thread(new Runnable() {
             @Override
@@ -172,7 +171,7 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
         }
         authDataObject.authData.key = null;
 
-        final String path = httpConfig.serverURL + "9000" + httpConfig.AUTH + httpConfig.USER;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH + httpConfig.USER;
 
         new Thread(new Runnable() {
             @Override
@@ -202,7 +201,7 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
 
     public void getUserToken (AuthDataObject authDataObject){
         authDataObject.authData.key = null;
-        final String path = httpConfig.serverURL + "9000" + httpConfig.AUTH;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH;
         Gson gson = new Gson();
         final String jsonObject = gson.toJson(authDataObject);
         new Thread(new Runnable() {

@@ -9,8 +9,6 @@ import com.dreamteam.httprequest.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.ObjectListFromHTTPManagerInterface;
 import com.dreamteam.httprequest.ObjectList.Protocols.ObjectListPresenterInterface;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface {
 
@@ -29,7 +27,7 @@ public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface 
     new Thread(new Runnable() {
       @Override
       public void run() {
-        String pathImage = httpConfig.serverURL + httpConfig.groupPORT +imageURL;
+        String pathImage = httpConfig.serverURL + httpConfig.SERVER_GETTER + imageURL;
         httpManager.getRequest(pathImage,constantConfig.IMAGE_TYPE + ":" + id, ObjectListInteractor.this);
       }
     }).start();

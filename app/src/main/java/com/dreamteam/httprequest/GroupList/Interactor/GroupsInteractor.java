@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
 
+import com.dreamteam.httprequest.Data.AddData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
@@ -42,7 +43,7 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
     //-------------------------------Входные функции из Presenter, отправка в HTTP MANAGER---------//
 
     public void getGroups (String userId){
-        final String path = httpConfig.serverURL + httpConfig.groupPORT + httpConfig.reqGroup +
+        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqGroup +
                 httpConfig.reqUser + httpConfig.USER_ID_PARAM + userId;
 
         new Thread(new Runnable() {
@@ -138,7 +139,8 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
 
     private void prepareGetGroupsResponse(byte[] byteArray){
         //TODO: узнать что делает final
-         final ArrayList<Group> groupCollection = createGroupsOfBytes(byteArray);
+        if (byteArray != null){
+            final ArrayList<Group> groupCollection = createGroupsOfBytes(byteArray);
         if (groupCollection == null){
             String error = " ";
             delegate.error(error);
@@ -156,6 +158,7 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
             ArrayList<Group> grs = groupCollection;
             getImageRequest(grs);
         }
+        }
     }
 
     //-----------------------------------------------------------------------------------------//
@@ -164,7 +167,7 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
         if (groupCollection != null){
             for (int i = 0 ; i<groupCollection.size(); i++){
                 Group group = groupCollection.get(i);
-                String pathImage = httpConfig.serverURL + httpConfig.groupPORT + group.content.mediaData.image;
+                String pathImage = httpConfig.serverURL + httpConfig.SERVER_GETTER + group.content.mediaData.image;
                 uploadImage(group.id, pathImage);
             }
         }
@@ -197,7 +200,7 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
                     setNullSelectData(arrayList.get(i));
 
                     //собираем путь запроса
-                    String path = httpConfig.serverURL + httpConfig.groupPORT + httpConfig.reqGroup + httpConfig.DEL;//TODO
+                    String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.reqGroup + httpConfig.DEL;//TODO
                     Gson gson = new Gson();
                     String jsonObject = gson.toJson(arrayList.get(i));
 
@@ -213,13 +216,15 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
     }
 
     public void addGroup(final Group group, final Bitmap bitmap, final RequestInfo requestInfo){
-        final String path = httpConfig.serverURL + httpConfig.groupPORT + httpConfig.reqGroup;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.reqGroup;
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final String jsonObject = createJsonObject(group, bitmap, requestInfo);
+                    requestInfo.addData = new AddData();
+                    requestInfo.addData.content = group.content;
+                    final String jsonObject = createJsonObject(bitmap, requestInfo);
                     httpManager.postRequest(path, jsonObject, constantConfig.POST_GROUP, GroupsInteractor.this);
                 } catch (Exception error) {
                     error(error);
@@ -228,20 +233,14 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
         }).start();
     }
 
-    private String createJsonObject(Group group,Bitmap bitmap, RequestInfo requestInfo){
+    private String createJsonObject(Bitmap bitmap, RequestInfo requestInfo){
         Gson gson = new Gson();
         if(bitmap != null){
-            group.content.mediaData = new GroupMediaData();
-            group.content.mediaData.image = decodeBitmapInBase64(bitmap);
+            requestInfo.addData.content.mediaData = new GroupMediaData();
+            requestInfo.addData.content.mediaData.image = decodeBitmapInBase64(bitmap);
         }
-        String jsonGroup = gson.toJson(group);
         String jsonRequestInfo = gson.toJson(requestInfo);
-        StringBuffer sg = new StringBuffer(jsonGroup);
-        sg.deleteCharAt(sg.length()-1);
-        StringBuffer sr = new StringBuffer(jsonRequestInfo);
-        sr.deleteCharAt(0);
-        String jsonObject = (sg + "," + sr);
-        return jsonObject;
+        return jsonRequestInfo;
     }
 
     private String decodeBitmapInBase64 (Bitmap bitmap){//------------------------------------------декодирование Bitmap в Base64

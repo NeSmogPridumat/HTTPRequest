@@ -41,12 +41,14 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         this.delegate = delegate;
     }
 
-    public void getGroup(String id) {
+    public void getGroup(String id, String userID) {
         final String path = httpConfig.serverURL
-            + httpConfig.groupPORT
+            + httpConfig.SERVER_GETTER
             + httpConfig.reqGroup
-            + httpConfig.ID_PARAM
-            + id;
+            + httpConfig.GROUP_ID_PARAM
+            + id
+            + "&userID="
+            + userID;
         new Thread(
             new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
                 @Override
@@ -95,7 +97,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
 
     //метод отправки запроса
     private void getMembersRequest(Group group){
-        final String membersPath = httpConfig.serverURL + "8100" + httpConfig.reqUser + httpConfig.reqGroup + httpConfig.GROUP_ID_PARAM + group.id; //"5c4a0105-c5b5-450e-b781-113a21f16e5a"
+        final String membersPath = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqUser + httpConfig.reqGroup + httpConfig.GROUP_ID_PARAM + group.id; //"5c4a0105-c5b5-450e-b781-113a21f16e5a"
 
         new Thread(new Runnable() {
             @Override
@@ -114,7 +116,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         ThreadLocal tl = new ThreadLocal();
         try {
             tl.set(System.nanoTime());
-            String imageUrl = httpConfig.serverURL + httpConfig.groupPORT + group.content.mediaData.image;
+            String imageUrl = httpConfig.serverURL + httpConfig.SERVER_GETTER + group.content.mediaData.image;
             httpManager.getRequest(imageUrl, constantConfig.IMAGE_TYPE, GroupInteractor.this);
         }
         finally {
@@ -260,7 +262,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     }
 
     public void checkListAddUser(){
-        final String path = httpConfig.serverURL + httpConfig.userPORT + httpConfig.USERS;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.USERS;
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override
             public void run() {
@@ -270,7 +272,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     }
 
     public void checkListAddAdmin(){
-        final String path = httpConfig.serverURL + httpConfig.userPORT + httpConfig.USERS;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.USERS;
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override
             public void run() {
@@ -281,7 +283,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
 
 
     public void checkListDeleteUser(String groupID){
-        final String path = httpConfig.serverURL + "8100" + httpConfig.reqUser + httpConfig.reqGroup + httpConfig.GROUP_ID_PARAM + groupID; //"5c4a0105-c5b5-450e-b781-113a21f16e5a"
+        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqUser + httpConfig.reqGroup + httpConfig.GROUP_ID_PARAM + groupID; //"5c4a0105-c5b5-450e-b781-113a21f16e5a"
 
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override
@@ -333,7 +335,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
 
     public void addSelectUser(ArrayList<SelectData> arrayList, String groupId){
 
-        final String path = httpConfig.serverURL + httpConfig.userPORT + httpConfig.GROUP_USER;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.GROUP_USER;
         for (int i = 0; i< arrayList.size(); i++){
             Gson gson = new Gson();
             UserGroupID userGroupID = new UserGroupID();
@@ -355,7 +357,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
 
     }
     public void deleteSelectUser(final ArrayList<SelectData> selectData, final String groupId) {
-        final String path = httpConfig.serverURL + httpConfig.userPORT + httpConfig.GROUP_USER + httpConfig.DEL;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.GROUP_USER + httpConfig.DEL;
 
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override
@@ -378,13 +380,12 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     }
 
 
-    public void deleteGroup (Group group){
+    public void deleteGroup (RequestInfo requestInfo){
 //        setNullSelectData(arrayList.get(i));
-        group.content = null;
         //собираем путь запроса
-        final String path = httpConfig.serverURL + httpConfig.groupPORT + httpConfig.reqGroup + httpConfig.DEL;//TODO
+        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.reqGroup + httpConfig.DEL;//TODO
         Gson gson = new Gson();
-        final String jsonObject = gson.toJson(group);
+        final String jsonObject = gson.toJson(requestInfo);
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override
             public void run() {
@@ -399,13 +400,14 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     }
 
     public void addGroup(final Group group, final Bitmap bitmap, final RequestInfo requestInfo){
-        final String path = httpConfig.serverURL + httpConfig.groupPORT + httpConfig.reqGroup;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.reqGroup;
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    final String jsonObject = createJsonObject(group, bitmap, requestInfo);
+                    requestInfo.addData.content = group.content;
+                    final String jsonObject = createJsonObject(bitmap, requestInfo);
                     httpManager.postRequest(path, jsonObject, constantConfig.POST_GROUP, GroupInteractor.this);
                 } catch (Exception error) {
                     error(error);
@@ -414,20 +416,14 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         }).start();
     }
 
-    private String createJsonObject(Group group,Bitmap bitmap, RequestInfo requestInfo){
+    private String createJsonObject(Bitmap bitmap, RequestInfo requestInfo){
         Gson gson = new Gson();
         if(bitmap != null){
-            group.content.mediaData = new GroupMediaData();
-            group.content.mediaData.image = decodeBitmapInBase64(bitmap);
+            requestInfo.addData.content.mediaData = new GroupMediaData();
+            requestInfo.addData.content.mediaData.image = decodeBitmapInBase64(bitmap);
         }
-        String jsonGroup = gson.toJson(group);
         String jsonRequestInfo = gson.toJson(requestInfo);
-        StringBuffer sg = new StringBuffer(jsonGroup);
-        sg.deleteCharAt(sg.length()-1);
-        StringBuffer sr = new StringBuffer(jsonRequestInfo);
-        sr.deleteCharAt(0);
-        String jsonObject = (sg + "," + sr);
-        return jsonObject;
+        return jsonRequestInfo;
     }
 
     private String decodeBitmapInBase64 (Bitmap bitmap){//------------------------------------------декодирование Bitmap в Base64
@@ -439,7 +435,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     }
 
     public void getUserForList (String id){
-        final String membersPath = httpConfig.serverURL + "8100" + httpConfig.reqUser + httpConfig.reqGroup + httpConfig.GROUP_ID_PARAM + id; //"5c4a0105-c5b5-450e-b781-113a21f16e5a"
+        final String membersPath = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqUser + httpConfig.reqGroup + httpConfig.GROUP_ID_PARAM + id; //"5c4a0105-c5b5-450e-b781-113a21f16e5a"
 
         new Thread(new Runnable() {
             @Override
@@ -453,14 +449,11 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         }).start();
     }
 
-    public void exitGroup(SelectData selectData, String groupId){
-        final String path = httpConfig.serverURL + httpConfig.userPORT + httpConfig.GROUP_USER + httpConfig.DEL;
+    public void exitGroup(RequestInfo requestInfo){//TODO: не работает
+        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.GROUP + httpConfig.DEL;
 
         Gson gson = new Gson();
-        UserGroupID userGroupID = new UserGroupID();
-        userGroupID.userID = selectData.id;
-        userGroupID.groupID = groupId;
-        final String jsonObject = gson.toJson(userGroupID);
+        final String jsonObject = gson.toJson(requestInfo);
 
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override

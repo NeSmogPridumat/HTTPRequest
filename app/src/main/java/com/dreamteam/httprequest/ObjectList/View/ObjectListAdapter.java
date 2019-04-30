@@ -29,12 +29,14 @@ public class ObjectListAdapter extends RecyclerView.Adapter<ObjectListHolder>  {
     return newObjectHolder;
   }
 
-  @Override public void onBindViewHolder(@NonNull ObjectListHolder objectListHolder, int i) {
+  @Override
+  public void onBindViewHolder(@NonNull ObjectListHolder objectListHolder, int i) {
     ObjectData objectData = objectDataArrayList.get(i);
     objectListHolder.bindGroup(objectData);
   }
 
-  @Override public int getItemCount() {
+  @Override
+  public int getItemCount() {
     int size = 0;
     if (objectDataArrayList.size()!=0){
       size = objectDataArrayList.size();

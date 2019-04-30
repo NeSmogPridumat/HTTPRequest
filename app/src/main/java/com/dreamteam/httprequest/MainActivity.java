@@ -2,12 +2,17 @@ package com.dreamteam.httprequest;
 
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.design.internal.BottomNavigationItemView;
+import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
@@ -16,6 +21,7 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.AuthorizationController;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.KeyRegistrationController;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.RegistrationController;
+import com.dreamteam.httprequest.EventList.View.EventListController;
 import com.dreamteam.httprequest.Group.Protocols.ActivityAction;
 import com.dreamteam.httprequest.Group.View.GroupController;
 import com.dreamteam.httprequest.GroupList.View.GroupsListFragment;
@@ -34,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
     GroupController groupController;
     SharedPreferences sharedPreferences;
+    public TextView bottomNavigationTextView;
 
     public String userID;// = "328d21d2-9797-4802-9f5d-0e0b3f204866";
 
@@ -74,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
                         case R.id.notification:
                             clearMainActivity();
+                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new EventListController(userID)).commit();
                             break;
                     }
 
@@ -85,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         sharedPreferences = getPreferences(MODE_PRIVATE);
         userID = sharedPreferences.getString("userID", null);
         boolean isStart = sharedPreferences.getBoolean("isStart", false);
-        if (isStart){
+        if (!(sharedPreferences.getString("userID", "").equals(""))){
             sharedPreferences.getString("userID", null);
             bottomNavigationView.setSelectedItemId(R.id.profile);
         } else {
@@ -96,7 +104,22 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         }
     }
 
+    @Override
+    protected void onStart() {
+        BottomNavigationMenuView bottomNavigationMenuView =
+                (BottomNavigationMenuView) bottomNavigationView.getChildAt(0);
+        View v = bottomNavigationMenuView.getChildAt(2);
+        BottomNavigationItemView itemView = (BottomNavigationItemView) v;
 
+        View badge = LayoutInflater.from(this)
+                .inflate(R.layout.bottomnavigation_event_notification, itemView, true);
+        bottomNavigationTextView = badge.findViewById(R.id.notification_badge);
+
+        bottomNavigationTextView.setVisibility(View.INVISIBLE);
+
+//        tv.setText("+3");
+        super.onStart();
+    }
 
     public void clearMainActivity(){
 

@@ -30,7 +30,7 @@ import java.util.ArrayList;
 public class ObjectListController extends Fragment implements ObjectListViewInterface {
 
     private RecyclerView objectRecyclerView;
-    MainActivity activity;
+    private MainActivity activity;
     private ObjectListAdapter adapter;
     private ObjectListPresenter objectListPresenter;
 

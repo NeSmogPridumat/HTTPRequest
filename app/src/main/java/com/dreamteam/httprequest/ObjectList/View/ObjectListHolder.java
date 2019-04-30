@@ -14,7 +14,6 @@ public class ObjectListHolder extends RecyclerView.ViewHolder {
 
   private TextView titleTextView, descriptionTextView;
   public ImageView imageView;
-  public LinearLayout linearLayout;
 
   ObjectData objectData = new ObjectData();
 
