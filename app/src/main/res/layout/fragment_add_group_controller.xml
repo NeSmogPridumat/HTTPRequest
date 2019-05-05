@@ -30,7 +30,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/enter_new_title"
             android:layout_marginTop="6dp"
-            android:inputType="textPersonName"/>
+            android:inputType="textPersonName"
+            android:autofillHints="" />
 
         <TextView
             android:id="@+id/add_description_group_text_view"

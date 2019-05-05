@@ -1,4 +1,4 @@
-package com.dreamteam.httprequest.EventList.Entity;
+package com.dreamteam.httprequest.Event.Entity;
 
 public class Content {
     public SimpleData simpleData;

@@ -1,6 +1,6 @@
 package com.dreamteam.httprequest.EventList.Protocols;
 
-import com.dreamteam.httprequest.EventList.Entity.Event;
+import com.dreamteam.httprequest.Event.Entity.Event;
 
 import java.util.ArrayList;
 

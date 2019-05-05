@@ -42,4 +42,5 @@
     <string name="enter_key">Enter Key</string>
     <string name="enter">Enter</string>
     <string name="exit">Exit</string>
+    <string name="ok">OK</string>
 </resources>

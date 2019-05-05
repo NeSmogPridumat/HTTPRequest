@@ -4,7 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.dreamteam.httprequest.Data.ConstantConfig;
-import com.dreamteam.httprequest.EventList.Entity.Event;
+import com.dreamteam.httprequest.Event.Entity.Event;
 import com.dreamteam.httprequest.EventList.Protocols.EventListFromHTTPManagerInterface;
 import com.dreamteam.httprequest.EventList.Protocols.EventListPresenterInterface;
 import com.dreamteam.httprequest.HTTPConfig;

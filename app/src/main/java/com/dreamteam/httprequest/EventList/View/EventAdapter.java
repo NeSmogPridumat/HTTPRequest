@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dreamteam.httprequest.EventList.Entity.Event;
+import com.dreamteam.httprequest.Event.Entity.Event;
 import com.dreamteam.httprequest.R;
 
 import java.util.ArrayList;

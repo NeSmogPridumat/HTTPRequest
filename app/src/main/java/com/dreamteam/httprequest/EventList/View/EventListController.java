@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dreamteam.httprequest.EventList.Entity.Event;
+import com.dreamteam.httprequest.Event.Entity.Event;
 import com.dreamteam.httprequest.EventList.Presenter.EventListPresenter;
 import com.dreamteam.httprequest.EventList.Protocols.EventListViewInterface;
 import com.dreamteam.httprequest.GroupList.View.RecyclerItemClickListener;
@@ -77,6 +77,7 @@ public class EventListController extends Fragment implements EventListViewInterf
             @Override
             public void onItemClick(View view, int position) {
 //                objectListPresenter.openObjectProfile(arrayList.get(position), type);
+                eventListPresenter.openEvent(eventArrayList.get(position));
             }
 
             @Override
@@ -111,22 +112,22 @@ public class EventListController extends Fragment implements EventListViewInterf
         this.eventArrayList = eventArrayList;
         adapter.eventArrayList = eventArrayList;
         eventsRecyclerView.setAdapter(adapter);
-        final Context context = getContext();
+//        final Context context = getContext();
 
-        eventsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), eventsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-
-                MainActivity activityAction = (MainActivity) getActivity();
-                activityAction = (MainActivity)context;
-
-
-            }
-
-            @Override
-            public void onLongItemClick(View view, int position) {
-
-            }
-        }));
+//        eventsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), eventsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(View view, int position) {
+//
+//                MainActivity activityAction = (MainActivity) getActivity();
+//                activityAction = (MainActivity)context;
+//                eventListPresenter.openEvent(eventArrayList.get(position));
+//
+//            }
+//
+//            @Override
+//            public void onLongItemClick(View view, int position) {
+//
+//            }
+//        }));
     }
 }

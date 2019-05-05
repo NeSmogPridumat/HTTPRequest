@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.dreamteam.httprequest.EventList.Entity.Event;
+import com.dreamteam.httprequest.Event.Entity.Event;
 import com.dreamteam.httprequest.R;
 
 public class EventHolder extends RecyclerView.ViewHolder {

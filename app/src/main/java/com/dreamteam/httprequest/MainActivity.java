@@ -21,6 +21,8 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.AuthorizationController;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.KeyRegistrationController;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.RegistrationController;
+import com.dreamteam.httprequest.Event.Entity.Event;
+import com.dreamteam.httprequest.Event.View.EventController;
 import com.dreamteam.httprequest.EventList.View.EventListController;
 import com.dreamteam.httprequest.Group.Protocols.ActivityAction;
 import com.dreamteam.httprequest.Group.View.GroupController;
@@ -285,6 +287,10 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         editor.clear();
         editor.commit();
         bottomNavigationView.setSelectedItemId(R.id.activities);
+    }
+
+    public void openEvent (Event event){
+        changeFragmentWitchBackstack(new EventController(event), null);
     }
 
 }
