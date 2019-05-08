@@ -2,7 +2,8 @@ package com.dreamteam.httprequest.EventList.Presenter;
 
 import android.util.Log;
 
-import com.dreamteam.httprequest.Event.Entity.Event;
+import com.dreamteam.httprequest.Event.Entity.EventType12.Event;
+import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.EventList.EventListRouter;
 import com.dreamteam.httprequest.EventList.Interactor.EventListInteractor;
 import com.dreamteam.httprequest.EventList.Protocols.EventListPresenterInterface;
@@ -34,12 +35,12 @@ public class EventListPresenter implements EventListPresenterInterface {
     }
 
     @Override
-    public void answerGetEvents(ArrayList<Event> eventArrayList) {
+    public void answerGetEvents(ArrayList<EventType4> eventArrayList) {
         Log.i("tam", "tadam");
         delegate.answerGetEvents(eventArrayList);
     }
 
-    public void openEvent (Event event){
+    public void openEvent (EventType4 event){
         eventListRouter.openEvent(event);
     }
 }

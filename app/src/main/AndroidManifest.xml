@@ -25,6 +25,8 @@
         android:largeHeap="true"
         android:configChanges="orientation|screenSize"
 
+        android:hardwareAccelerated="false"
+
         android:theme="@style/Theme.AppCompat.Light.DarkActionBar">
         <activity
             android:name=".MainActivity"

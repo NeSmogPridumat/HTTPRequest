@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
@@ -68,7 +69,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         activity = (MainActivity) getActivity();
         groupPresenter = new GroupPresenter(this, activity);
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(false);
 
         Log.i("ControllerGROUP", "ONCreate");
         super.onCreate(savedInstanceState);
@@ -78,9 +79,8 @@ public class GroupController extends Fragment implements GroupViewInterface {
     @Override
     public void onStart() {
         Log.i("ControllerGROUP", "ONStart");
-        groupPresenter.getGroup(groupID);
-
         super.onStart();
+        groupPresenter.getGroup(groupID);
 
         membersRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -101,6 +101,9 @@ public class GroupController extends Fragment implements GroupViewInterface {
         titleTextView.setText(group.content.simpleData.title);
         descriptionTextView.setText(group.content.simpleData.description);
         activity.setActionBarTitle(group.content.simpleData.title);
+//        if(group.rules == 7){
+            setHasOptionsMenu(true);
+//        }
 
 //        ab = activity.getActionBar();
 //        ab.setTitle(group.content.simpleData.title);
@@ -118,10 +121,14 @@ public class GroupController extends Fragment implements GroupViewInterface {
     }
 
     @Override
+    public void answerStartVoited() {
+        Toast.makeText(getContext(), "Голосование запущено", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.group_profile_controller_menu, menu);
-
     }
 
     @Override
@@ -158,6 +165,13 @@ public class GroupController extends Fragment implements GroupViewInterface {
                 requestInfoExit.creatorID = activity.userID;
                 requestInfoExit.groupID = groupID;
                 groupPresenter.exitGroup(requestInfoExit);
+
+            case R.id.voited:
+                RequestInfo requestInfoVoited = new RequestInfo();
+                requestInfoVoited.creatorID = activity.userID;
+                requestInfoVoited.groupCreatorID = groupID;
+                requestInfoVoited.groupID = groupID;
+                groupPresenter.startVoited(requestInfoVoited);
         }
         return super.onOptionsItemSelected(item);
     }

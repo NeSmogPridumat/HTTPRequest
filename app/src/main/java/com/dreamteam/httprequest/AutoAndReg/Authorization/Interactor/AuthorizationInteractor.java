@@ -7,6 +7,8 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AnswerAuth;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthData;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.Content;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.Token;
@@ -41,6 +43,7 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
 
     //создание логина
     public void createLogin (String login, String password){
+        authDataObject.authData = new AuthData();
         authDataObject.authData.login = login;
         authDataObject.authData.pass = password;
         Gson gson = new Gson();
@@ -139,7 +142,12 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
     private boolean createBooleanOfBytes(byte[] byteArray){
         Gson gson = new Gson();
         String jsonString = new String(byteArray);
-        final boolean answer = gson.fromJson(jsonString, Boolean.class);
+        AnswerAuth answerAuth =  gson.fromJson(jsonString, AnswerAuth.class);
+        boolean responseBoolean = false;
+        if (answerAuth.status.equals("ok")){
+            responseBoolean = true;
+        }
+        final boolean answer = responseBoolean;
         return answer;
     }
 

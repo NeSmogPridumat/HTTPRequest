@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthData;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Presenter.AuthorizationPresenter;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
@@ -79,6 +80,7 @@ public class AuthorizationController extends Fragment {
                     passwordEditText.requestFocus();
                 } else {//---------------------------------------------------------------------------------код отправки изменеий на сервер
                     MainActivity activity = (MainActivity) getActivity();
+                    activity.authDataObject.authData = new AuthData();
                     activity.authDataObject.authData.login = loginEditText.getText().toString();
                     activity.authDataObject.authData.pass = loginEditText.getText().toString();
                     authorizationPresenter.enterUser(loginEditText.getText().toString(), passwordEditText.getText().toString());

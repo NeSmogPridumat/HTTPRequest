@@ -22,8 +22,6 @@ public interface GroupPresenterInterface extends PresenterInterface {
 
     void answerGetUsersForSelect (ArrayList<User> users, String type);
 
-    void openGroup ();
-
     void openGroupsList();
 
     void answerAddGroup(Group group);
@@ -31,4 +29,6 @@ public interface GroupPresenterInterface extends PresenterInterface {
     void openGroupAfterSelect();
 
     void backPress();
+
+    void answerStartVoited();
 }

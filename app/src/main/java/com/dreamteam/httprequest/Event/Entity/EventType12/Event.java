@@ -1,4 +1,4 @@
-package com.dreamteam.httprequest.Event.Entity;
+package com.dreamteam.httprequest.Event.Entity.EventType12;
 
 public class Event {
     public Data data;

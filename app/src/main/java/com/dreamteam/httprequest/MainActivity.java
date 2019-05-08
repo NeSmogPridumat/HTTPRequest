@@ -21,8 +21,10 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.AuthorizationController;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.KeyRegistrationController;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.RegistrationController;
-import com.dreamteam.httprequest.Event.Entity.Event;
+import com.dreamteam.httprequest.Event.Entity.EventType12.Event;
+import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.Event.View.EventController;
+import com.dreamteam.httprequest.Event.View.EventType4Controller;
 import com.dreamteam.httprequest.EventList.View.EventListController;
 import com.dreamteam.httprequest.Group.Protocols.ActivityAction;
 import com.dreamteam.httprequest.Group.View.GroupController;
@@ -97,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         boolean isStart = sharedPreferences.getBoolean("isStart", false);
         if (!(sharedPreferences.getString("userID", "").equals(""))){
             sharedPreferences.getString("userID", null);
+            userID = sharedPreferences.getString("userID", null);
             bottomNavigationView.setSelectedItemId(R.id.profile);
         } else {
             SharedPreferences.Editor e = sharedPreferences.edit();
@@ -118,8 +121,6 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         bottomNavigationTextView = badge.findViewById(R.id.notification_badge);
 
         bottomNavigationTextView.setVisibility(View.INVISIBLE);
-
-//        tv.setText("+3");
         super.onStart();
     }
 
@@ -289,8 +290,16 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         bottomNavigationView.setSelectedItemId(R.id.activities);
     }
 
-    public void openEvent (Event event){
-        changeFragmentWitchBackstack(new EventController(event), null);
+    public void openEvent (EventType4 event){
+        if(event.response.type == 4){
+            changeFragmentWitchBackstack(new EventType4Controller(event), null);
+        }else {
+            changeFragmentWitchBackstack(new EventController(event), null);
+        }
+    }
+
+    public void openEventList (){
+        changeFragment(new EventListController(userID), null);
     }
 
 }

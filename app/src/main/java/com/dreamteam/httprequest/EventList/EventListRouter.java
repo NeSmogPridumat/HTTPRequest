@@ -1,6 +1,7 @@
 package com.dreamteam.httprequest.EventList;
 
-import com.dreamteam.httprequest.Event.Entity.Event;
+import com.dreamteam.httprequest.Event.Entity.EventType12.Event;
+import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.MainActivity;
 
 public class EventListRouter {
@@ -11,7 +12,7 @@ public class EventListRouter {
         this.activity = activity;
     }
 
-    public void openEvent(Event event){
+    public void openEvent(EventType4 event){
         activity.openEvent(event);
     }
 }

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.AuthorizationRouter;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthData;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.Token;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Interactor.AuthorizationInteractor;
@@ -114,6 +115,7 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
 
     public void enterUser(String login, String password){
         authDataObject = new AuthDataObject();
+        authDataObject.authData = new AuthData();
         authDataObject.authData.login = login;
         authDataObject.authData.pass = password;
         authDataObject.authData.key = null;

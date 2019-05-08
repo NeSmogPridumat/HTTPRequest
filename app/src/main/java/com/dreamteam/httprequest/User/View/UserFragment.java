@@ -68,10 +68,8 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         super.onCreate(savedInstanceState);
 
         activity = (MainActivity) getActivity();
+        setHasOptionsMenu(true);
 
-        if (root == true) {
-            setHasOptionsMenu(true);
-        }
         presenterUser = new PresenterUser(this, activity);
     }
 

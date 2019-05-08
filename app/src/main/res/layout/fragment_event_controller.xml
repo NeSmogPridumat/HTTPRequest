@@ -3,15 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Event.View.EventController"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".Event.View.EventController">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/event_title_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="30sp"/>
+        android:textSize="30sp"
+        android:textColor="@android:color/black"
+        android:background="@color/colorGray"/>
 
     <TextView
         android:id="@+id/event_description_text_view"
@@ -21,35 +23,36 @@
 
     <Button
         android:id="@+id/type1_event_button"
-        android:layout_gravity="center|bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="24dp"
         android:text="@string/ok"
-        android:visibility="invisible"
-        android:layout_marginBottom="24dp"/>
+        android:visibility="invisible" />
 
     <FrameLayout
         android:id="@+id/event_frame_layout"
-        android:visibility="invisible"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:orientation="horizontal"
-        android:layout_gravity="bottom">
+        android:visibility="invisible">
 
         <Button
             android:id="@+id/ok_type2_event_button"
-            android:text="@string/ok"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginBottom="24dp"
-            android:layout_height="wrap_content" />
+            android:text="@string/ok" />
 
         <Button
             android:id="@+id/cancel_event_button"
-            android:layout_gravity="end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="24dp"/>
+            android:layout_gravity="end"
+            android:layout_marginEnd="24dp"
+            android:text="@string/cancel" />
     </FrameLayout>
 
 </LinearLayout>

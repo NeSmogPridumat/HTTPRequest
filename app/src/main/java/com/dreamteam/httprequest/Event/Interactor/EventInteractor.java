@@ -1,8 +1,11 @@
 package com.dreamteam.httprequest.Event.Interactor;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
-import com.dreamteam.httprequest.Event.Entity.Event;
+import com.dreamteam.httprequest.Event.Entity.AnswerQuestion.AnswerQuestion;
+import com.dreamteam.httprequest.Event.Entity.EventAnswer.EventResponseType12;
 import com.dreamteam.httprequest.Event.Protocols.EventFromHTTPManagerInterface;
 import com.dreamteam.httprequest.Event.Protocols.EventPresenterInterface;
 import com.dreamteam.httprequest.HTTPConfig;
@@ -26,7 +29,22 @@ public class EventInteractor implements EventFromHTTPManagerInterface {
     public void response(byte[] byteArray, String type) {
         if (type.equals("Answer for event")){
             Log.i("Вроде","Что-то ок");
+            eventAnswer();
+        } else if (type.equals("Result To Question")){
+            answerServerToQuestion();
         }
+    }
+
+    private void eventAnswer(){
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                delegate.answerEvent();
+
+            }
+        };
+        mainHandler.post(myRunnable);
     }
 
     @Override
@@ -39,14 +57,14 @@ public class EventInteractor implements EventFromHTTPManagerInterface {
 
     }
 
-    public void answerEvent (final Event event){
+    public void answerEvent (final AnswerQuestion eventResponse){
         final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.EVENT + httpConfig.USER;
         new Thread(
                 new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
                     @Override
                     public void run() {
                         Gson gson = new Gson();
-                        String jsonObject = gson.toJson(event);
+                        String jsonObject = gson.toJson(eventResponse);
                         try {
                             httpManager.postRequest(path, jsonObject, "Answer for event",
                                     EventInteractor.this);//----------отправка в HTTPManager
@@ -55,6 +73,35 @@ public class EventInteractor implements EventFromHTTPManagerInterface {
                         }
                     }
                 }).start();
+    }
+
+    public void resultToQuestion (final AnswerQuestion answerQuestion){
+        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.EVENT + httpConfig.USER;
+        new Thread(
+                new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
+                    @Override
+                    public void run() {
+                        Gson gson = new Gson();
+                        String jsonObject = gson.toJson(answerQuestion);
+                        try {
+                            httpManager.postRequest(path, jsonObject, "Result To Question",
+                                    EventInteractor.this);//----------отправка в HTTPManager
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+    }
+
+    private void answerServerToQuestion(){
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                delegate.answerServerToQuestion();
+            }
+        };
+        mainHandler.post(myRunnable);
     }
 
 }

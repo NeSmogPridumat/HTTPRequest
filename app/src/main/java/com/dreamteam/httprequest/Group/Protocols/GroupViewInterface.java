@@ -12,4 +12,6 @@ public interface GroupViewInterface {
     void error(String error);
 
     void outputMembersView(int members);
+
+    void answerStartVoited();
 }

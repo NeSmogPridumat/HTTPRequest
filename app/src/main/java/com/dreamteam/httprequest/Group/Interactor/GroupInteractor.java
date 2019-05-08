@@ -214,7 +214,20 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             prepareGetMembersForListResponse(byteArray);
         } else if (type.equals(constantConfig.EXIT_USER_IN_GROUP_TYPE)){
             backPress();
+        }else if (type.equals(constantConfig.VOITED)){
+            prepareStartVoited();
         }
+    }
+
+    private void prepareStartVoited(){
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                delegate.answerStartVoited();
+            }
+        };
+        mainHandler.post(myRunnable);
     }
 
     private void backPress(){
@@ -333,15 +346,19 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         mainHandler.post(myRunnable);
     }
 
-    public void addSelectUser(ArrayList<SelectData> arrayList, String groupId){
+    public void addSelectUser(ArrayList<SelectData> arrayList, String groupId, String userID){
 
-        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.GROUP_USER;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER
+                + httpConfig.GROUP + httpConfig.USER + httpConfig.ADD;
         for (int i = 0; i< arrayList.size(); i++){
             Gson gson = new Gson();
-            UserGroupID userGroupID = new UserGroupID();
-            userGroupID.userID = arrayList.get(i).id;
-            userGroupID.groupID = groupId;
-            final String jsonObject = gson.toJson(userGroupID);
+            RequestInfo requestInfo = new RequestInfo();
+            requestInfo.userID = arrayList.get(i).id;
+            requestInfo.groupID = groupId;
+            requestInfo.groupCreatorID = groupId;
+            requestInfo.creatorID = userID;
+
+            final String jsonObject = gson.toJson(requestInfo);
             new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
                 @Override
                 public void run() {
@@ -356,8 +373,8 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
 
 
     }
-    public void deleteSelectUser(final ArrayList<SelectData> selectData, final String groupId) {
-        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.GROUP_USER + httpConfig.DEL;
+    public void deleteSelectUser(final ArrayList<SelectData> selectData, final String groupId, final String userID) {
+        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.GROUP + httpConfig.USER  + httpConfig.DEL;
 
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override
@@ -365,10 +382,12 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
                 try {
                     for (int i = 0; i < selectData.size(); i++) {
                         Gson gson = new Gson();
-                        UserGroupID userGroupID = new UserGroupID();
-                        userGroupID.userID = selectData.get(i).id;
-                        userGroupID.groupID = groupId;
-                        String jsonObject = gson.toJson(userGroupID);
+                        RequestInfo requestInfo = new RequestInfo();
+                        requestInfo.userID = selectData.get(i).id;
+                        requestInfo.groupID = groupId;
+                        requestInfo.groupCreatorID = groupId;
+                        requestInfo.creatorID = userID;
+                        String jsonObject = gson.toJson(requestInfo);
                         httpManager.postRequest(path, jsonObject, constantConfig.SET_DELETE_USER_IN_GROUP_TYPE,
                             GroupInteractor.this);//----------отправка в HTTPManager
                    }
@@ -461,6 +480,23 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
                 try {
                     httpManager.postRequest(path, jsonObject, constantConfig.EXIT_USER_IN_GROUP_TYPE,
                         GroupInteractor.this);//----------отправка в HTTPManager
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public void startVoited(final RequestInfo requestInfo){
+        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.GROUP + httpConfig.VOITED;
+        new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
+            @Override
+            public void run() {
+                Gson gson = new Gson();
+                String jsonObject = gson.toJson(requestInfo);
+                try {
+                    httpManager.postRequest(path, jsonObject, constantConfig.VOITED,
+                            GroupInteractor.this);//----------отправка в HTTPManager
                 }catch (IOException e) {
                     e.printStackTrace();
                 }

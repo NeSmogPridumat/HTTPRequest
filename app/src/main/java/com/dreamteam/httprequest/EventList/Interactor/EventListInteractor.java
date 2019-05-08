@@ -2,16 +2,24 @@ package com.dreamteam.httprequest.EventList.Interactor;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.dreamteam.httprequest.Data.ConstantConfig;
-import com.dreamteam.httprequest.Event.Entity.Event;
+import com.dreamteam.httprequest.Event.Entity.ChangeEvent.EventChoice;
+import com.dreamteam.httprequest.Event.Entity.EventType12.Event;
+import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.EventList.Protocols.EventListFromHTTPManagerInterface;
 import com.dreamteam.httprequest.EventList.Protocols.EventListPresenterInterface;
 import com.dreamteam.httprequest.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class EventListInteractor implements EventListFromHTTPManagerInterface {
@@ -52,31 +60,55 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
 
     private void prepareGetEventsResponse (byte[] byteArray){
         if (byteArray != null){
-            final ArrayList<Event> eventArrayList = createEventsOfBytes(byteArray);//TODO занимает много времени на Samsung
-            if (eventArrayList == null){
-                String error = " ";
-                delegate.error(error);
-            } else {
+            final ArrayList<EventType4> eventArrayList;//TODO занимает много времени на Samsung
+            try {
+                eventArrayList = createEventsOfBytes(byteArray);
+                if (eventArrayList == null){
+                    String error = " ";
+                    delegate.error(error);
+                } else {
 
-                Handler mainHandler = new Handler(Looper.getMainLooper());
-                Runnable myRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        delegate.answerGetEvents(eventArrayList);
-                    }
-                };
-                mainHandler.post(myRunnable);
+                    Handler mainHandler = new Handler(Looper.getMainLooper());
+                    Runnable myRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            delegate.answerGetEvents(eventArrayList);
+                        }
+                    };
+                    mainHandler.post(myRunnable);
 
 //                ArrayList<Event> grs = groupCollection;
 //                getImageRequest(grs);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
 
-    private ArrayList<Event> createEventsOfBytes (byte[] byteArray){
+    private ArrayList<EventType4> createEventsOfBytes (byte[] byteArray)throws Exception{
+
         Gson gson = new Gson();
         String jsonString = new String(byteArray);
-        return gson.fromJson(jsonString, new TypeToken<ArrayList<Event>>(){}.getType());
+        JSONArray jsonArray = new JSONArray(jsonString);
+        ArrayList<String> list = new ArrayList<>();
+        for (int i=0; i<jsonArray.length(); i++) {
+            list.add(jsonArray.getString(i));
+        }
+
+//            Type type =  new TypeToken<EventChoice>(){}.getType();
+        ArrayList<EventType4> events = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++){
+            if(!(jsonArray.get(i).equals("null"))) {
+                EventChoice eventChoice = gson.fromJson((list.get(i)), EventChoice.class);
+//                if (eventChoice != null && eventChoice.response.type == 4) {
+                    EventType4 event = gson.fromJson((list.get(i)), new TypeToken<EventType4>() {}.getType());
+                    events.add(event);
+                    Log.i("FFFF", Integer.toString(i));
+                }
+//            }
+        }
+        return events;
     }
 
     @Override

@@ -22,4 +22,5 @@ public class ConstantConfig {
     public final String GET_GROUP_FOR_LIST_TYPE =           "getGroup for list";
     public final String EXIT_USER_IN_GROUP_TYPE =           "exit group";
     public final String GET_EVENT_TYPE =                    "getEvent";
+    public final String VOITED =                            "voited";
 }

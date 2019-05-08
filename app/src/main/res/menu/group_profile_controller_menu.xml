@@ -31,6 +31,12 @@
         />
 
     <item
+        android:id="@+id/voited"
+        android:title="@string/voiting_group"
+        app:showAsAction="never"
+        />
+
+    <item
         android:id="@+id/exit_group"
         android:title="@string/exit_the_group"
         app:showAsAction="never"

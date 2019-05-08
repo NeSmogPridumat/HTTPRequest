@@ -1,8 +1,8 @@
 package com.dreamteam.httprequest.AutoAndReg.Authorization.Entity;
 
-import android.graphics.Bitmap;
-
 public class AuthDataObject {
-    public AuthData authData = new AuthData();
+    public AuthData authData;
     public Content content;
+    public String id;
+
 }

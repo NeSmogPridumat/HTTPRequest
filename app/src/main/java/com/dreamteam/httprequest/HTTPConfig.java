@@ -15,6 +15,7 @@ public class HTTPConfig {
     public String MAIN_USER = "/mainuser";
     public String CREATOR_GROUP  = "/creatorgroup";
     public String GROUP = "/group";
+    public String VOITED = "/voited";
     public String GROUPS = "/groups";
     public String RULES = "/rules";
     public String ADMIN = "/admin";

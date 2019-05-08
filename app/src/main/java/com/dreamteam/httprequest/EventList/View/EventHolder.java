@@ -6,7 +6,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.dreamteam.httprequest.Event.Entity.Event;
+import com.dreamteam.httprequest.Event.Entity.EventType12.Event;
+import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.R;
 
 public class EventHolder extends RecyclerView.ViewHolder {
@@ -14,16 +15,13 @@ public class EventHolder extends RecyclerView.ViewHolder {
     public TextView titleTextView, descriptionTextView;
     public ImageView imageView;
 
-    private Event event;
-
     public EventHolder(@NonNull View item) {
         super(item);
         titleTextView = item.findViewById(R.id.event_list_title_text_view);
         descriptionTextView = item.findViewById(R.id.event_list_description_text_view);
     }
 
-    public void bindGroup(Event event){
-        this.event = event;
+    public void bindGroup(EventType4 event){
         titleTextView.setText(event.data.content.simpleData.title);
         descriptionTextView.setText(event.data.content.simpleData.description);
 

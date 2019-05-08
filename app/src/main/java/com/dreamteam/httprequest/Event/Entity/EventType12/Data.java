@@ -1,4 +1,4 @@
-package com.dreamteam.httprequest.Event.Entity;
+package com.dreamteam.httprequest.Event.Entity.EventType12;
 
 public class Data {
     public Content content;
@@ -6,5 +6,5 @@ public class Data {
     public String groupCreatorID;
     public String groupID;
     public String userID;
-    public boolean result;
+//    public boolean result;
 }

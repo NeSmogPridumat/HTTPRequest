@@ -7,8 +7,11 @@ import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
 
+import com.dreamteam.httprequest.Data.AddData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
+import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
+import com.dreamteam.httprequest.Group.Entity.GroupData.GroupMediaData;
 import com.dreamteam.httprequest.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.UserFromHTTPManagerInterface;
@@ -246,7 +249,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 
     //запрос на изменение объекта
     public void putUser(final User user, final Bitmap bitmap){//------------------------------------Отправка User
-
+        final RequestInfo requestInfo = getRequestInfo(user);
         final String urlPath = config.serverURL + config.SERVER_SETTER + config.reqUser;
         new Thread(new Runnable() {
             @Override
@@ -254,15 +257,26 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
                 try {
                     Gson gson = new Gson();
                     if(bitmap != null){
-                        user.content.mediaData.image = decodeBitmapInBase64(bitmap);
+                        requestInfo.addData.content.mediaData.image = decodeBitmapInBase64(bitmap);
                     }
-                    final String jsonObject = gson.toJson(user);
+                    final String jsonObject = gson.toJson(requestInfo);
                     httpManager.putRequest(urlPath, jsonObject, constantConfig.PUT_USER, UserInteractor.this);
                 } catch (Exception error) {
                     error(error);
                 }
             }
         }).start();
+    }
+
+    private RequestInfo getRequestInfo (User user){
+        RequestInfo requestInfo = new RequestInfo();
+        requestInfo.creatorID = user.id;
+        requestInfo.addData = new AddData();
+        requestInfo.addData.id = user.id;
+        requestInfo.addData.content.mediaData = new GroupMediaData();
+        requestInfo.addData.content.simpleData.name = user.content.simpleData.name;
+        requestInfo.addData.content.simpleData.surname = user.content.simpleData.surname;
+        return requestInfo;
     }
 
     //декодирование Bitmap в Base64

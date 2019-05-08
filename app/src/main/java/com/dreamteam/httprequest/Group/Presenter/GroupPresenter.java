@@ -22,12 +22,12 @@ import java.util.ArrayList;
 
 public class GroupPresenter implements GroupPresenterInterface {
     private GroupViewInterface delegate;
-    private Router myRouter;
     private GroupRouter router;
     private GroupInteractor groupInteractor = new GroupInteractor(this);
     private String groupID;
     private String userID;
     private ConstantConfig constantConfig = new ConstantConfig();
+    private MainActivity activity;
 
     private final String ADD = "Add";
     private final String DELETE = "Delete";
@@ -36,13 +36,14 @@ public class GroupPresenter implements GroupPresenterInterface {
 
     public GroupPresenter(GroupViewInterface delegate, MainActivity activity){
         this.delegate = delegate;
+        this.activity = activity;
         router = new GroupRouter(activity);
-        userID = activity.userID;
     }
 
     //============================ОТПРАВКА В INTERACTOR==========================================//
 
     public void getGroup(String id){
+        userID = activity.userID;
         groupInteractor.getGroup(id, userID);
         Log.i("GROUP_PRESENTER", id);
         groupID = id;
@@ -84,10 +85,6 @@ public class GroupPresenter implements GroupPresenterInterface {
         router.showSelectList(selectData, this, type);
     }
 
-    @Override
-    public void openGroup() {
-        router.openGroup(groupID);
-    }
 
     @Override
     public void openGroupsList() {
@@ -108,9 +105,13 @@ public class GroupPresenter implements GroupPresenterInterface {
         router.exitGroup();
     }
 
+    @Override
+    public void answerStartVoited() {
+        delegate.answerStartVoited();
+    }
+
     public void openGroup(Group group, Router myRouter, Context context) {
         myRouter.getGroup(group, context);
-        myRouter=null;
     }
 
     public void checkListAddUser(){
@@ -125,17 +126,20 @@ public class GroupPresenter implements GroupPresenterInterface {
     public void inputSelect(ArrayList<SelectData> arrayList, String type) {
         Log.i("F", "to respect");
         if (type.equals(ADD)){
-            groupInteractor.addSelectUser(arrayList, groupID);
+            groupInteractor.addSelectUser(arrayList, groupID, userID);
         } else if (type.equals(DELETE)){
-            groupInteractor.deleteSelectUser(arrayList, groupID);
+            groupInteractor.deleteSelectUser(arrayList, groupID, userID);
         } else if (type.equals(ADMIN)){
 
         }
     }
 
+    public void startVoited(RequestInfo requestInfo){
+        groupInteractor.startVoited(requestInfo);
+    }
+
     public void showAddGroup(){
-        InfoProfileData infoProfileData = null;
-        router.showAddGroup(infoProfileData, this, "Group");
+        router.showAddGroup(null, this, "Group");
     }
 
     public void addAdmin(){
@@ -175,7 +179,6 @@ public class GroupPresenter implements GroupPresenterInterface {
     public void exitGroup(RequestInfo requestInfo){
         SelectData selectData = new SelectData();
         selectData.id = userID;
-//        groupInteractor.exitGroup(selectData, groupID);
         groupInteractor.exitGroup(requestInfo);
     }
 

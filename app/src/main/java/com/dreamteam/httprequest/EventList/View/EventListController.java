@@ -2,7 +2,6 @@ package com.dreamteam.httprequest.EventList.View;
 
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,7 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dreamteam.httprequest.Event.Entity.Event;
+import com.dreamteam.httprequest.Event.Entity.EventType12.Event;
+import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.EventList.Presenter.EventListPresenter;
 import com.dreamteam.httprequest.EventList.Protocols.EventListViewInterface;
 import com.dreamteam.httprequest.GroupList.View.RecyclerItemClickListener;
@@ -28,19 +28,18 @@ import java.util.Collections;
 @SuppressLint("ValidFragment")
 public class EventListController extends Fragment implements EventListViewInterface {
 
-    private RecyclerView eventsRecyclerView;
+    private RecyclerView eventsRecyclerView, noteventsRecyclerView;
     private MainActivity activity;
-    private EventAdapter adapter;
+    private EventAdapter adapter, nAdapter;
     private String userID;
 
     private EventListPresenter eventListPresenter;
 
-    private ArrayList<Event> eventArrayList = new ArrayList<>();
+    private ArrayList<EventType4> eventArrayList = new ArrayList<>();
 
 
     public EventListController(String userID) {
         // Required empty public constructor
-        this.eventArrayList = eventArrayList;
         this.userID = userID;
     }
 
@@ -51,7 +50,19 @@ public class EventListController extends Fragment implements EventListViewInterf
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_event_list, container, false);
         eventsRecyclerView = view.findViewById(R.id.events_recycler_view);
-        eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
+        noteventsRecyclerView = view.findViewById(R.id.events_not_active_recycler_view);
+        noteventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()){
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
         eventListPresenter.getEvents(userID);
         return view;
     }
@@ -63,6 +74,7 @@ public class EventListController extends Fragment implements EventListViewInterf
         activity = (MainActivity) getActivity();
 
         adapter = new EventAdapter(eventArrayList);
+        nAdapter = new EventAdapter(eventArrayList);
         eventListPresenter = new EventListPresenter(this, activity);
 //        activity.setActionBarTitle(type);
         super.onCreate(savedInstanceState);
@@ -77,7 +89,9 @@ public class EventListController extends Fragment implements EventListViewInterf
             @Override
             public void onItemClick(View view, int position) {
 //                objectListPresenter.openObjectProfile(arrayList.get(position), type);
-                eventListPresenter.openEvent(eventArrayList.get(position));
+                if (eventArrayList.get(position).active){
+                    eventListPresenter.openEvent(eventArrayList.get(position));
+                }
             }
 
             @Override
@@ -90,12 +104,12 @@ public class EventListController extends Fragment implements EventListViewInterf
     }
 
     @Override
-    public void answerGetEvents(final ArrayList<Event> eventArrayList) {
+    public void answerGetEvents(final ArrayList<EventType4> eventArrayList) {
         Collections.reverse(eventArrayList);
-        ArrayList<Event> activeEvent = new ArrayList<>();
-        ArrayList<Event> notActiveEvent = new ArrayList<>();
+        ArrayList<EventType4> activeEvent = new ArrayList<>();
+        ArrayList<EventType4> notActiveEvent = new ArrayList<>();
         for (int i = 0; i < eventArrayList.size(); i++){
-            if (eventArrayList.get(i).active == true){
+            if (eventArrayList.get(i).active){
                 activeEvent.add(eventArrayList.get(i));
             } else {
                 notActiveEvent.add(eventArrayList.get(i));
@@ -110,8 +124,11 @@ public class EventListController extends Fragment implements EventListViewInterf
 
         }
         this.eventArrayList = eventArrayList;
-        adapter.eventArrayList = eventArrayList;
+        adapter.eventArrayList = activeEvent;
         eventsRecyclerView.setAdapter(adapter);
+
+        nAdapter.eventArrayList = notActiveEvent;
+        noteventsRecyclerView.setAdapter(nAdapter);
 //        final Context context = getContext();
 
 //        eventsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), eventsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
