@@ -24,8 +24,8 @@ public class RouterGroupList {
         activity.openSelectList(selectData,delegate, TYPE);
     }
 
-    public void openGroup(String id){
-        activity.openGroup(id);
+    public void openGroup(String id, int rules){
+        activity.openGroup(id, rules);
     }
 
     public void showAddGroup(InfoProfileData infoProfileData, PresenterInterface delegate, String type){

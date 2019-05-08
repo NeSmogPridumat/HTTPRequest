@@ -33,7 +33,7 @@ public class ObjectListPresenter implements ObjectListPresenterInterface {
     if (type.equals("User")){
       router.showUserObjectList(objectData.id);
     }else if (type.equals("Group")){
-      router.showGroup(objectData.id);
+      router.showGroup(objectData.id, objectData.rules);
     }
 
   }

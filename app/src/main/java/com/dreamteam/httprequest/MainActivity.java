@@ -155,23 +155,22 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 //            }
 //    }
 //    }
-    public void openGroup(String id){
-        GroupController controller = new GroupController(id);
+    public void openGroup(String id,  int rules){
+        GroupController controller = new GroupController(id,rules);
         changeFragmentWitchBackstack(controller, "");//TODO: задать в backstack
     }
 
-    public void openGroupAfterSelect (String id){
+    public void openGroupAfterSelect (String id, int rules){
         //так как после выбора элементов и совершения действия, нам, при нажатии кнопки назад, надо будет сбросить два шага назад
         FragmentManager fm = getSupportFragmentManager();
         for(int i = 0; i < 20; ++i) {
             fm.popBackStack();
         }
-        changeFragmentWitchBackstack(new GroupController(id), null);
+        changeFragmentWitchBackstack(new GroupController(id, rules), null);
     }
 
-    @Override
-    public void getGroup(String id) {
-        groupController = new GroupController(id);
+    public void getGroup(String id, int rules) {
+        groupController = new GroupController(id, rules);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, groupController, null).addToBackStack(null).commit();
     }
 

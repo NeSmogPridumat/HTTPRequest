@@ -8,5 +8,5 @@ public class ObjectData {
   public String description;
   public String image;
   public Bitmap imageData;
-
+  public int rules;
 }

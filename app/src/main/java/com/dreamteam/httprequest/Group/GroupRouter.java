@@ -21,8 +21,8 @@ public class GroupRouter {
         activity.openSelectList(selectData, delegate, type);
     }
 
-    public void openGroup(String id){
-        activity.getGroup(id);
+    public void openGroup(String id, int rules){
+        activity.getGroup(id, rules);
     }
 
     public void openGroupsList(){
@@ -37,8 +37,8 @@ public class GroupRouter {
         activity.openObjectList(objectDataArrayList, delegate, type);
     }
 
-    public void openGroupAfterSelect (String id){
-        activity.openGroupAfterSelect(id);
+    public void openGroupAfterSelect (String id, int rules){
+        activity.openGroupAfterSelect(id, rules);
     }
 
     public void exitGroup (){

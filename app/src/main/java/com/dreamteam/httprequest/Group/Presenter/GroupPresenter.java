@@ -26,6 +26,7 @@ public class GroupPresenter implements GroupPresenterInterface {
     private GroupInteractor groupInteractor = new GroupInteractor(this);
     private String groupID;
     private String userID;
+    private int rules;
     private ConstantConfig constantConfig = new ConstantConfig();
     private MainActivity activity;
 
@@ -93,12 +94,12 @@ public class GroupPresenter implements GroupPresenterInterface {
 
     @Override
     public void answerAddGroup(Group group) {
-        router.openGroup(group.id);
+        router.openGroup(group.id, group.rules);
     }
 
     @Override
     public void openGroupAfterSelect() {
-        router.openGroupAfterSelect(groupID);
+        router.openGroupAfterSelect(groupID, rules);
     }
 
     @Override public void backPress() {

@@ -131,11 +131,7 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
         groupsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), groupsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
-                MainActivity activityAction = (MainActivity) getActivity();
-                    activityAction = (MainActivity)context;
-                    activityAction.getGroup(groupCollection.get(position).id);
-
+                groupsPresenter.openGroup (groupCollection.get(position).id, groupCollection.get(position).rules);
             }
 
 

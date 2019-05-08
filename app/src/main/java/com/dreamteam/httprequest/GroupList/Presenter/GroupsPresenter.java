@@ -58,9 +58,9 @@ public class GroupsPresenter implements GroupsPresenterInterface {
         groupsInteractor.getGroups(id);
     }
 
-    public void getGroup(String id){
+    public void getGroup(String id, int rules){
 
-        routerGroupList.openGroup(id);
+        routerGroupList.openGroup(id, rules);
 //        router.changeFragment(controller);
     }
 
@@ -110,6 +110,11 @@ public class GroupsPresenter implements GroupsPresenterInterface {
         Bitmap bitmap = infoProfileData.imageData;
         groupsInteractor.addGroup(group, bitmap, requestInfo);
     }
+
+    public void openGroup(String id, int rules){
+        routerGroupList.openGroup(id, rules);
+    }
+
 }
 
 

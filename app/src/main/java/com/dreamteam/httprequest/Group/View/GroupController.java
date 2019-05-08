@@ -48,7 +48,8 @@ public class GroupController extends Fragment implements GroupViewInterface {
     MainActivity activity;
 
     @SuppressLint("ValidFragment")
-    public GroupController(String id) {
+    public GroupController(String id, int rules) {
+        this.rules = rules;
         groupID = id;
     }
 
@@ -70,7 +71,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         activity = (MainActivity) getActivity();
         groupPresenter = new GroupPresenter(this, activity);
-        setHasOptionsMenu(false);
+        setHasOptionsMenu(true);
 
         Log.i("ControllerGROUP", "ONCreate");
         super.onCreate(savedInstanceState);
@@ -113,11 +114,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void outputMembersView(ArrayList<User> members) {
-        for (int i = 0; i < members.size(); i++){
-            if(activity.userID.equals(members.get(i).id) && members.get(i).rules == 7){
-                setHasOptionsMenu(true);            }
-        }
+    public void outputMembersView(ArrayList<User> members) {//TODO возможно стоит передавать не список а int значение
         membersRadioButton.setText(Integer.toString(members.size()) + " members");
     }
 
@@ -128,8 +125,11 @@ public class GroupController extends Fragment implements GroupViewInterface {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.group_profile_controller_menu, menu);
+        if (rules == 7) {
+            inflater.inflate(R.menu.group_profile_controller_menu, menu);
+        } else {
+            setHasOptionsMenu(false);
+        }
     }
 
     @Override
