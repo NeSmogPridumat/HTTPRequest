@@ -153,7 +153,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                delegate.answerGetMembers(members.size(), "");
+                delegate.answerGetMembers(members, "");
             }
         };
         mainHandler.post(myRunnable);

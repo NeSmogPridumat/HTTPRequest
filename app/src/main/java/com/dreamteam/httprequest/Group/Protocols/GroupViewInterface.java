@@ -3,6 +3,9 @@ package com.dreamteam.httprequest.Group.Protocols;
 import android.graphics.Bitmap;
 
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
+import com.dreamteam.httprequest.User.Entity.UserData.User;
+
+import java.util.ArrayList;
 
 public interface GroupViewInterface {
     void outputImageView(Bitmap bitmap);
@@ -11,7 +14,7 @@ public interface GroupViewInterface {
 
     void error(String error);
 
-    void outputMembersView(int members);
+    void outputMembersView(ArrayList<User> members);
 
     void answerStartVoited();
 }

@@ -16,7 +16,7 @@ public interface GroupPresenterInterface extends PresenterInterface {
 
     void answerGetImage(Bitmap bitmap);
 
-    void answerGetMembers(int members, String type);
+    void answerGetMembers(ArrayList<User> members, String type);
 
     void answerGetMembersForList (ArrayList<ObjectData> arrayList);
 

@@ -65,7 +65,7 @@ public class GroupPresenter implements GroupPresenterInterface {
     }
 
     @Override
-    public void answerGetMembers(int members, String type) {
+    public void answerGetMembers(ArrayList<User> members, String type) {
         delegate.outputMembersView(members);
     }
 

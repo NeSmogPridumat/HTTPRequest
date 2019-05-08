@@ -26,6 +26,7 @@ import com.dreamteam.httprequest.Group.Protocols.GroupViewInterface;
 import com.dreamteam.httprequest.GroupList.Protocols.GroupsViewInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
+import com.dreamteam.httprequest.User.Entity.UserData.User;
 
 import java.util.ArrayList;
 
@@ -38,11 +39,11 @@ public class GroupController extends Fragment implements GroupViewInterface {
     private TextView titleTextView, descriptionTextView;
     private ImageView groupImageView;
     private RadioButton membersRadioButton;
+    private int rules;
 
     GroupPresenter groupPresenter;
     Group group;
     String groupID;
-    private String type;
 
     MainActivity activity;
 
@@ -101,9 +102,9 @@ public class GroupController extends Fragment implements GroupViewInterface {
         titleTextView.setText(group.content.simpleData.title);
         descriptionTextView.setText(group.content.simpleData.description);
         activity.setActionBarTitle(group.content.simpleData.title);
-//        if(group.rules == 7){
+        if(group.rules == 7){
             setHasOptionsMenu(true);
-//        }
+        }
 
 //        ab = activity.getActionBar();
 //        ab.setTitle(group.content.simpleData.title);
@@ -116,8 +117,13 @@ public class GroupController extends Fragment implements GroupViewInterface {
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void outputMembersView(int members) {
-        membersRadioButton.setText(Integer.toString(members) + " members");
+    public void outputMembersView(ArrayList<User> members) {
+        for (int i = 0; i < members.size(); i++){
+            if(activity.userID.equals(members.get(i).id)){
+
+            }
+        }
+        membersRadioButton.setText(Integer.toString(members.size()) + " members");
     }
 
     @Override
