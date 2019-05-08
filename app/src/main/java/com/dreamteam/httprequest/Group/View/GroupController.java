@@ -70,7 +70,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         activity = (MainActivity) getActivity();
         groupPresenter = new GroupPresenter(this, activity);
-//        setHasOptionsMenu(false);
+        setHasOptionsMenu(false);
 
         Log.i("ControllerGROUP", "ONCreate");
         super.onCreate(savedInstanceState);
@@ -102,10 +102,6 @@ public class GroupController extends Fragment implements GroupViewInterface {
         titleTextView.setText(group.content.simpleData.title);
         descriptionTextView.setText(group.content.simpleData.description);
         activity.setActionBarTitle(group.content.simpleData.title);
-        if(group.rules == 7){
-            setHasOptionsMenu(true);
-        }
-
 //        ab = activity.getActionBar();
 //        ab.setTitle(group.content.simpleData.title);
     }
@@ -119,9 +115,8 @@ public class GroupController extends Fragment implements GroupViewInterface {
     @Override
     public void outputMembersView(ArrayList<User> members) {
         for (int i = 0; i < members.size(); i++){
-            if(activity.userID.equals(members.get(i).id)){
-
-            }
+            if(activity.userID.equals(members.get(i).id) && members.get(i).rules == 7){
+                setHasOptionsMenu(true);            }
         }
         membersRadioButton.setText(Integer.toString(members.size()) + " members");
     }

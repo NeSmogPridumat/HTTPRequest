@@ -6,4 +6,5 @@ public class User {
     public String id;
     public Content content = new Content();
     public ArrayList<QustionUser> questions;
+    public int rules;
 }
