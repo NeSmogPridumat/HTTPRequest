@@ -21,6 +21,7 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.AuthorizationController;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.KeyRegistrationController;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.RegistrationController;
+import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Event.Entity.EventType12.Event;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.Event.View.EventController;
@@ -209,9 +210,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         changeFragmentWitchBackstack(new SelectedListController(selectData, delegate, TYPE), null);
     }
 
-    public void openEditProfile (InfoProfileData infoProfileData, PresenterInterface delegate, String type){
-        String creatorID = userID;
-        changeFragmentWitchBackstack(new EditInfoProfileController(infoProfileData, creatorID, delegate,  type), null);
+    public void openEditProfile (InfoProfileData infoProfileData, RequestInfo requestInfo, PresenterInterface delegate, String type){
+        changeFragmentWitchBackstack(new EditInfoProfileController(infoProfileData, requestInfo, delegate,  type), null);
     }
 
     @Override

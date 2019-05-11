@@ -19,6 +19,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dreamteam.httprequest.Data.AddData;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.Group.Presenter.GroupPresenter;
@@ -40,6 +41,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
     private ImageView groupImageView;
     private RadioButton membersRadioButton;
     private int rules;
+    private Bitmap bitmap;
 
     GroupPresenter groupPresenter;
     Group group;
@@ -94,6 +96,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
 
     @Override
     public void outputImageView(Bitmap bitmap) {
+        this.bitmap = bitmap;
         groupImageView.setImageBitmap(bitmap);
     }
 
@@ -142,7 +145,6 @@ public class GroupController extends Fragment implements GroupViewInterface {
             //запрос списка с checkBox
             case R.id.delete_user_in_group:
                 groupPresenter.checkListDeleteUser();
-
                 break;
 
             case R.id.add_subgroup:
@@ -166,6 +168,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
                 requestInfoExit.creatorID = activity.userID;
                 requestInfoExit.groupID = groupID;
                 groupPresenter.exitGroup(requestInfoExit);
+                break;
 
             case R.id.voited:
                 RequestInfo requestInfoVoited = new RequestInfo();
@@ -173,6 +176,18 @@ public class GroupController extends Fragment implements GroupViewInterface {
                 requestInfoVoited.groupCreatorID = groupID;
                 requestInfoVoited.groupID = groupID;
                 groupPresenter.startVoited(requestInfoVoited);
+                break;
+
+            case R.id.edit_group:
+                RequestInfo requestInfoEdit = new RequestInfo();
+                requestInfoEdit.addData = new AddData();
+                requestInfoEdit.addData.id = groupID;
+                requestInfoEdit.addData.content.simpleData.title = titleTextView.getText().toString();
+                requestInfoEdit.addData.content.simpleData.description = descriptionTextView.getText().toString();
+                requestInfoEdit.creatorID = activity.userID;
+                requestInfoEdit.groupCreatorID = groupID;
+//                requestInfoEdit.groupID = groupID;
+                groupPresenter.showEditGroup(requestInfoEdit, bitmap);
         }
         return super.onOptionsItemSelected(item);
     }

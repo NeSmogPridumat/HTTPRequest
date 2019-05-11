@@ -29,7 +29,7 @@ public class RouterGroupList {
     }
 
     public void showAddGroup(InfoProfileData infoProfileData, PresenterInterface delegate, String type){
-        activity.openEditProfile(infoProfileData, delegate, type);
+        activity.openEditProfile(infoProfileData,null, delegate, type);
     }
 
 }

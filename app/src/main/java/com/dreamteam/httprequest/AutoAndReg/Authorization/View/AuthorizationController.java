@@ -59,7 +59,8 @@ public class AuthorizationController extends Fragment {
 
     @Override
     public void onStart() {
-
+        MainActivity activity = (MainActivity) getActivity();
+        activity.hideBottomNavigationView(activity.bottomNavigationView);
         //кнопка для регистрации, перекидывает на фрагмент для регистрации
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override

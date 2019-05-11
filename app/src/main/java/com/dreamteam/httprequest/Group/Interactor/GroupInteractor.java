@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
 
+import com.dreamteam.httprequest.Data.AddData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
@@ -418,14 +419,14 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
 
     }
 
-    public void addGroup(final Group group, final Bitmap bitmap, final RequestInfo requestInfo){
+    public void addOrEditGroup(final Bitmap bitmap, final RequestInfo requestInfo){
         final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.reqGroup;
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    requestInfo.addData.content = group.content;
+//                    requestInfo.addData.content = group.content;
                     final String jsonObject = createJsonObject(bitmap, requestInfo);
                     httpManager.postRequest(path, jsonObject, constantConfig.POST_GROUP, GroupInteractor.this);
                 } catch (Exception error) {
@@ -503,4 +504,20 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             }
         }).start();
     }
+
+//    public void editGroup (RequestInfo requestInfo, Bitmap bitmap){
+//        String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqGroup;
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+////                    requestInfo.addData.content = group.content;
+//                    final String jsonObject = createJsonObject(bitmap, requestInfo);
+//                    httpManager.postRequest(path, jsonObject, constantConfig.POST_GROUP, GroupInteractor.this);
+//                } catch (Exception error) {
+//                    error(error);
+//                }
+//            }
+//        }).start();
+//    }
 }

@@ -30,7 +30,7 @@ public class AuthorizationRouter {
 
     public void createUserToAuth(AuthDataObject authDataObject, PresenterInterface delegate){
         Toast.makeText(activity, "Введите личные данные", Toast.LENGTH_LONG).show();
-        activity.openEditProfile(null, delegate, "User");
+        activity.openEditProfile(null, null,delegate, "User");
 
     }
 
@@ -46,6 +46,7 @@ public class AuthorizationRouter {
     public void getUserID(String userID){
         activity.userID = userID;
         activity.saveSharedPreferences(userID);
+        activity.showBottomNavigationView(activity.bottomNavigationView);
         activity.openProfile();
     }
 

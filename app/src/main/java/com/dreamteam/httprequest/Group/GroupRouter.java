@@ -1,6 +1,7 @@
 package com.dreamteam.httprequest.Group;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.ObjectList.ObjectData;
@@ -29,8 +30,8 @@ public class GroupRouter {
         activity.openGroupList();
     }
 
-    public void showAddGroup(InfoProfileData infoProfileData, PresenterInterface delegate, String type){
-        activity.openEditProfile(infoProfileData, delegate, type);
+    public void showAddGroup(InfoProfileData infoProfileData, RequestInfo requestInfo, PresenterInterface delegate, String type){
+        activity.openEditProfile(infoProfileData, requestInfo, delegate, type);
     }
 
     public void showMembersList(ArrayList<ObjectData> objectDataArrayList, PresenterInterface delegate, String type){

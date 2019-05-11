@@ -21,7 +21,7 @@ public class Router {
     }
 
     public void showEditInfoProfile(InfoProfileData infoProfileData, PresenterInterface delegate, String type){
-        activity.openEditProfile(infoProfileData, delegate, type);
+        activity.openEditProfile(infoProfileData,null, delegate, type);
     }
 
     public void showUser (User user){

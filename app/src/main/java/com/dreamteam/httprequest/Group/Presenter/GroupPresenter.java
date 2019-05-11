@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.Data.AddData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
@@ -140,7 +141,20 @@ public class GroupPresenter implements GroupPresenterInterface {
     }
 
     public void showAddGroup(){
-        router.showAddGroup(null, this, "Group");
+        RequestInfo requestInfo = new RequestInfo();
+        requestInfo.groupCreatorID = groupID;
+        requestInfo.creatorID = activity.userID;
+        router.showAddGroup(null, requestInfo,this, "Group");
+    }
+
+    public void showEditGroup(RequestInfo requestInfo, Bitmap bitmap){
+        InfoProfileData infoProfileData = new InfoProfileData();
+        infoProfileData.imageData = bitmap;
+        infoProfileData.title = requestInfo.addData.content.simpleData.title;
+        infoProfileData.description = requestInfo.addData.content.simpleData.description;
+        requestInfo.addData.id = groupID;
+        router.showAddGroup(infoProfileData, requestInfo, this, "Group");
+
     }
 
     public void addAdmin(){
@@ -169,12 +183,11 @@ public class GroupPresenter implements GroupPresenterInterface {
 
     @Override
     public void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo) {
-        Group group = new Group();
-        group.content.simpleData.title = infoProfileData.title;
-        group.content.simpleData.description = infoProfileData.description;
-
         Bitmap bitmap = infoProfileData.imageData;
-        groupInteractor.addGroup(group, bitmap, requestInfo);
+        requestInfo.addData = new AddData();
+        requestInfo.addData.content.simpleData.title = infoProfileData.title;
+        requestInfo.addData.content.simpleData.description = infoProfileData.description;
+        groupInteractor.addOrEditGroup(bitmap, requestInfo);
     }
 
     public void exitGroup(RequestInfo requestInfo){

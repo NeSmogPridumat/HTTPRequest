@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Presenter.EditInfoProfilePresenter;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Protocols.EditInfoProfileViewInterface;
+import com.dreamteam.httprequest.Data.AddData;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
@@ -47,12 +48,12 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
 
 
 
-    public EditInfoProfileController(InfoProfileData infoProfileData, String creatorID, PresenterInterface delegate, String type) {
+    public EditInfoProfileController(InfoProfileData infoProfileData, RequestInfo requestInfo, PresenterInterface delegate, String type) {
         // Required empty public constructor
         this.delegate = delegate;
         this.infoProfileData = infoProfileData;
         this.type = type;
-        requestInfo.creatorID = creatorID;
+        this.requestInfo = requestInfo;
     }
 
 
