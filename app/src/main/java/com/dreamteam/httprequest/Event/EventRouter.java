@@ -1,6 +1,7 @@
 package com.dreamteam.httprequest.Event;
 
 import com.dreamteam.httprequest.MainActivity;
+import com.dreamteam.httprequest.R;
 
 public class EventRouter {
 
@@ -11,7 +12,7 @@ public class EventRouter {
     }
 
     public void backPress(){
-        activity.onBackPressed();
+        activity.bottomNavigationView.setSelectedItemId(R.id.notification);//TODO
     }
 
     public void openEventList(){

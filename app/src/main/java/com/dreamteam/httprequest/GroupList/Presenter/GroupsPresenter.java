@@ -100,7 +100,10 @@ public class GroupsPresenter implements GroupsPresenterInterface {
         Group group = new Group();
         group.content.simpleData.title = infoProfileData.title;
         group.content.simpleData.description = infoProfileData.description;
-        requestInfo.groupCreatorID = group.id;
+        if (requestInfo == null){
+            requestInfo = new RequestInfo();
+        }
+        requestInfo.creatorID = activity.userID;
 
         Bitmap bitmap = infoProfileData.imageData;
         groupsInteractor.addGroup(group, bitmap, requestInfo);

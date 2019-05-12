@@ -36,6 +36,7 @@ public class EventListController extends Fragment implements EventListViewInterf
     private EventListPresenter eventListPresenter;
 
     private ArrayList<EventType4> eventArrayList = new ArrayList<>();
+    private ArrayList<EventType4> activeEvent = new ArrayList<>();
 
 
     public EventListController(String userID) {
@@ -63,7 +64,6 @@ public class EventListController extends Fragment implements EventListViewInterf
                 return false;
             }
         });
-        eventListPresenter.getEvents(userID);
         return view;
     }
 
@@ -82,16 +82,17 @@ public class EventListController extends Fragment implements EventListViewInterf
 
     @Override
     public void onStart() {
+//        adapter.notifyDataSetChanged();
+        eventListPresenter.getEvents(userID);
         adapter.eventArrayList = eventArrayList;
         eventsRecyclerView.setAdapter(adapter);
+
 
         eventsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), eventsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
 //                objectListPresenter.openObjectProfile(arrayList.get(position), type);
-                if (eventArrayList.get(position).active){
-                    eventListPresenter.openEvent(eventArrayList.get(position));
-                }
+                    eventListPresenter.openEvent(activeEvent.get(position));
             }
 
             @Override
@@ -106,7 +107,6 @@ public class EventListController extends Fragment implements EventListViewInterf
     @Override
     public void answerGetEvents(final ArrayList<EventType4> eventArrayList) {
         Collections.reverse(eventArrayList);
-        ArrayList<EventType4> activeEvent = new ArrayList<>();
         ArrayList<EventType4> notActiveEvent = new ArrayList<>();
         for (int i = 0; i < eventArrayList.size(); i++){
             if (eventArrayList.get(i).active){
@@ -115,14 +115,14 @@ public class EventListController extends Fragment implements EventListViewInterf
                 notActiveEvent.add(eventArrayList.get(i));
             }
         }
-        if (activeEvent.size() != 0) {
-            activity.bottomNavigationTextView.setVisibility(View.VISIBLE);
-            activity.bottomNavigationTextView.setText(Integer.toString(activeEvent.size()));
-
-        } else {
-            activity.bottomNavigationTextView.setVisibility(View.INVISIBLE);
-
-        }
+//        if (activeEvent.size() != 0) {
+//            activity.bottomNavigationTextView.setVisibility(View.VISIBLE);
+//            activity.bottomNavigationTextView.setText(Integer.toString(activeEvent.size()));
+//
+//        } else {
+//            activity.bottomNavigationTextView.setVisibility(View.INVISIBLE);
+//
+//        }
         this.eventArrayList = eventArrayList;
         adapter.eventArrayList = activeEvent;
         eventsRecyclerView.setAdapter(adapter);

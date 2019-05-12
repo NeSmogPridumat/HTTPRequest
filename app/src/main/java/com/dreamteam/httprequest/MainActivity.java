@@ -1,7 +1,10 @@
 package com.dreamteam.httprequest;
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.internal.BottomNavigationItemView;
 import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
@@ -36,6 +39,7 @@ import com.dreamteam.httprequest.ObjectList.ObjectData;
 import com.dreamteam.httprequest.ObjectList.View.ObjectListController;
 import com.dreamteam.httprequest.SelectedList.SelectData;
 import com.dreamteam.httprequest.SelectedList.View.SelectedListController;
+import com.dreamteam.httprequest.Service.EventService;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.dreamteam.httprequest.User.View.UserFragment;
 
@@ -108,6 +112,9 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
             e.commit();
             bottomNavigationView.setSelectedItemId(R.id.activities);
         }
+
+//        startService(new Intent(this, EventService.class).putExtra("userID", userID));
+
     }
 
     @Override
@@ -122,6 +129,16 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         bottomNavigationTextView = badge.findViewById(R.id.notification_badge);
 
         bottomNavigationTextView.setVisibility(View.INVISIBLE);
+
+        // Создаем PendingIntent для Task1
+        Intent intent = new Intent(this, EventService.class);
+        PendingIntent pi = createPendingResult(1, intent, 0);
+        // Создаем Intent для вызова сервиса, кладем туда параметр времени
+        // и созданный PendingIntent
+        intent.putExtra("userID", userID)
+                .putExtra("Pending", pi);
+        // стартуем сервис
+        startService(intent);
         super.onStart();
     }
 
@@ -290,15 +307,32 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     }
 
     public void openEvent (EventType4 event){
-        if(event.response.type == 4){
-            changeFragmentWitchBackstack(new EventType4Controller(event), null);
-        }else {
+
             changeFragmentWitchBackstack(new EventController(event), null);
-        }
+
     }
 
     public void openEventList (){
         changeFragment(new EventListController(userID), null);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1){
+            String event = data.getStringExtra("Events");
+            if(event.equals("0")){
+                bottomNavigationTextView.setVisibility(View.INVISIBLE);
+            } else {
+                bottomNavigationTextView.setVisibility(View.VISIBLE);
+                bottomNavigationTextView.setText(event);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+//        stopService()
+        super.onDestroy();
+    }
 }

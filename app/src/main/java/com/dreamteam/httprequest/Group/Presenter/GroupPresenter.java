@@ -187,6 +187,8 @@ public class GroupPresenter implements GroupPresenterInterface {
         requestInfo.addData = new AddData();
         requestInfo.addData.content.simpleData.title = infoProfileData.title;
         requestInfo.addData.content.simpleData.description = infoProfileData.description;
+        requestInfo.groupID = groupID;
+        requestInfo.groupCreatorID = null;
         groupInteractor.addOrEditGroup(bitmap, requestInfo);
     }
 

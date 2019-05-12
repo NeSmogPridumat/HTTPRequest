@@ -5,7 +5,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
-import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.Token;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
 

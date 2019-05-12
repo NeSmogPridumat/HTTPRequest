@@ -137,7 +137,6 @@ public class HTTPManager {
         //TODO: возможно нужно вынести
         closeUrlConnect(httpURLConnection);
         sendDelegate(byteArray, error, type, delegate);
-        byteArray = null;
     }
 
 
