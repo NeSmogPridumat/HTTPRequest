@@ -15,7 +15,10 @@ import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class EventListInteractor implements EventListFromHTTPManagerInterface {
 
@@ -50,7 +53,27 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
 
     @Override
     public void error(Throwable t) {
-
+        String title = null;
+        String description  = null;
+        if (t instanceof SocketTimeoutException) {
+            title = "Ошибка соединения с сервером";
+            description = "Проверте соединение с интернетом. Не удается подключится с серверу";
+        }
+        if (t instanceof NullPointerException) {
+            title = "Объект не найден";
+            description = "";
+        }
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        final String finalTitle = title;
+        final String finalDescription = description;
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                delegate.error(finalTitle, finalDescription);
+            }
+        };
+        mainHandler.post(myRunnable);
+        Log.e(TAG, "Failed server" + t.toString());
     }
 
     private void prepareGetEventsResponse (byte[] byteArray){
@@ -60,7 +83,7 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
                 eventArrayList = createEventsOfBytes(byteArray);
                 if (eventArrayList == null){
                     String error = " ";
-                    delegate.error(error);
+                    delegate.error(error, null);
                 } else {
 
                     Handler mainHandler = new Handler(Looper.getMainLooper());

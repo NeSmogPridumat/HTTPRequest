@@ -40,4 +40,9 @@ public class SelectListPresenter implements SelectListPresenterInterface {
         delegate.redrawAdapter(objectID, finalBitmap);
     }
 
+    @Override
+    public void error(String title, String description) {
+        delegate.error(title, description);
+    }
+
 }

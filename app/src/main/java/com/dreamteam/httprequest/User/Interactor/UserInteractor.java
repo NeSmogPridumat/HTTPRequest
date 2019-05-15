@@ -21,13 +21,14 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.ByteArrayOutputStream;
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 
 public class UserInteractor implements UserFromHTTPManagerInterface {
 
-    public final static String TAG = "UserInteractor";
+    private final static String TAG = "UserInteractor";
 
     private ConstantConfig constantConfig = new ConstantConfig();
 
@@ -105,14 +106,26 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 
     @Override
     public void error(Throwable t) {//--------------------------------------------------------------Обработка ошибки
-        String error = null;
-        if (t instanceof SocketTimeoutException) {
-            error = "Ошибка ожидания сервера";
+        String title = null;
+        String description  = null;
+        if (t instanceof SocketTimeoutException|| t instanceof ConnectException) {
+            title = "Ошибка соединения с сервером";
+            description = "Проверте соединение с интернетом. Не удается подключится с серверу";
         }
         if (t instanceof NullPointerException) {
-            error = "Объект не найден";
+            title = "Объект не найден";
+            description = "";
         }
-        delegate.error(error);
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        final String finalTitle = title;
+        final String finalDescription = description;
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                delegate.error(finalTitle, finalDescription);
+            }
+        };
+        mainHandler.post(myRunnable);
         Log.e(TAG, "Failed server" + t.toString());
     }
 
@@ -128,7 +141,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
             final User user = createUserOfBytes(byteArray);
             if (user.equals(null)) {
                 String error = "Объект не существует";
-                delegate.error(error);
+                delegate.error(error, "");
             }
 
             Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -235,9 +248,14 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     }
 
     private ArrayList<Group> createGroupsOfBytes (byte[] byteArray){//----------------------создание массива групп из массива байтов
-        Gson gson = new Gson();
-        String jsonString = new String(byteArray);
-        return gson.fromJson(jsonString, new TypeToken<ArrayList<Group>>(){}.getType());
+        ArrayList<Group> groups = null;
+        if (byteArray != null) {
+            Gson gson = new Gson();
+            String jsonString = new String(byteArray);
+            return gson.fromJson(jsonString, new TypeToken<ArrayList<Group>>() {
+            }.getType());
+        }
+        return groups;
     }
 
     //запрос на изменение объекта

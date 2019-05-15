@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.HTTPConfig;
@@ -11,9 +12,13 @@ import com.dreamteam.httprequest.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.SelectListHTTPManagerInterface;
 import com.dreamteam.httprequest.SelectedList.Protocols.SelectListPresenterInterface;
 
+import java.net.SocketTimeoutException;
+
+import static android.support.constraint.Constraints.TAG;
+
 public class SelectListInteractor implements SelectListHTTPManagerInterface {
 
-    SelectListPresenterInterface delegate;
+    private SelectListPresenterInterface delegate;
 
     private HTTPConfig httpConfig = new HTTPConfig();
     private ConstantConfig constantConfig = new ConstantConfig();
@@ -37,14 +42,33 @@ public class SelectListInteractor implements SelectListHTTPManagerInterface {
     @Override
     public void response(byte[] byteArray, String type) {
         if (byteArray != null) {
-            byte[] copyArray = byteArray;
-            prepareGetBitmapOfByte(parsingStringType(type)[1], copyArray);
+            prepareGetBitmapOfByte(parsingStringType(type)[1], byteArray);
         }
     }
 
     @Override
     public void error(Throwable t) {
-
+        String title = null;
+        String description  = null;
+        if (t instanceof SocketTimeoutException) {
+            title = "Ошибка соединения с сервером";
+            description = "Проверте соединение с интернетом. Не удается подключится с серверу";
+        }
+        if (t instanceof NullPointerException) {
+            title = "Объект не найден";
+            description = "";
+        }
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        final String finalTitle = title;
+        final String finalDescription = description;
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                delegate.error(finalTitle, finalDescription);
+            }
+        };
+        mainHandler.post(myRunnable);
+        Log.e(TAG, "Failed server" + t.toString());
     }
 
     @Override
@@ -66,8 +90,6 @@ public class SelectListInteractor implements SelectListHTTPManagerInterface {
             }
             final Bitmap finalBitmap = bitmap;
 
-            byteArray = null;
-            bitmap = null;
             Runnable myRunnable = new Runnable() {
                 @Override
                 public void run() {

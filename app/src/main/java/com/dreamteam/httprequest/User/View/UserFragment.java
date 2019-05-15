@@ -12,9 +12,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
@@ -30,6 +35,8 @@ public class UserFragment extends Fragment implements ViewUserInterface {
 
     ImageView userImage, raitingStoryImage, scheduleImage;
     TextView userName, userSurName, mail, call, rating, groupTitle;
+    LinearLayout userFragment;
+    RelativeLayout progressBar;
     RadioButton groupsRadioButton;
     MainActivity activity;
 
@@ -37,7 +44,6 @@ public class UserFragment extends Fragment implements ViewUserInterface {
 
     User user = new User();
     Bitmap bitmapU;
-    String errors;
     String userID;
     boolean root;
 
@@ -59,6 +65,8 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         groupTitle = view.findViewById(R.id.group_title);
         userImage = view.findViewById(R.id.user_image);
         groupsRadioButton = view.findViewById(R.id.radio_button_groups);
+        progressBar = view.findViewById(R.id.progressBarOverlay);
+        userFragment = view.findViewById(R.id.user_fragment);
         return view;
     }
 
@@ -75,6 +83,7 @@ public class UserFragment extends Fragment implements ViewUserInterface {
 
     @Override
     public void onStart() {
+        progressBar.setVisibility(View.VISIBLE);
         presenterUser.getUser(userID);
         super.onStart();
         groupsRadioButton.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +110,7 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         userSurName.setText(user.content.simpleData.surname);
         this.user = user;
         activity.setActionBarTitle(user.content.simpleData.name);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
@@ -110,8 +120,9 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     }
 
     @Override
-    public void error(String error) {
-        errors = error;
+    public void error(String title, String description) {
+        Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

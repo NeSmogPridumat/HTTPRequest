@@ -10,16 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.dreamteam.httprequest.AutoAndReg.Authorization.AuthorizationRouter;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Presenter.AuthorizationPresenter;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationViewInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class RegistrationController extends Fragment {
+public class RegistrationController extends Fragment implements AuthorizationViewInterface {
 
     private MainActivity activity;
     private AuthorizationPresenter authorizationPresenter;
@@ -73,5 +75,10 @@ public class RegistrationController extends Fragment {
             }
         });
         super.onStart();
+    }
+
+    @Override
+    public void error(String title, String description) {
+        Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
     }
 }

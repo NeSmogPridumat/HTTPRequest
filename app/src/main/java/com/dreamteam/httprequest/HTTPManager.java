@@ -73,7 +73,7 @@ public class HTTPManager {
             urlConnection = (HttpURLConnection) url.openConnection();
 
             //таймаут ожидания
-            urlConnection.setReadTimeout(10000);
+            urlConnection.setReadTimeout(5000);
         } catch (IOException error){
             Log.e(TAG,  error.getMessage());
         }
@@ -82,7 +82,7 @@ public class HTTPManager {
 
 
 
-    public ByteArrayOutputStream readDataFromRequestStream (InputStream inputStream) throws IOException {//получение информации с сервера
+    private ByteArrayOutputStream readDataFromRequestStream(InputStream inputStream) throws IOException {//получение информации с сервера
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int bytesRead;
         byte[] buffer = new byte[8024];
@@ -107,7 +107,7 @@ public class HTTPManager {
                 errorHanding(responseCode, delegate);
             }
         } catch (Exception error){
-            Log.e(TAG,  error.getMessage());
+            delegate.error(error);
         }
         return result;
     }
@@ -131,8 +131,7 @@ public class HTTPManager {
             try {
                 byteArray = readDataFromRequestStream(httpURLConnection.getInputStream()).toByteArray();
             } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
-                error = e;
+                delegate.error(e);
             }
         }
         //TODO: возможно нужно вынести
@@ -141,7 +140,7 @@ public class HTTPManager {
     }
 
 
-    public void sendDelegate(byte [] byteArray,Exception error, String type, OutputHTTPManagerInterface delegate){
+    private void sendDelegate(byte[] byteArray, Exception error, String type, OutputHTTPManagerInterface delegate){
         if (error != null){
             delegate.error(error);
         }
@@ -180,7 +179,7 @@ public class HTTPManager {
         httpURLConnection.setRequestProperty("Content-Type", "application/json");
     }
 
-    public void setBodyRequest(String object, HttpURLConnection httpURLConnection) throws IOException {
+    private void setBodyRequest(String object, HttpURLConnection httpURLConnection) throws IOException {
         DataOutputStream out = new DataOutputStream(httpURLConnection.getOutputStream());
         byte[] utf8JsonString = object.getBytes(StandardCharsets.UTF_8);
         out.write(utf8JsonString, 0, utf8JsonString.length);

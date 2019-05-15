@@ -11,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthData;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Presenter.AuthorizationPresenter;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationViewInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
 
@@ -27,7 +29,7 @@ import com.dreamteam.httprequest.R;
  * A simple {@link Fragment} subclass.
  */
 @SuppressLint("ValidFragment")
-public class AuthorizationController extends Fragment {
+public class AuthorizationController extends Fragment implements AuthorizationViewInterface {
 
     private EditText loginEditText, passwordEditText;
     private Button authorizationButton, registrationButton;
@@ -103,5 +105,10 @@ public class AuthorizationController extends Fragment {
     public void onResume() {
 
         super.onResume();
+    }
+
+    @Override
+    public void error(String title, String description) {
+        Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
     }
 }

@@ -33,6 +33,11 @@ public class EventPresenter implements EventPresenterInterface {
         delegate.answerServerToQuestion();
     }
 
+    @Override
+    public void error(String title, String description) {
+        delegate.error(title, description);
+    }
+
     public void resultToQuestion(AnswerQuestion answerQuestion){
         eventInteractor.resultToQuestion(answerQuestion);
     }

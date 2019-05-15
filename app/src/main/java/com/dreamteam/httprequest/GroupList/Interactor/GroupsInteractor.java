@@ -23,6 +23,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 public class GroupsInteractor implements GroupsHTTPManagerInterface {
@@ -82,7 +83,18 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
 
     @Override
     public void error(Throwable t) {
-
+        if (t instanceof SocketTimeoutException){
+            final String title = "Ошибка соединения с сервером";
+            final String description = "Проверте соединение с интернетом. Не удается подключится с серверу";
+            Handler mainHandler = new Handler(Looper.getMainLooper());
+            Runnable myRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    delegate.error(title, description);
+                }
+            };
+            mainHandler.post(myRunnable);
+        }
     }
 
     @Override
@@ -94,12 +106,11 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
 
     private synchronized void prepareGetBitmapOfByte(final String groupID, byte[] byteArray){
         if (byteArray != null){
-            Handler mainHandler = new Handler(Looper.getMainLooper());
             Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-
             bitmap = Bitmap.createScaledBitmap(bitmap, 150, 150, false);
             final Bitmap finalBitmap = bitmap;
 
+            Handler mainHandler = new Handler(Looper.getMainLooper());
             Runnable myRunnable = new Runnable() {
                     @Override
                     public void run() {
@@ -116,9 +127,8 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
             final ArrayList<Group> groupCollection = createGroupsOfBytes(byteArray);
         if (groupCollection == null){
             String error = " ";
-            delegate.error(error);
+            delegate.error(error, null);
         } else {
-
             Handler mainHandler = new Handler(Looper.getMainLooper());
             Runnable myRunnable = new Runnable() {
                 @Override

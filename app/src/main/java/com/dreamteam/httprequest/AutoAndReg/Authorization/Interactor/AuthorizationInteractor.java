@@ -21,6 +21,9 @@ import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class AuthorizationInteractor implements AuthorizationHTTPManagerInterface {
 
@@ -83,7 +86,27 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
 
     @Override
     public void error(Throwable t) {
-
+        String title = null;
+        String description  = null;
+        if (t instanceof SocketTimeoutException) {
+            title = "Ошибка соединения с сервером";
+            description = "Проверте соединение с интернетом. Не удается подключится с серверу";
+        }
+        if (t instanceof NullPointerException) {
+            title = "Объект не найден";
+            description = "";
+        }
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        final String finalTitle = title;
+        final String finalDescription = description;
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                delegate.error(finalTitle, finalDescription);
+            }
+        };
+        mainHandler.post(myRunnable);
+        Log.e(TAG, "Failed server" + t.toString());
     }
 
     @Override

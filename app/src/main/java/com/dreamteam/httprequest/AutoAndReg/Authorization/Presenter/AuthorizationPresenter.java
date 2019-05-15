@@ -10,6 +10,7 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.Token;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Interactor.AuthorizationInteractor;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationPresenterInterface;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationViewInterface;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.SelectedList.SelectData;
@@ -21,6 +22,7 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
     private AuthorizationRouter router;
     private AuthorizationInteractor authorizationInteractor;
     private AuthDataObject authDataObject;
+    private AuthorizationViewInterface delegate;
 
     public AuthorizationPresenter(MainActivity activity){
         router = new AuthorizationRouter(activity);
@@ -109,8 +111,13 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
             router.createUserToAuth(router.getAuthDataObject(), this);
         }
         if (responseCode == 404){
-            router.showNotFound();
+            router.showNotFound();//TODO: возможно надо передать во View
         }
+    }
+
+    @Override
+    public void error(String title, String description) {
+        delegate.error(title, description);
     }
 
     public void enterUser(String login, String password){

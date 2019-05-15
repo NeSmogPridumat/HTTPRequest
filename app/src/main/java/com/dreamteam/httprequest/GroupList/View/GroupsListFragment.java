@@ -17,6 +17,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.GroupList.Presenter.GroupsPresenter;
@@ -39,6 +41,7 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
     private GroupAdapter adapter;
     private MainActivity activity;
     public GroupsPresenter groupsPresenter;
+    private RelativeLayout progressBar;
     MenuInflater inflater;
     Menu menu;
 
@@ -57,7 +60,7 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
         groupsRecyclerView = view.findViewById(R.id.groups_recycler_view);
         groupsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         groupsRecyclerView.setAdapter(adapter);
-        groupsPresenter.getGroups(userID);//здесь ID User'а
+        progressBar = view.findViewById(R.id.progressBarOverlay);
         return view;
     }
 
@@ -73,6 +76,8 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
 
     @Override
     public void onStart() {
+        progressBar.setVisibility(View.VISIBLE);
+        groupsPresenter.getGroups(userID);//здесь ID User'а
         activity.setActionBarTitle("List Group");
         super.onStart();
     }
@@ -104,6 +109,7 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
         groups = groupCollection;
         adapter.groupCollection = groupCollection;
         groupsRecyclerView.setAdapter(adapter);
+        progressBar.setVisibility(View.GONE);
 
         //TODO: внедрить измененное состояние для флажка и синхронизировать недавно обновленное состояние с флагом isChecked текущего объекта. Когда вы связываете свой держатель вида, проверьте, является ли флаг истинным или ложным, и обновите макет в соответствии с флагом.
         groupsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), groupsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
@@ -118,6 +124,12 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
             }
         }));
 
+    }
+
+    @Override
+    public void error(String title, String description) {
+        Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
+        progressBar.setVisibility(View.GONE);
     }
 
     public void redrawAdapter(String groupID, Bitmap bitmap){//presenter отправляет bitmap/картинку в этот метод, он отправляет их на отображение в адаптере

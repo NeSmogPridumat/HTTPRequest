@@ -24,7 +24,10 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class GroupInteractor implements GroupHTTPMangerInterface {
 
@@ -37,6 +40,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     private GroupPresenterInterface delegate;
     private HTTPManager httpManager = HTTPManager.get();
     private HTTPConfig httpConfig = new HTTPConfig();
+    private ArrayList<User> usersGroup = new ArrayList<>();
 
     public GroupInteractor(GroupPresenterInterface delegate) {
         this.delegate = delegate;
@@ -52,9 +56,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             prepareGetImageResponse(byteArray);
         } else if (type.equals(constantConfig.MEMBERS_TYPE)){
             prepareGetMembersResponse(byteArray);
-        } else if (type.equals(constantConfig.GET_USERS_FOR_SELECT_ADD_TYPE)){
-            prepareGetUserForSelect(byteArray);
-        } else if (type.equals(constantConfig.SET_USER_IN_GROUP_TYPE) || type.equals(constantConfig.SET_DELETE_USER_IN_GROUP_TYPE)){
+        }  else if (type.equals(constantConfig.SET_USER_IN_GROUP_TYPE) || type.equals(constantConfig.SET_DELETE_USER_IN_GROUP_TYPE)){
             delegate.openGroupAfterSelect();
         } else if(type.equals(constantConfig.GET_USERS_FOR_SELECT_DELETE_TYPE)){
             prepareGetDeleteUserForSelect(byteArray);
@@ -74,6 +76,12 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             prepareGetGroupAfterEditResponse(byteArray);
         } else if (type.equals(constantConfig.ADD_ADMIN)){
             prepareAddAdminResponse(byteArray);
+        }
+        //====================Steppers=============================================//
+        else if (type.equals(constantConfig.GET_USERS_FOR_ADD_STEP_1_TYPE)){
+            prepareGetUserForSelect(byteArray);
+        } else if (type.equals(constantConfig.GET_USERS_FOR_ADD_STEP_2_TYPE)){
+            prepareGetUserForAddSelect(byteArray);
         }
     }
 
@@ -100,7 +108,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             final Group group = createGroupOfBytes(byteArray);
             if (group == null) {
                 String error = "Объект не существует";
-                delegate.error(error);
+                delegate.error(error, null);
             }
 
             new Thread(new Runnable() {
@@ -135,7 +143,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             final Group group = createGroupOfBytes(byteArray);
             if (group == null) {
                 String error = "Объект не существует";
-                delegate.error(error);
+                delegate.error(error, null);
             }
 
             new Thread(new Runnable() {
@@ -196,7 +204,6 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     private Group createGroupOfBytes(byte[] byteArray) {//---------------------------------------------создание User из массива байтов
         Gson gson = new Gson();
         String jsonString = new String(byteArray);
-        Group group = gson.fromJson(jsonString, Group.class);
         Log.i("wqe", "wqe");
         return gson.fromJson(jsonString, Group.class);
     }
@@ -204,7 +211,6 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     private EventType4 createEventOfBytes(byte[] byteArray) {//---------------------------------------------создание User из массива байтов
         Gson gson = new Gson();
         String jsonString = new String(byteArray);
-        EventType4 group = gson.fromJson(jsonString, EventType4.class);
         Log.i("wqe", "wqe");
         return gson.fromJson(jsonString, EventType4.class);
     }
@@ -311,7 +317,27 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
 
     @Override
     public void error(Throwable t) {
-
+        String title = null;
+        String description  = null;
+        if (t instanceof SocketTimeoutException) {
+            title = "Ошибка соединения с сервером";
+            description = "Проверте соединение с интернетом. Не удается подключится с серверу";
+        }
+        if (t instanceof NullPointerException) {
+            title = "Объект не найден";
+            description = "";
+        }
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        final String finalTitle = title;
+        final String finalDescription = description;
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                delegate.error(finalTitle, finalDescription);
+            }
+        };
+        mainHandler.post(myRunnable);
+        Log.e(TAG, "Failed server" + t.toString());
     }
 
     @Override
@@ -342,7 +368,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             final EventType4 event = createEventOfBytes(byteArray);
             if (event == null) {
                 String error = "Объект не существует";
-                delegate.error(error);
+                delegate.error(error, null);
             }
 
             Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -358,16 +384,6 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         } catch (Exception error) {
             error(error);
         }
-    }
-
-    public void checkListAddUser(){
-        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.USERS;
-        new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
-            @Override
-            public void run() {
-                httpManager.getRequest(path, constantConfig.GET_USERS_FOR_SELECT_ADD_TYPE, GroupInteractor.this);//----------отправка в HTTPManager
-            }
-        }).start();
     }
 
     public void checkListAddAdmin(){
@@ -391,18 +407,49 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         }).start();
     }
 
-    private void prepareGetUserForSelect (byte[] byteArray){
-        final ArrayList<User> users = createMembersOfBytes(byteArray);
+    //==============================================GET USERS FOR ADD IN GROUP============================================//
+    public void checkListAddUser(String groupID){
+        final String membersPath = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqUser + httpConfig.reqGroup + httpConfig.GROUP_ID_PARAM + groupID; //"5c4a0105-c5b5-450e-b781-113a21f16e5a"
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    httpManager.getRequest(membersPath, constantConfig.GET_USERS_FOR_ADD_STEP_1_TYPE, GroupInteractor.this);
+                } catch (Exception error) {
+                    error(error);
+                }
+            }
+        }).start();
+    }
+
+    private void prepareGetUserForSelect (byte[] byteArray){////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        usersGroup = createMembersOfBytes(byteArray);
+        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.USERS;
+        httpManager.getRequest(path, constantConfig.GET_USERS_FOR_ADD_STEP_2_TYPE, GroupInteractor.this);//----------отправка в HTTPManager
+    }
+
+    private void prepareGetUserForAddSelect (byte[] bytes){
+        ArrayList<User> allUsers = createMembersOfBytes(bytes);
+        ArrayList<User> users = allUsers;
+        for (int i = 0; i < allUsers.size(); i++){
+            for (int j = 0; j < usersGroup.size(); j++){
+                if (allUsers.get(i).id.equals(usersGroup.get(j).id)){
+                    users.remove(allUsers.get(i));
+                }
+            }
+        }
+        final ArrayList<User> usersFinal = users;
         Handler mainHandler = new Handler(Looper.getMainLooper());
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                delegate.answerGetUsersForSelect(users, constantConfig.ADD);
-
+                delegate.answerGetUsersForSelectAdd(usersFinal);
             }
         };
         mainHandler.post(myRunnable);
     }
+    //==============================================GET USERS FOR ADD IN GROUP============================================//
 
     private void prepareGetUserForSelectAdmin(byte[] byteArray){
         final ArrayList<User> users = createMembersOfBytes(byteArray);
@@ -410,7 +457,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                delegate.answerGetUsersForSelect(users, constantConfig.ADMIN);
+                delegate.answerGetUsersForSelectAdmin(users);
 
             }
         };
@@ -423,7 +470,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                delegate.answerGetUsersForSelect(users, constantConfig.DELETE);
+                delegate.answerGetUsersForSelectDelete(users);
 
             }
         };

@@ -12,7 +12,7 @@ public interface PresenterUserInterface extends PresenterInterface {
 
     void answerGetImage(Bitmap bitmap);
 
-    void error (String error);
+    void error (String title, String description);
 
     void  answerGetGroups(int groups);
 

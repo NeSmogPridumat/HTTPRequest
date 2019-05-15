@@ -29,8 +29,8 @@ public class EventListPresenter implements EventListPresenterInterface {
     }
 
     @Override
-    public void error(String error) {
-
+    public void error(String title, String description) {
+        delegate.error(title, description);
     }
 
     @Override

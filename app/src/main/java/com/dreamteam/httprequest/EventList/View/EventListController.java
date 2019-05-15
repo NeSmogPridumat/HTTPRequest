@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.EventList.Presenter.EventListPresenter;
@@ -117,5 +118,10 @@ public class EventListController extends Fragment implements EventListViewInterf
         nAdapter.eventArrayList = notActiveEvent;
         noteventsRecyclerView.setAdapter(nAdapter);
 
+    }
+
+    @Override
+    public void error(String title, String description) {
+        Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
     }
 }

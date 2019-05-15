@@ -11,7 +11,7 @@ import com.dreamteam.httprequest.User.Entity.UserData.User;
 import java.util.ArrayList;
 
 public interface GroupPresenterInterface extends PresenterInterface {
-    void error(String error);
+    void error(String title, String description);
 
     void answerGetGroup(Group group);
 
@@ -21,7 +21,11 @@ public interface GroupPresenterInterface extends PresenterInterface {
 
     void answerGetMembersForList (ArrayList<ObjectData> arrayList);
 
-    void answerGetUsersForSelect (ArrayList<User> users, String type);
+    void answerGetUsersForSelectAdmin (ArrayList<User> users);
+
+    void answerGetUsersForSelectAdd (ArrayList<User> users);
+
+    void answerGetUsersForSelectDelete (ArrayList<User> users);
 
     void openGroupsList();
 

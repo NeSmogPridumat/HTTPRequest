@@ -14,7 +14,6 @@ public class ConstantConfig {
     public final String DELETE =                            "Delete";
     public final String MEMBERS_TYPE =                      "members";
 
-    public final String GET_USERS_FOR_SELECT_ADD_TYPE =     "add users";
     public final String GET_USERS_FOR_SELECT_DELETE_TYPE =  "delete users";
     public final String SET_USER_IN_GROUP_TYPE =            "get user in group";
     public final String SET_DELETE_USER_IN_GROUP_TYPE =     "delete user in group";
@@ -30,5 +29,10 @@ public class ConstantConfig {
     public final String ADD_ADMIN =                         "Add admin";
     public final String ADD_GROUP_TYPE =                    "Add group";
     public final String EDIT_GROUP_TYPE =                   "Edit group";
+    public final String ANSWER_FOR_EVENT_TYPE =             "Answer for event";
+    public final String RESULT_TO_QUESTION_TYPE =           "Result To Question";
 
+
+    public final String GET_USERS_FOR_ADD_STEP_1_TYPE =     "add users";
+    public final String GET_USERS_FOR_ADD_STEP_2_TYPE =     "Get user";
 }

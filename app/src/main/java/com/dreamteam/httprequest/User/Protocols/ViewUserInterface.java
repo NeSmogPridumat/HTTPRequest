@@ -9,7 +9,7 @@ public interface ViewUserInterface {
 
     void ViewImage(Bitmap bitmap);
 
-    void  error (String error);
+    void  error (String title, String description);
 
     void answerGetGroups(int groups);
 }

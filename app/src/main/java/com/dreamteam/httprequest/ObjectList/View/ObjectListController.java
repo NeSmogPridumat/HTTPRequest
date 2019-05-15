@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.dreamteam.httprequest.GroupList.View.RecyclerItemClickListener;
 import com.dreamteam.httprequest.MainActivity;
@@ -98,5 +99,10 @@ public class ObjectListController extends Fragment implements ObjectListViewInte
         if (bitmap != null) {
             adapter.changeItem(groupID, bitmap);
         }
+    }
+
+    @Override
+    public void error(String title, String description) {
+        Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
     }
 }

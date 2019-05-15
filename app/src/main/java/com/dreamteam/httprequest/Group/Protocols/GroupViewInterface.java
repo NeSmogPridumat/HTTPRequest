@@ -12,7 +12,7 @@ public interface GroupViewInterface {
 
     void outputGroupView(Group group);
 
-    void error(String error);
+    void error(String title, String description);
 
     void outputMembersView(ArrayList<User> members);
 

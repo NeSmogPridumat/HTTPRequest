@@ -93,6 +93,7 @@ public class EventType4Controller extends Fragment implements EventViewInterface
         return check;
     }
 
+    @SuppressLint("SetTextI18n")
     private void createListForUser(EventType4 event){
 
         int counter = 0;
@@ -142,5 +143,10 @@ public class EventType4Controller extends Fragment implements EventViewInterface
         }
         createListForUser(event);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void error(String title, String description) {
+        Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
     }
 }

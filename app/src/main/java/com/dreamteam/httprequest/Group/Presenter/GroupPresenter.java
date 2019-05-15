@@ -48,8 +48,8 @@ public class GroupPresenter implements GroupPresenterInterface {
     }
 
     @Override
-    public void error(String error) {
-        delegate.error(error);
+    public void error(String title, String description) {
+        delegate.error(title, description);
     }
 
     @Override
@@ -72,21 +72,36 @@ public class GroupPresenter implements GroupPresenterInterface {
         router.showMembersList(arrayList, this, constantConfig.USER_TYPE);
     }
 
-
-
     @Override
-    public void answerGetUsersForSelect(ArrayList<User> users, String type) {
+    public void answerGetUsersForSelectAdd(ArrayList<User> users) {//TODO Сделать
         ArrayList<SelectData> selectData = new ArrayList<>();
         for (int i = 0; i < users.size(); i++){
             selectData.add(new SelectData().initFromUser(users.get(i)));
         }
-        router.showSelectList(selectData, this, type);
+        router.showSelectList(selectData, this, constantConfig.ADD);
+    }
+
+    @Override
+    public void answerGetUsersForSelectAdmin(ArrayList<User> users) {//TODO Сделать
+        ArrayList<SelectData> selectData = new ArrayList<>();
+        for (int i = 0; i < users.size(); i++){
+            selectData.add(new SelectData().initFromUser(users.get(i)));
+        }
+        router.showSelectList(selectData, this, constantConfig.ADD);
+    }
+
+    @Override
+    public void answerGetUsersForSelectDelete(ArrayList<User> users) {//TODO Сделать
+        ArrayList<SelectData> selectData = new ArrayList<>();
+        for (int i = 0; i < users.size(); i++){
+            selectData.add(new SelectData().initFromUser(users.get(i)));
+        }
+        router.showSelectList(selectData, this, constantConfig.DELETE);
     }
 
     @Override
     public void openGroupsList() {
         router.openGroupsList();
-//        Toast.makeText(activity, "Группа будет удалена после согласия создателя группы", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -118,7 +133,7 @@ public class GroupPresenter implements GroupPresenterInterface {
     }
 
     public void checkListAddUser(){
-        groupInteractor.checkListAddUser();
+        groupInteractor.checkListAddUser(groupID);
     }
 
     public void checkListDeleteUser(){

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dreamteam.httprequest.Event.Entity.AnswerQuestion.AnswerQuestion;
 import com.dreamteam.httprequest.Event.Entity.AnswerQuestion.AnswerQuestionResult;
@@ -111,5 +112,10 @@ public class EventController extends Fragment implements EventViewInterface {
     @Override
     public void answerServerToQuestion() {
 
+    }
+
+    @Override
+    public void error(String title, String description) {
+        Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
     }
 }

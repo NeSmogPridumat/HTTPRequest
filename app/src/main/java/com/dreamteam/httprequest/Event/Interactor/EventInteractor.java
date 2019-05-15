@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Event.Entity.AnswerQuestion.AnswerQuestion;
 import com.dreamteam.httprequest.Event.Protocols.EventFromHTTPManagerInterface;
 import com.dreamteam.httprequest.Event.Protocols.EventPresenterInterface;
@@ -12,12 +13,17 @@ import com.dreamteam.httprequest.HTTPManager;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
+
+import static android.support.constraint.Constraints.TAG;
 
 public class EventInteractor implements EventFromHTTPManagerInterface {
 
     private EventPresenterInterface delegate;
     private HTTPConfig httpConfig= new HTTPConfig();
     private HTTPManager httpManager = HTTPManager.get();
+
+    private ConstantConfig constantConfig = new ConstantConfig();
 
 
     public EventInteractor(EventPresenterInterface delegate){
@@ -26,10 +32,10 @@ public class EventInteractor implements EventFromHTTPManagerInterface {
 
     @Override
     public void response(byte[] byteArray, String type) {
-        if (type.equals("Answer for event")){
+        if (type.equals(constantConfig.ANSWER_FOR_EVENT_TYPE)){
             Log.i("Вроде","Что-то ок");
             eventAnswer();
-        } else if (type.equals("Result To Question")){
+        } else if (type.equals(constantConfig.RESULT_TO_QUESTION_TYPE)){
             answerServerToQuestion();
         }
     }
@@ -48,7 +54,27 @@ public class EventInteractor implements EventFromHTTPManagerInterface {
 
     @Override
     public void error(Throwable t) {
-
+        String title = null;
+        String description  = null;
+        if (t instanceof SocketTimeoutException) {
+            title = "Ошибка соединения с сервером";
+            description = "Проверте соединение с интернетом. Не удается подключится с серверу";
+        }
+        if (t instanceof NullPointerException) {
+            title = "Объект не найден";
+            description = "";
+        }
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        final String finalTitle = title;
+        final String finalDescription = description;
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                delegate.error(finalTitle, finalDescription);
+            }
+        };
+        mainHandler.post(myRunnable);
+        Log.e(TAG, "Failed server" + t.toString());
     }
 
     @Override
@@ -65,7 +91,7 @@ public class EventInteractor implements EventFromHTTPManagerInterface {
                         Gson gson = new Gson();
                         String jsonObject = gson.toJson(eventResponse);
                         try {
-                            httpManager.postRequest(path, jsonObject, "Answer for event",
+                            httpManager.postRequest(path, jsonObject, constantConfig.ANSWER_FOR_EVENT_TYPE,
                                     EventInteractor.this);//----------отправка в HTTPManager
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -83,7 +109,7 @@ public class EventInteractor implements EventFromHTTPManagerInterface {
                         Gson gson = new Gson();
                         String jsonObject = gson.toJson(answerQuestion);
                         try {
-                            httpManager.postRequest(path, jsonObject, "Result To Question",
+                            httpManager.postRequest(path, jsonObject, constantConfig.RESULT_TO_QUESTION_TYPE,
                                     EventInteractor.this);//----------отправка в HTTPManager
                         } catch (IOException e) {
                             e.printStackTrace();

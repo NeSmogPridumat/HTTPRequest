@@ -15,4 +15,6 @@ public interface AuthorizationPresenterInterface extends PresenterInterface {
     void answerGetUserToken (Token token);
 
     void errorHanding(int responseCode);
+
+    void error (String title, String description);
 }

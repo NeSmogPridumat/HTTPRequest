@@ -104,8 +104,8 @@ public class GroupController extends Fragment implements GroupViewInterface {
     }
 
     @Override
-    public void error(String error) {
-
+    public void error(String title, String description) {
+        Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -186,7 +186,6 @@ public class GroupController extends Fragment implements GroupViewInterface {
                 requestInfoEdit.addData.content.simpleData.description = descriptionTextView.getText().toString();
                 requestInfoEdit.creatorID = activity.userID;
                 requestInfoEdit.groupCreatorID = groupID;
-//                requestInfoEdit.groupID = groupID;
                 groupPresenter.showEditGroup(requestInfoEdit, bitmap);
         }
         return super.onOptionsItemSelected(item);

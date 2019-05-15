@@ -11,4 +11,6 @@ public interface GroupsViewInterface {
     void redrawAdapter(String groupID, Bitmap bitmap);
 
     void outputGroupsView (ArrayList<Group> groupCollection);
+
+    void  error (String title, String description);
 }

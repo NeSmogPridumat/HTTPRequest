@@ -1,6 +1,7 @@
 package com.dreamteam.httprequest.GroupList.Presenter;
 
 import android.graphics.Bitmap;
+import android.widget.Toast;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
@@ -45,8 +46,8 @@ public class GroupsPresenter implements GroupsPresenterInterface {
     }
 
     @Override
-    public void error(String error) {
-
+    public void error(String title, String description) {
+        delegate.error(title, description);
     }
 
     @Override
