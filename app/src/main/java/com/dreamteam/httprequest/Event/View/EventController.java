@@ -14,9 +14,6 @@ import android.widget.TextView;
 
 import com.dreamteam.httprequest.Event.Entity.AnswerQuestion.AnswerQuestion;
 import com.dreamteam.httprequest.Event.Entity.AnswerQuestion.AnswerQuestionResult;
-import com.dreamteam.httprequest.Event.Entity.EventType12.Event;
-import com.dreamteam.httprequest.Event.Entity.EventAnswer.EventResponseType12;
-import com.dreamteam.httprequest.Event.Entity.EventType4.Answer;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.Event.Presenter.EventPresenter;
 import com.dreamteam.httprequest.Event.Protocols.EventViewInterface;
@@ -32,7 +29,7 @@ public class EventController extends Fragment implements EventViewInterface {
     private EventType4 event;
 
     private TextView titleTextView, descriptionTextView;
-    private Button okType1Button, okType2Botton, cancelButton;
+    private Button okType1Button, okType2Button, cancelButton;
     private FrameLayout frameLayout;
     private MainActivity activity;
 
@@ -51,7 +48,7 @@ public class EventController extends Fragment implements EventViewInterface {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_event_controller, container, false);
         okType1Button = view.findViewById(R.id.type1_event_button);
-        okType2Botton = view.findViewById(R.id.ok_type2_event_button);
+        okType2Button = view.findViewById(R.id.ok_type2_event_button);
         cancelButton = view.findViewById(R.id.cancel_event_button);
         titleTextView = view.findViewById(R.id.event_title_text_view);
         titleTextView.setText(event.data.content.simpleData.title);
@@ -76,6 +73,7 @@ public class EventController extends Fragment implements EventViewInterface {
 
     @Override
     public void onStart() {
+        activity.setActionBarTitle("Event");
         okType1Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,7 +81,7 @@ public class EventController extends Fragment implements EventViewInterface {
             }
         });
 
-        okType2Botton.setOnClickListener(new View.OnClickListener() {
+        okType2Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 eventPresenter.answerEvent(createEventResponse(1));

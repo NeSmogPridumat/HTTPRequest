@@ -54,28 +54,6 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
         }).start();
     }
 
-//    public void deleteGroups (final ArrayList<Group> groups){
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                for (int i = 0; i < groups.size(); i++){
-//                    groups.get(i).content = null;
-//                    String path = httpConfig.serverURL + httpConfig.groupPORT + httpConfig.reqGroup + "/del";
-//                    Gson gson = new Gson();
-//                    String jsonObject = gson.toJson(groups.get(i));
-//
-////                    String id = "{id:\"" + groups.get(i).id + "\"}";
-//                    try {
-//                        httpManager.postRequest(path, jsonObject, DELETE_GROUP, GroupsInteractor.this);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                }
-//            }
-//        }).start();
-//    }
-
     private void uploadImage(final String groupID, final String pathImage ){
             new Thread(new Runnable() {
             @Override
@@ -93,13 +71,10 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
             prepareGetGroupsResponse(byteArray);
         } else if ((parsingStringType(type).length > 1) && (parsingStringType(type)[0]
                 .equals(constantConfig.IMAGE_TYPE))){
-            byte[] copyArray = byteArray;
-            prepareGetBitmapOfByte(parsingStringType(type)[1], copyArray);
+            prepareGetBitmapOfByte(parsingStringType(type)[1], byteArray);
         } else if(type.equals(constantConfig.DELETE_GROUP)){
-//            delegate.
             Log.i(TAG, "Сообщение");
             delegate.answerDeleteGroups();
-//            delegate.answerDeleteGroups();
         } else if (type.equals(constantConfig.POST_GROUP)){
             delegate.answerAddGroup();
         }
@@ -125,8 +100,6 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
             bitmap = Bitmap.createScaledBitmap(bitmap, 150, 150, false);
             final Bitmap finalBitmap = bitmap;
 
-            byteArray = null;
-            bitmap = null;
             Runnable myRunnable = new Runnable() {
                     @Override
                     public void run() {
@@ -155,8 +128,7 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
             };
             mainHandler.post(myRunnable);
 
-            ArrayList<Group> grs = groupCollection;
-            getImageRequest(grs);
+            getImageRequest(groupCollection);
         }
         }
     }
@@ -196,20 +168,17 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
             @Override
             public void run() {
                 for (int i = 0; i < arrayList.size(); i++){
-
                     setNullSelectData(arrayList.get(i));
 
                     //собираем путь запроса
                     String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.reqGroup + httpConfig.DEL;//TODO
                     Gson gson = new Gson();
                     String jsonObject = gson.toJson(arrayList.get(i));
-
                     try {
                         httpManager.postRequest(path, jsonObject, constantConfig.DELETE_GROUP, GroupsInteractor.this);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
                 }
             }
         }).start();
@@ -239,8 +208,7 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
             requestInfo.addData.content.mediaData = new GroupMediaData();
             requestInfo.addData.content.mediaData.image = decodeBitmapInBase64(bitmap);
         }
-        String jsonRequestInfo = gson.toJson(requestInfo);
-        return jsonRequestInfo;
+        return gson.toJson(requestInfo);
     }
 
     private String decodeBitmapInBase64 (Bitmap bitmap){//------------------------------------------декодирование Bitmap в Base64

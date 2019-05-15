@@ -3,6 +3,7 @@ package com.dreamteam.httprequest.GroupList.Presenter;
 import android.graphics.Bitmap;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.GroupList.Interactor.GroupsInteractor;
@@ -20,8 +21,7 @@ public class GroupsPresenter implements GroupsPresenterInterface {
     private MainActivity activity;
     private GroupsInteractor groupsInteractor = new GroupsInteractor(this);
     private RouterGroupList routerGroupList;
-
-    private final String type = "Group";
+    private ConstantConfig constantConfig = new ConstantConfig();
 
     public GroupsPresenter(GroupsViewInterface delegate, MainActivity activity){
         this.delegate = delegate;
@@ -60,7 +60,7 @@ public class GroupsPresenter implements GroupsPresenterInterface {
 
     public void showAddGroup(){
         InfoProfileData infoProfileData = null;
-        routerGroupList.showAddGroup(infoProfileData, this, type);
+        routerGroupList.showAddGroup(infoProfileData, this, constantConfig.GROUP_TYPE);
     }
 
 
@@ -96,7 +96,7 @@ public class GroupsPresenter implements GroupsPresenterInterface {
     }
 
     @Override
-    public void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo) {
+    public void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo, String type) {
         Group group = new Group();
         group.content.simpleData.title = infoProfileData.title;
         group.content.simpleData.description = infoProfileData.description;

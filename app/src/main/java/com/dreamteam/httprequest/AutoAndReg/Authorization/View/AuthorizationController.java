@@ -1,6 +1,7 @@
 package com.dreamteam.httprequest.AutoAndReg.Authorization.View;
 
 
+import android.annotation.SuppressLint;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,16 +26,19 @@ import com.dreamteam.httprequest.R;
 /**
  * A simple {@link Fragment} subclass.
  */
+@SuppressLint("ValidFragment")
 public class AuthorizationController extends Fragment {
 
     private EditText loginEditText, passwordEditText;
     private Button authorizationButton, registrationButton;
 
      private AuthorizationPresenter authorizationPresenter;
+     private MainActivity activity;
 
 
-    public AuthorizationController() {
+    public AuthorizationController(MainActivity activity) {
         // Required empty public constructor
+        this.activity = activity;
     }
 
 
@@ -47,20 +51,24 @@ public class AuthorizationController extends Fragment {
         passwordEditText = view.findViewById(R.id.password);
         authorizationButton = view.findViewById(R.id.authorization_button);
         registrationButton = view.findViewById(R.id.authorization_registration_button);
+        activity.hideBottomNavigationView(activity.bottomNavigationView);
+
         return view;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        MainActivity activity = (MainActivity) getActivity();
+
+//        activity.bottomNavigationView.setVisibility(View.INVISIBLE);
+//        activity = (MainActivity) getActivity();
         authorizationPresenter = new AuthorizationPresenter(activity);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onStart() {
-        MainActivity activity = (MainActivity) getActivity();
         activity.hideBottomNavigationView(activity.bottomNavigationView);
+
         //кнопка для регистрации, перекидывает на фрагмент для регистрации
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,4 +99,9 @@ public class AuthorizationController extends Fragment {
         super.onStart();
     }
 
+    @Override
+    public void onResume() {
+
+        super.onResume();
+    }
 }

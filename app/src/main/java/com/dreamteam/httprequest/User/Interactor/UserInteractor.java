@@ -29,13 +29,13 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 
     public final static String TAG = "UserInteractor";
 
-    ConstantConfig constantConfig = new ConstantConfig();
+    private ConstantConfig constantConfig = new ConstantConfig();
 
-    HTTPConfig config = new HTTPConfig();
+    private HTTPConfig config = new HTTPConfig();
 
-    HTTPManager httpManager = HTTPManager.get();
+    private HTTPManager httpManager = HTTPManager.get();
 
-    HTTPConfig httpConfig = new HTTPConfig();
+    private HTTPConfig httpConfig = new HTTPConfig();
 
     private PresenterUserInterface delegate;
 
@@ -55,7 +55,6 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         }).start();
     }
 
-
     public void postUser(String name, String surname) {//--------------отправка post-запроса на сервер
         final User user = createUser(name, surname);
         Gson gson = new Gson();
@@ -73,8 +72,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         }).start();
     }
 
-
-    public void getAfterPostUser(byte[] byteArray) {
+    private void getAfterPostUser(byte[] byteArray) {
         final User user = createUserOfBytes(byteArray);
         String path = config.serverURL + config.SERVER_GETTER + config.reqUser + httpConfig.ID_PARAM + user.id;
         httpManager.getRequest(path, constantConfig.USER_TYPE, UserInteractor.this);
@@ -101,10 +99,9 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     }
 
     //открытие окна профиля после получения ответа
-    public void getUserEditResponse(){
+    private void getUserEditResponse(){
         delegate.openUser ();
     }
-
 
     @Override
     public void error(Throwable t) {//--------------------------------------------------------------Обработка ошибки
@@ -125,7 +122,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     }
 
 
-    public void getUserResponse(byte[] byteArray) {//----------------------------------------------получение json ответа, преобразование его в User и вывод в основной поток
+    private void getUserResponse(byte[] byteArray) {//----------------------------------------------получение json ответа, преобразование его в User и вывод в основной поток
         Log.i("UserInteractor", "jsonString");
         try {
             final User user = createUserOfBytes(byteArray);
@@ -152,7 +149,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     }
 
 
-    public void getImageResponse(User user) {//------------------------------------------------------получение картинки
+    private void getImageResponse(User user) {//------------------------------------------------------получение картинки
         try {
             String imageUrl = config.serverURL + config.SERVER_GETTER + user.content.mediaData.image;
             //Log.i(TAG, "Поток " + Thread.currentThread().getName());
@@ -195,11 +192,9 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
             };
             mainHandler.post(myRunnable);
         }
-
-
     }
 
-    public void getImage(byte[] byteArray) {//-------------------------------------------------------получение картинки(преобразование в bitmap)
+    private void getImage(byte[] byteArray) {//-------------------------------------------------------получение картинки(преобразование в bitmap)
         if(byteArray != null) {
             final Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
@@ -215,10 +210,9 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         }
     }
 
-    public void getGroups (String userId){
+    private void getGroups(String userId){
         final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqGroup +
                 httpConfig.reqUser + httpConfig.USER_ID_PARAM + userId;
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -237,8 +231,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     private User createUserOfBytes(byte[] byteArray){
         Gson gson = new Gson();
         String jsonString = new String(byteArray);
-        final User user = gson.fromJson(jsonString, User.class);
-        return user;
+        return gson.fromJson(jsonString, User.class);
     }
 
     private ArrayList<Group> createGroupsOfBytes (byte[] byteArray){//----------------------создание массива групп из массива байтов
@@ -248,7 +241,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     }
 
     //запрос на изменение объекта
-    public void putUser(final User user, final Bitmap bitmap){//------------------------------------Отправка User
+    public void putUser(final User user, final Bitmap bitmap){
         final RequestInfo requestInfo = getRequestInfo(user);
         final String urlPath = config.serverURL + config.SERVER_SETTER + config.reqUser;
         new Thread(new Runnable() {

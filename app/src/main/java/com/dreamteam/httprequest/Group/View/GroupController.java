@@ -2,7 +2,6 @@ package com.dreamteam.httprequest.Group.View;
 
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,7 +23,6 @@ import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.Group.Presenter.GroupPresenter;
 import com.dreamteam.httprequest.Group.Protocols.GroupViewInterface;
-import com.dreamteam.httprequest.GroupList.Protocols.GroupsViewInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
@@ -55,12 +53,10 @@ public class GroupController extends Fragment implements GroupViewInterface {
         groupID = id;
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View view = inflater.inflate(R.layout.fragment_group_controller, container, false);
         titleTextView = view.findViewById(R.id.group_title_text_view);
         descriptionTextView = view.findViewById(R.id.group_description_text_view);
@@ -73,18 +69,16 @@ public class GroupController extends Fragment implements GroupViewInterface {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         activity = (MainActivity) getActivity();
         groupPresenter = new GroupPresenter(this, activity);
-        setHasOptionsMenu(true);
-
         Log.i("ControllerGROUP", "ONCreate");
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
     }
 
     @Override
     public void onStart() {
         Log.i("ControllerGROUP", "ONStart");
-        super.onStart();
         groupPresenter.getGroup(groupID);
+        super.onStart();
 
         membersRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
@@ -106,13 +100,17 @@ public class GroupController extends Fragment implements GroupViewInterface {
         titleTextView.setText(group.content.simpleData.title);
         descriptionTextView.setText(group.content.simpleData.description);
         activity.setActionBarTitle(group.content.simpleData.title);
-//        ab = activity.getActionBar();
-//        ab.setTitle(group.content.simpleData.title);
+        rules = group.rules;
     }
 
     @Override
     public void error(String error) {
 
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
     }
 
     @SuppressLint("SetTextI18n")
@@ -129,7 +127,9 @@ public class GroupController extends Fragment implements GroupViewInterface {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (rules == 7) {
-            inflater.inflate(R.menu.group_profile_controller_menu, menu);
+            inflater.inflate(R.menu.group_profile_rules7_controller_menu, menu);
+        } else if (rules == 1) {
+            inflater.inflate(R.menu.group_profile_rules1_controller_menu, menu);
         } else {
             setHasOptionsMenu(false);
         }
@@ -191,6 +191,4 @@ public class GroupController extends Fragment implements GroupViewInterface {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 }

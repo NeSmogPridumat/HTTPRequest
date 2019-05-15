@@ -2,19 +2,25 @@ package com.dreamteam.httprequest;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Camera;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +28,9 @@ import android.widget.Toast;
 
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -149,6 +158,7 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
     }
 
     // Получние результатов интента
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -165,25 +175,43 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
 
         } else if (requestCode == dialogConfig.GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
             //получаем Bitmap из интента (data.getData())
-//            bitmap = BitmapFactory.decodeFile(data.getData().getEncodedPath().toString());
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(
                         this.getActivity().getContentResolver(), data.getData());
+
+                //извлекаем путь к картинке
+                Uri selectedImageUri = data.getData();
+                int orientation = getOrientation(getContext(), selectedImageUri);
+
+                //Создаем Matrix, вносим данные о повороте на нужное кол-во градусов и применяем к bitmap
+                Matrix matrix = new Matrix();
+                matrix.postRotate(orientation);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+
+                //отпавляем Bitmap в делегат
+                delegate.forResult(bitmap);
+
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
-            //отпавляем Bitmap в делегат
-            delegate.forResult(bitmap);
         }
-//        else if (requestCode == dialogGonfig.CAMERA_REQUEST_CODE && resultCode == RESULT_OK){
-//// перобразуем сделанное фото в Bitmap
-//            Bitmap thumbnailBitmap = (Bitmap) data.getExtras().get("data");
-//
-//            //отправляем Bitmap в делегат
-//            delegate.forResult(thumbnailBitmap);
-//        }
+
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+    }
+
+    //Получение ориетации картинки
+    private static int getOrientation(Context context, Uri photoUri) {
+        Cursor cursor = context.getContentResolver().query(photoUri, new String[]{MediaStore.Images.ImageColumns.ORIENTATION}, null, null, null);
+        if (cursor.getCount() != 1) {
+            cursor.close();
+            return -1;
+        }
+        cursor.moveToFirst();
+        int orientation = cursor.getInt(0);
+        cursor.close(); cursor = null;
+        return orientation;
     }
 }
 

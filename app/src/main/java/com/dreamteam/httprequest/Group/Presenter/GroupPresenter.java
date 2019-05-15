@@ -3,11 +3,13 @@ package com.dreamteam.httprequest.Group.Presenter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
 import com.dreamteam.httprequest.Data.AddData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
+import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.Group.GroupRouter;
 import com.dreamteam.httprequest.Group.Interactor.GroupInteractor;
@@ -27,14 +29,8 @@ public class GroupPresenter implements GroupPresenterInterface {
     private GroupInteractor groupInteractor = new GroupInteractor(this);
     private String groupID;
     private String userID;
-    private int rules;
     private ConstantConfig constantConfig = new ConstantConfig();
     private MainActivity activity;
-
-    private final String ADD = "Add";
-    private final String DELETE = "Delete";
-    private final String ADMIN = "Admin";
-
 
     public GroupPresenter(GroupViewInterface delegate, MainActivity activity){
         this.delegate = delegate;
@@ -73,7 +69,7 @@ public class GroupPresenter implements GroupPresenterInterface {
 
     @Override
     public void answerGetMembersForList(ArrayList<ObjectData> arrayList) {
-        router.showMembersList(arrayList, this, "User");
+        router.showMembersList(arrayList, this, constantConfig.USER_TYPE);
     }
 
 
@@ -87,20 +83,20 @@ public class GroupPresenter implements GroupPresenterInterface {
         router.showSelectList(selectData, this, type);
     }
 
-
     @Override
     public void openGroupsList() {
         router.openGroupsList();
+//        Toast.makeText(activity, "Группа будет удалена после согласия создателя группы", Toast.LENGTH_LONG).show();
     }
 
     @Override
-    public void answerAddGroup(Group group) {
-        router.openGroup(group.id, group.rules);
+    public void answerAddGroup(EventType4 event) {
+        groupInteractor.getGroupAfterEdit(event.data.groupCreatorID, userID);
     }
 
     @Override
     public void openGroupAfterSelect() {
-        router.openGroupAfterSelect(groupID, rules);
+        router.openGroupAfterSelect(groupID, 7);
     }
 
     @Override public void backPress() {
@@ -110,6 +106,11 @@ public class GroupPresenter implements GroupPresenterInterface {
     @Override
     public void answerStartVoited() {
         delegate.answerStartVoited();
+    }
+
+    @Override
+    public void answerGetGroupAfterEdit(Group group) {
+        router.openGroup(group.id, group.rules);
     }
 
     public void openGroup(Group group, Router myRouter, Context context) {
@@ -127,12 +128,17 @@ public class GroupPresenter implements GroupPresenterInterface {
     @Override
     public void inputSelect(ArrayList<SelectData> arrayList, String type) {
         Log.i("F", "to respect");
-        if (type.equals(ADD)){
+        if (type.equals(constantConfig.ADD)){
             groupInteractor.addSelectUser(arrayList, groupID, userID);
-        } else if (type.equals(DELETE)){
+        } else if (type.equals(constantConfig.DELETE)){
             groupInteractor.deleteSelectUser(arrayList, groupID, userID);
-        } else if (type.equals(ADMIN)){
-
+        } else if (type.equals(constantConfig.ADMIN)){
+            RequestInfo requestInfo = new RequestInfo();
+            requestInfo.groupID = groupID;
+            requestInfo.groupCreatorID = groupID;
+            requestInfo.creatorID = userID;
+            requestInfo.userID = arrayList.get(0).id;
+            groupInteractor.addAdmin(requestInfo);
         }
     }
 
@@ -144,7 +150,7 @@ public class GroupPresenter implements GroupPresenterInterface {
         RequestInfo requestInfo = new RequestInfo();
         requestInfo.groupCreatorID = groupID;
         requestInfo.creatorID = activity.userID;
-        router.showAddGroup(null, requestInfo,this, "Group");
+        router.showAddGroup(null, requestInfo,this, constantConfig.ADD_GROUP_TYPE);
     }
 
     public void showEditGroup(RequestInfo requestInfo, Bitmap bitmap){
@@ -153,12 +159,11 @@ public class GroupPresenter implements GroupPresenterInterface {
         infoProfileData.title = requestInfo.addData.content.simpleData.title;
         infoProfileData.description = requestInfo.addData.content.simpleData.description;
         requestInfo.addData.id = groupID;
-        router.showAddGroup(infoProfileData, requestInfo, this, "Group");
+        router.showAddGroup(infoProfileData, requestInfo, this, constantConfig.EDIT_GROUP_TYPE);
 
     }
 
     public void addAdmin(){
-//        router.addAdminSelect();
         groupInteractor.checkListAddAdmin();
     }
 
@@ -182,14 +187,24 @@ public class GroupPresenter implements GroupPresenterInterface {
     }
 
     @Override
-    public void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo) {
-        Bitmap bitmap = infoProfileData.imageData;
-        requestInfo.addData = new AddData();
-        requestInfo.addData.content.simpleData.title = infoProfileData.title;
-        requestInfo.addData.content.simpleData.description = infoProfileData.description;
-        requestInfo.groupID = groupID;
-        requestInfo.groupCreatorID = null;
-        groupInteractor.addOrEditGroup(bitmap, requestInfo);
+    public void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo, String type) {
+        if (type.equals(constantConfig.EDIT_GROUP_TYPE)) {
+            Bitmap bitmap = infoProfileData.imageData;
+            requestInfo.addData = new AddData();
+            requestInfo.addData.content.simpleData.title = infoProfileData.title;
+            requestInfo.addData.content.simpleData.description = infoProfileData.description;
+            requestInfo.addData.id = groupID;
+            requestInfo.groupCreatorID = groupID;
+            groupInteractor.editGroupPut(bitmap, requestInfo);
+        }else if(type.equals(constantConfig.ADD_GROUP_TYPE)){
+            Bitmap bitmap = infoProfileData.imageData;
+            requestInfo.addData = new AddData();
+            requestInfo.addData.content.simpleData.title = infoProfileData.title;
+            requestInfo.addData.content.simpleData.description = infoProfileData.description;
+            requestInfo.creatorID = userID;
+            requestInfo.groupCreatorID = groupID;
+            groupInteractor.addSubGroup(bitmap, requestInfo);
+        }
     }
 
     public void exitGroup(RequestInfo requestInfo){

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.GroupList.View.RecyclerItemClickListener;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
@@ -31,24 +32,20 @@ import java.util.ArrayList;
 @SuppressLint("ValidFragment")
 public class SelectedListController extends Fragment implements SelectListViewController {
 
-    ArrayList<SelectData> listObject = new ArrayList<>();
-    String type;
-    final String ADD = "Add";
-    final String DELETE = "Delete";
-    final String ADMIN = "Admin";
+    private ArrayList<SelectData> listObject;
+    private String type;
     private final String TAG = "SelectListController";
 
     private RecyclerView selectRecyclerView;
-    MainActivity activity;
+    private MainActivity activity;
 
     private SelectAdapter adapter;
-    SelectListPresenter selectListPresenter;
+    private SelectListPresenter selectListPresenter;
     private PresenterInterface delegate;
+    private ConstantConfig constantConfig = new ConstantConfig();
 
     MenuInflater inflater;
     Menu menu;
-
-    private SelectData selectData;
 
     //Передаем конструктуру список и тип действия (удалить, добавить)
     public SelectedListController(ArrayList<SelectData> arrayList, PresenterInterface delegate, String type) {
@@ -63,9 +60,7 @@ public class SelectedListController extends Fragment implements SelectListViewCo
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         View view = inflater.inflate(R.layout.fragment_selected_list_controller, container, false);
-
         selectRecyclerView = view.findViewById(R.id.selected_recycler_view);
         selectRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return view;
@@ -76,7 +71,6 @@ public class SelectedListController extends Fragment implements SelectListViewCo
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         activity = (MainActivity) getActivity();
-
         adapter = new SelectAdapter(listObject);
         selectListPresenter = new SelectListPresenter(this, activity);
         activity.setActionBarTitle(type);
@@ -88,13 +82,13 @@ public class SelectedListController extends Fragment implements SelectListViewCo
         this.inflater = inflater;
         this.menu = menu;
         super.onCreateOptionsMenu(menu, inflater);
-        if (type.equals(ADD)) {
+        if (type.equals(constantConfig.ADD)) {
             //если полученный тип Add (будем что-то куда-то добавлять) то в ActionBar будет кнопка "+"
             inflater.inflate(R.menu.add_select_list_controller, menu);
-        } else if (type.equals(DELETE)){
+        } else if (type.equals(constantConfig.DELETE)){
             //если тип Delete, будет корзина
             inflater.inflate(R.menu.delete_select_list_controller, menu);
-        } else if (type.equals(ADMIN)){
+        } else if (type.equals(constantConfig.ADMIN)){
             inflater.inflate(R.menu.one_change_select_list, menu);
         }
     }
@@ -102,65 +96,31 @@ public class SelectedListController extends Fragment implements SelectListViewCo
     //при нажатии на корзину, собираем список выбранных элементов и отправляем в презентер
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         ArrayList<SelectData> selectData = new ArrayList<>();
-
         //циклом формируем список (все у кого checkBox - true)
         for (int i = 0; i < listObject.size(); i++) {
             if (listObject.get(i).check) {
                 selectData.add(listObject.get(i));
             }
         }
-
         switch (item.getItemId()) {
-
-
-
             //если нажата кнопка remove, список отправляется на удаление
             case R.id.remove_select_list_edit:
-                //ArrayList<SelectData> deleteSelect = new ArrayList<>();
-                //
-                ////циклом формируем список на удаление (все у кого checkBox - true)
-                //for (int i = 0; i < listObject.size(); i++) {
-                //    if (listObject.get(i).check) {
-                //        deleteSelect.add(listObject.get(i));
-                //    }
-                //}
-
                 //отправляем на удаление собранный список
                 selectListPresenter.inputSelect(delegate, selectData, type);
-
                 break;
-
             case R.id.add_user_in_group:
-                //ArrayList<SelectData> addSelect = new ArrayList<>();
-                //
-                ////циклом формируем список на удаление (все у кого checkBox - true)
-                //for (int i = 0; i < listObject.size(); i++) {
-                //    if (listObject.get(i).check) {
-                //        addSelect.add(listObject.get(i));
-                //    }
-                //}
 
                 //отправляем на удаление собранный список
                 selectListPresenter.inputSelect(delegate, selectData, type);
                 break;
 
             case R.id.one_select_list_edit:
-                //ArrayList<SelectData> adminSelect = new ArrayList<>();
-                //
-                ////циклом формируем список на удаление (все у кого checkBox - true)
-                //for (int i = 0; i < listObject.size(); i++) {
-                //    if (listObject.get(i).check) {
-                //        adminSelect.add(listObject.get(i));
-                //    }
-                //}
 
                 //отправляем на удаление собранный список
                 selectListPresenter.inputSelect(delegate, selectData, type);
-
-                break;        }
-
+                break;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -170,7 +130,7 @@ public class SelectedListController extends Fragment implements SelectListViewCo
         selectRecyclerView.setAdapter(adapter);
 
         //вешаем слушатель на список (меняем занчение check)
-        if (type.equals(ADMIN)){
+        if (type.equals(constantConfig.ADMIN)){
             selectRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), selectRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
@@ -179,7 +139,6 @@ public class SelectedListController extends Fragment implements SelectListViewCo
                     }
                     listObject.get(position).check = !listObject.get(position).check;
                     adapter.notifyDataSetChanged();
-                    selectData = listObject.get(position);
                 }
 
                 @Override

@@ -2,7 +2,6 @@ package com.dreamteam.httprequest.EventList.Presenter;
 
 import android.util.Log;
 
-import com.dreamteam.httprequest.Event.Entity.EventType12.Event;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.EventList.EventListRouter;
 import com.dreamteam.httprequest.EventList.Interactor.EventListInteractor;

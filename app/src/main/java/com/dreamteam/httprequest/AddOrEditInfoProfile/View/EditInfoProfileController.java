@@ -7,6 +7,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Presenter.EditInfoProfilePresenter;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Protocols.EditInfoProfileViewInterface;
 import com.dreamteam.httprequest.Data.AddData;
+import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
@@ -33,7 +35,6 @@ import com.dreamteam.httprequest.R;
 @SuppressLint("ValidFragment")
 public class EditInfoProfileController extends Fragment implements EditInfoProfileViewInterface {
 
-    private Bitmap bitmap;
     private EditText titleEditTextView, descriptionEditTextView;
     private TextView titleTextView, descriptionTextView;
     private Button saveButton;
@@ -44,9 +45,8 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
 
     private EditInfoProfilePresenter editProfilePresenter;
     private PresenterInterface delegate;
-    private RequestInfo requestInfo = new RequestInfo();
-
-
+    private RequestInfo requestInfo;
+    private ConstantConfig constantConfig = new ConstantConfig();
 
     public EditInfoProfileController(InfoProfileData infoProfileData, RequestInfo requestInfo, PresenterInterface delegate, String type) {
         // Required empty public constructor
@@ -71,13 +71,12 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
         saveButton = view.findViewById(R.id.save_profile_info_button);
 
         //если один тип - задаем один вариант отображения вью, если другой тип  - другой
-        if (type.equals("User")){
+        if (type.equals(constantConfig.USER_TYPE)){
             titleTextView.setText(R.string.name);
             titleEditTextView.setHint(R.string.enter_new_name);
             descriptionTextView.setText(R.string.surname);
             descriptionEditTextView.setHint(R.string.enter_new_surname);
-        } else if (type.equals("Group")){
-
+        } else if (type.equals(constantConfig.ADD_GROUP_TYPE) || type.equals(constantConfig.EDIT_GROUP_TYPE)){
             titleTextView.setText(R.string.title);
             titleEditTextView.setHint(R.string.enter_new_title);
             descriptionTextView.setText(R.string.description);
@@ -96,7 +95,6 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
         }else {
             infoProfileData = new InfoProfileData();
         }
-
         return view;
     }
 
@@ -109,7 +107,6 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
 
     @Override
     public void onStart() {
-
         //слушатель на ImageView и вызов диалогового окна
         editImageView.setOnClickListener(new View.OnClickListener() {//слушатель нажатия на ImageView
             @Override
@@ -139,7 +136,7 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
                         infoProfileData.imageData = null;
                     }
                     //отправка данных на изменение
-                    delegate.editInfo(infoProfileData, requestInfo);
+                    delegate.editInfo(infoProfileData, requestInfo, type);
                 }
             }
         });
@@ -151,5 +148,4 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
     public void forResult(Bitmap bitmap) {
         editImageView.setImageBitmap(bitmap);
     }
-
 }

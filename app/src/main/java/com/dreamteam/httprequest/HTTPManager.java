@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class HTTPManager {
 
@@ -106,7 +107,7 @@ public class HTTPManager {
                 errorHanding(responseCode, delegate);
             }
         } catch (Exception error){
-            Log.e(TAG,  error.getMessage().toString());
+            Log.e(TAG,  error.getMessage());
         }
         return result;
     }
@@ -121,7 +122,7 @@ public class HTTPManager {
         delegate.errorHanding(responseCode);
     }
 
-    //---------------------------------------RESPONCE------------------------------------------------//
+    //---------------------------------------RESPONSE------------------------------------------------//
 
     private void prepareResponce(HttpURLConnection httpURLConnection, String type, OutputHTTPManagerInterface delegate){
         byte [] byteArray = null;
@@ -181,7 +182,9 @@ public class HTTPManager {
 
     public void setBodyRequest(String object, HttpURLConnection httpURLConnection) throws IOException {
         DataOutputStream out = new DataOutputStream(httpURLConnection.getOutputStream());
-        out.writeBytes(object);
+        byte[] utf8JsonString = object.getBytes(StandardCharsets.UTF_8);
+        out.write(utf8JsonString, 0, utf8JsonString.length);
+//        out.writeBytes(object);
         out.flush();
         out.close();
     }

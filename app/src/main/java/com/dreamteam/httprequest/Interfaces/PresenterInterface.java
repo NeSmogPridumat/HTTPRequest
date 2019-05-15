@@ -13,5 +13,5 @@ public interface PresenterInterface  {
     void answerDialog(int i);
     void forResult(Bitmap bitmap);
     void inputSelect(ArrayList<SelectData> arrayList, String type);
-    void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo);
+    void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo, String type);
 }

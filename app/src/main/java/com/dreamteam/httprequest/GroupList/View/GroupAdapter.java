@@ -1,12 +1,9 @@
 package com.dreamteam.httprequest.GroupList.View;
 
 import android.animation.ObjectAnimator;
-import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseArray;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +12,11 @@ import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.R;
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupHolder>{
-    public ArrayList<Group> groupCollection;
-    ArrayList<GroupHolder> groupHolders = new ArrayList<>();
-//    SparseBooleanArray checkArray = new SparseBooleanArray();
+    ArrayList<Group> groupCollection;
+    private ArrayList<GroupHolder> groupHolders = new ArrayList<>();
 
 
     public GroupAdapter(ArrayList<Group> groupCollection){
@@ -36,7 +32,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder>{
             }
             notifyItemChanged(i);
         }
-//        notifyDataSetChanged();
     }
 
     @NonNull
@@ -53,11 +48,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder>{
     public void onBindViewHolder(@NonNull GroupHolder groupsHolder, int i) {
         Group group = groupCollection.get(i);
         groupsHolder.bindGroup(group);
-//        if(checkArray.valueAt(i)){
-//            groupsHolder.checkBox.setChecked(checkArray.get(i));
-//        } else{
-//            groupsHolder.checkBox.setChecked(false);
-//        }
     }
 
     @Override
@@ -75,16 +65,11 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder>{
             ObjectAnimator animator = ObjectAnimator.ofFloat(groupHolders.get(i).linearLayout, "translationX", 100f);
             animator.setDuration(500);
             animator.start();
-//            notifyItemRangeChanged(0, groupCollection.size());
-//            notifyItemChanged(i);
         }
-//        notifyItemRangeChanged();
-//        notifyDataSetChanged();
-//        notifyItemRangeChanged(0, groupCollection.size());
     }
 
     //анимация сдвига holder'ов влево
-    public void animationBack(){
+    void animationBack(){
 
         for (int i = 0; i < groupHolders.size(); i++) {
             ObjectAnimator animator = ObjectAnimator.ofFloat(groupHolders.get(i).linearLayout, "translationX", 0f);

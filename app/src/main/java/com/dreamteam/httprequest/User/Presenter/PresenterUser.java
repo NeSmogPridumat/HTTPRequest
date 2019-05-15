@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.MainActivity;
@@ -21,11 +22,10 @@ public class PresenterUser implements PresenterUserInterface {
 
     public ViewUserInterface delegate;
     public MainActivity activity;
-    public Router router;
+    private Router router;
 
-    private String type = "User";
-
-    UserInteractor userInteractor = new UserInteractor(this);
+    private UserInteractor userInteractor = new UserInteractor(this);
+    private ConstantConfig constantConfig = new ConstantConfig();
 
     public PresenterUser(ViewUserInterface delegate, MainActivity activity){
         this.delegate = delegate;
@@ -69,7 +69,7 @@ public class PresenterUser implements PresenterUserInterface {
             objectData.image = groups.get(i).content.mediaData.image;
             objectDataArrayList.add(objectData);
         }
-        router.openGroupList(objectDataArrayList, this,"Group");
+        router.openGroupList(objectDataArrayList, this,constantConfig.GROUP_TYPE);
 
     }
 
@@ -89,7 +89,7 @@ public class PresenterUser implements PresenterUserInterface {
         infoProfileData.title = user.content.simpleData.name;
         infoProfileData.description = user.content.simpleData.surname;
         infoProfileData.imageData = bitmap;
-        router.showEditInfoProfile(infoProfileData,this, type);
+        router.showEditInfoProfile(infoProfileData,this, constantConfig.USER_TYPE);
      }
 
     @Override
@@ -114,7 +114,7 @@ public class PresenterUser implements PresenterUserInterface {
 
     //получение измененных данных и отпрака их в Interactor
     @Override
-    public void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo) {
+    public void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo, String type) {
         User user = new User();
         user.id = infoProfileData.id;
         user.content.simpleData.name = infoProfileData.title;

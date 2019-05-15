@@ -36,26 +36,18 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
     //TODO: не забудь перенести обработчик клика в проект (class RecyclerItemClickListener и обработка outputGroupsView)
 
     private RecyclerView groupsRecyclerView;
-
     private GroupAdapter adapter;
-
-    MainActivity activity;
-
+    private MainActivity activity;
     public GroupsPresenter groupsPresenter;
     MenuInflater inflater;
     Menu menu;
 
     private String userID;
-
-//    SparseBooleanArray checkedArray = new SparseBooleanArray();
-
-    boolean deleteOn;
-
+    private boolean deleteOn;
     private ArrayList<Group> groups = new ArrayList<>();
 
     public GroupsListFragment(String userID) {
         this.userID = userID;
-
     }
 
     @Override
@@ -64,9 +56,9 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
         View view = inflater.inflate(R.layout.fragment_groups_list, container, false);
         groupsRecyclerView = view.findViewById(R.id.groups_recycler_view);
         groupsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        groupsRecyclerView.setAdapter(adapter);
         groupsPresenter.getGroups(userID);//здесь ID User'а
         return view;
-
     }
 
     @Override
@@ -103,18 +95,6 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
             case R.id.add_item_edit:
                 groupsPresenter.showAddGroup();
                 break;
-
-//            case R.id.remove_select_list_edit:
-//                ArrayList<Group> deleteGroups = new ArrayList<>();
-//               if (deleteOn){
-//                   for (int i = 0; i < adapter.groupCollection.size()-1; i++){
-//                       if (checkedArray.valueAt(i) == true){
-//                           deleteGroups.add(adapter.groupCollection.get(i));
-//                       }
-//                   }
-//                   groupsPresenter.deleteGroups (deleteGroups);
-//               }
-//               break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -124,8 +104,6 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
         groups = groupCollection;
         adapter.groupCollection = groupCollection;
         groupsRecyclerView.setAdapter(adapter);
-        final Context context = getContext();
-
 
         //TODO: внедрить измененное состояние для флажка и синхронизировать недавно обновленное состояние с флагом isChecked текущего объекта. Когда вы связываете свой держатель вида, проверьте, является ли флаг истинным или ложным, и обновите макет в соответствии с флагом.
         groupsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), groupsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
@@ -133,7 +111,6 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
             public void onItemClick(View view, int position) {
                 groupsPresenter.openGroup (groupCollection.get(position).id, groupCollection.get(position).rules);
             }
-
 
             @Override
             public void onLongItemClick(View view, int position) {
@@ -166,7 +143,6 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
 
     @Override
     public void onBackPressed() {
-//        deleteOn = false;
         adapter.animationBack();
         menu.clear();
         inflater.inflate(R.menu.group_list_controller, menu);

@@ -44,9 +44,8 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
 
         pi = intent.getParcelableExtra("Pending");
 
-
         final Handler handler = new Handler();
-        final int delay = 3000; //milliseconds
+        final int delay = 5000; //milliseconds
 
         handler.postDelayed(new Runnable(){
             public void run(){
@@ -65,8 +64,6 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
                 handler.postDelayed(this, delay);
             }
         }, delay);
-
-
         return super.onStartCommand(intent, flags, startId);
     }
 

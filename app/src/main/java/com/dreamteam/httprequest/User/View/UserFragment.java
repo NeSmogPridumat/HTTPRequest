@@ -59,7 +59,6 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         groupTitle = view.findViewById(R.id.group_title);
         userImage = view.findViewById(R.id.user_image);
         groupsRadioButton = view.findViewById(R.id.radio_button_groups);
-
         return view;
     }
 
@@ -68,8 +67,9 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         super.onCreate(savedInstanceState);
 
         activity = (MainActivity) getActivity();
-        setHasOptionsMenu(true);
-
+        if (userID.equals(activity.userID)) {
+            setHasOptionsMenu(true);
+        }
         presenterUser = new PresenterUser(this, activity);
     }
 

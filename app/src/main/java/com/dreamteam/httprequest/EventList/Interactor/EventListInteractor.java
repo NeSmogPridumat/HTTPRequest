@@ -5,21 +5,16 @@ import android.os.Looper;
 import android.util.Log;
 
 import com.dreamteam.httprequest.Data.ConstantConfig;
-import com.dreamteam.httprequest.Event.Entity.ChangeEvent.EventChoice;
-import com.dreamteam.httprequest.Event.Entity.EventType12.Event;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.EventList.Protocols.EventListFromHTTPManagerInterface;
 import com.dreamteam.httprequest.EventList.Protocols.EventListPresenterInterface;
 import com.dreamteam.httprequest.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class EventListInteractor implements EventListFromHTTPManagerInterface {
@@ -76,9 +71,6 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
                         }
                     };
                     mainHandler.post(myRunnable);
-
-//                ArrayList<Event> grs = groupCollection;
-//                getImageRequest(grs);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -96,17 +88,13 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
             list.add(jsonArray.getString(i));
         }
 
-//            Type type =  new TypeToken<EventChoice>(){}.getType();
         ArrayList<EventType4> events = new ArrayList<>();
         for (int i = 0; i < jsonArray.length(); i++){
             if(!(jsonArray.get(i).equals("null"))) {
-                EventChoice eventChoice = gson.fromJson((list.get(i)), EventChoice.class);
-//                if (eventChoice != null && eventChoice.response.type == 4) {
-                    EventType4 event = gson.fromJson((list.get(i)), new TypeToken<EventType4>() {}.getType());
-                    events.add(event);
-                    Log.i("FFFF", Integer.toString(i));
-                }
-//            }
+                EventType4 event = gson.fromJson((list.get(i)), new TypeToken<EventType4>() {}.getType());
+                events.add(event);
+                Log.i("FFFF", Integer.toString(i));
+            }
         }
         return events;
     }

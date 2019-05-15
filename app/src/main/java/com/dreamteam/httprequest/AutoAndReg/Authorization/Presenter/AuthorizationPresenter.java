@@ -35,7 +35,7 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
     //ответ создания логина, если true, открываем контроллер для ввода ключа
     @Override
     public void answerCreateLogin(boolean answer, AuthDataObject authDataObject) {
-        if (answer == true ) {
+        if (answer) {
             router.getKeyLogin(authDataObject);
         }
     }
@@ -43,7 +43,7 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
     //если ответ true открываем фрагмент для изменения и добавления данных
     @Override
     public void answerEnableUserAuth(boolean answer, AuthDataObject authDataObject) {
-        if (answer == true ) {
+        if (answer) {
             router.createUserToAuth(authDataObject, this);
         }
     }
@@ -85,7 +85,7 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
 
     //получаем измененные данные
     @Override
-    public void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo) {
+    public void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo, String type) {
         authDataObject = router.getAuthDataObject();
         authorizationInteractor.createUserToAuth(infoProfileData, authDataObject);
     }

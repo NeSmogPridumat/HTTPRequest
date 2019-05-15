@@ -1,6 +1,7 @@
 package com.dreamteam.httprequest.AutoAndReg.Authorization;
 
 import android.content.Context;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -45,6 +46,7 @@ public class AuthorizationRouter {
     public void getUserID(String userID){
         activity.userID = userID;
         activity.saveSharedPreferences(userID);
+        activity.bottomNavigationView.setVisibility(View.VISIBLE);
         activity.showBottomNavigationView(activity.bottomNavigationView);
         activity.openProfile();
     }

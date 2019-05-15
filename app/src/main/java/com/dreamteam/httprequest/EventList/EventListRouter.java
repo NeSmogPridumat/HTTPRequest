@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.EventList;
 
-import com.dreamteam.httprequest.Event.Entity.EventType12.Event;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.MainActivity;
 
@@ -13,6 +12,10 @@ public class EventListRouter {
     }
 
     public void openEvent(EventType4 event){
-        activity.openEvent(event);
+        if (event.response.type != 4) {
+            activity.openEventType12(event);
+        }else{
+            activity.openEventType4(event);
+        }
     }
 }

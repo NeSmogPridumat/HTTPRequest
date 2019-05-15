@@ -10,13 +10,13 @@ import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.View.EditInfoProfileController;
@@ -25,7 +25,6 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.View.AuthorizationCont
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.KeyRegistrationController;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.RegistrationController;
 import com.dreamteam.httprequest.Data.RequestInfo;
-import com.dreamteam.httprequest.Event.Entity.EventType12.Event;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.Event.View.EventController;
 import com.dreamteam.httprequest.Event.View.EventType4Controller;
@@ -47,7 +46,6 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements ActivityAction {
 
-    GroupController groupController;
     SharedPreferences sharedPreferences;
     public TextView bottomNavigationTextView;
 
@@ -65,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
+
         bottomNavigationView.setOnNavigationItemSelectedListener(
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -74,12 +73,10 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
                         case R.id.activities:
                             clearMainActivity();
-                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AuthorizationController()).commit();
                             break;
 
                         case R.id.groups:
                             clearMainActivity();
-//                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new GroupsListFragment()).commit();
                             changeFragment(new GroupsListFragment(userID), null);
                             break;
 
@@ -98,10 +95,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
                 }
             });
 
-        bottomNavigationView.setSelectedItemId(R.id.activities);
         sharedPreferences = getPreferences(MODE_PRIVATE);
         userID = sharedPreferences.getString("userID", null);
-        boolean isStart = sharedPreferences.getBoolean("isStart", false);
         if (!(sharedPreferences.getString("userID", "").equals(""))){
             sharedPreferences.getString("userID", null);
             userID = sharedPreferences.getString("userID", null);
@@ -110,15 +105,24 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
             SharedPreferences.Editor e = sharedPreferences.edit();
             e.putBoolean("isStart", true);
             e.commit();
-            bottomNavigationView.setSelectedItemId(R.id.activities);
+            bottomNavigationView.setVisibility(View.INVISIBLE);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AuthorizationController(this)).commit();
         }
 
-//        startService(new Intent(this, EventService.class).putExtra("userID", userID));
-
+        // Создаем PendingIntent для Task1
+        Intent intent = new Intent(this, EventService.class);
+        PendingIntent pi = createPendingResult(1, intent, 0);
+        // Создаем Intent для вызова сервиса, кладем туда параметр времени
+        // и созданный PendingIntent
+        intent.putExtra("userID", userID)
+                .putExtra("Pending", pi);
+        // стартуем сервис
+        startService(intent);
     }
 
     @Override
     protected void onStart() {
+
         BottomNavigationMenuView bottomNavigationMenuView =
                 (BottomNavigationMenuView) bottomNavigationView.getChildAt(0);
         View v = bottomNavigationMenuView.getChildAt(2);
@@ -130,15 +134,6 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
         bottomNavigationTextView.setVisibility(View.INVISIBLE);
 
-        // Создаем PendingIntent для Task1
-        Intent intent = new Intent(this, EventService.class);
-        PendingIntent pi = createPendingResult(1, intent, 0);
-        // Создаем Intent для вызова сервиса, кладем туда параметр времени
-        // и созданный PendingIntent
-        intent.putExtra("userID", userID)
-                .putExtra("Pending", pi);
-        // стартуем сервис
-        startService(intent);
         super.onStart();
     }
 
@@ -157,22 +152,14 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
     public void changeFragment(Fragment fragment, String type) {
 
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
     }
 
     public void changeFragmentWitchBackstack(Fragment fragment, String type) {
 
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, type).addToBackStack(null).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, type).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit();
     }
-//    {
-//        creatorID : "asda",
-//        content : {
-//            simpleData : {
-//                title : " asd",
-//                description : "asdsa"
-//            }
-//    }
-//    }
+
     public void openGroup(String id,  int rules){
         GroupController controller = new GroupController(id,rules);
         changeFragmentWitchBackstack(controller, "");//TODO: задать в backstack
@@ -188,8 +175,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     }
 
     public void getGroup(String id, int rules) {
-        groupController = new GroupController(id, rules);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, groupController, null).addToBackStack(null).commit();
+        changeFragmentWitchBackstack(new GroupController(id, rules), null);
     }
 
 
@@ -252,6 +238,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     public void hideBottomNavigationView(BottomNavigationView view) {
         view.clearAnimation();
         view.animate().translationY(view.getHeight()).setDuration(300);
+
     }
 
     public void showBottomNavigationView(BottomNavigationView view) {
@@ -303,13 +290,15 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.commit();
-        bottomNavigationView.setSelectedItemId(R.id.activities);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AuthorizationController(this)).commit();
     }
 
-    public void openEvent (EventType4 event){
+    public void openEventType12 (EventType4 event){
+        changeFragmentWitchBackstack(new EventController(event), null);
+    }
 
-            changeFragmentWitchBackstack(new EventController(event), null);
-
+    public void openEventType4(EventType4 event){
+        changeFragmentWitchBackstack(new EventType4Controller(event), null);
     }
 
     public void openEventList (){
@@ -324,15 +313,16 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
             if(event.equals("0")){
                 bottomNavigationTextView.setVisibility(View.INVISIBLE);
             } else {
-                bottomNavigationTextView.setVisibility(View.VISIBLE);
                 bottomNavigationTextView.setText(event);
+                bottomNavigationTextView.setVisibility(View.VISIBLE);
             }
         }
     }
 
     @Override
     protected void onDestroy() {
-//        stopService()
+        Intent intent = new Intent(this, EventService.class);
+        stopService(intent);
         super.onDestroy();
     }
 }

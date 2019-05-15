@@ -71,7 +71,7 @@ public class EditInfoProfilePresenter implements PresenterInterface {
     }
 
     //отправка введенных данных на изменение
-    public void editInfo (InfoProfileData infoProfileData, RequestInfo requestInfo){
-        delegate.editInfo(infoProfileData, requestInfo);
+    public void editInfo (InfoProfileData infoProfileData, RequestInfo requestInfo, String type){
+        delegate.editInfo(infoProfileData, requestInfo, type);
     }
 }

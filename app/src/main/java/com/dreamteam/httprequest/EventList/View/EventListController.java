@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dreamteam.httprequest.Event.Entity.EventType12.Event;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.EventList.Presenter.EventListPresenter;
 import com.dreamteam.httprequest.EventList.Protocols.EventListViewInterface;
@@ -70,19 +69,17 @@ public class EventListController extends Fragment implements EventListViewInterf
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setHasOptionsMenu(true);
         activity = (MainActivity) getActivity();
 
         adapter = new EventAdapter(eventArrayList);
         nAdapter = new EventAdapter(eventArrayList);
         eventListPresenter = new EventListPresenter(this, activity);
-//        activity.setActionBarTitle(type);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onStart() {
-//        adapter.notifyDataSetChanged();
+        activity.setActionBarTitle("Event List");
         eventListPresenter.getEvents(userID);
         adapter.eventArrayList = eventArrayList;
         eventsRecyclerView.setAdapter(adapter);
@@ -91,7 +88,6 @@ public class EventListController extends Fragment implements EventListViewInterf
         eventsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), eventsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-//                objectListPresenter.openObjectProfile(arrayList.get(position), type);
                     eventListPresenter.openEvent(activeEvent.get(position));
             }
 
@@ -100,7 +96,6 @@ public class EventListController extends Fragment implements EventListViewInterf
 
             }
         }));
-//        getImage(arrayList);
         super.onStart();
     }
 
@@ -115,36 +110,12 @@ public class EventListController extends Fragment implements EventListViewInterf
                 notActiveEvent.add(eventArrayList.get(i));
             }
         }
-//        if (activeEvent.size() != 0) {
-//            activity.bottomNavigationTextView.setVisibility(View.VISIBLE);
-//            activity.bottomNavigationTextView.setText(Integer.toString(activeEvent.size()));
-//
-//        } else {
-//            activity.bottomNavigationTextView.setVisibility(View.INVISIBLE);
-//
-//        }
         this.eventArrayList = eventArrayList;
         adapter.eventArrayList = activeEvent;
         eventsRecyclerView.setAdapter(adapter);
 
         nAdapter.eventArrayList = notActiveEvent;
         noteventsRecyclerView.setAdapter(nAdapter);
-//        final Context context = getContext();
 
-//        eventsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), eventsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(View view, int position) {
-//
-//                MainActivity activityAction = (MainActivity) getActivity();
-//                activityAction = (MainActivity)context;
-//                eventListPresenter.openEvent(eventArrayList.get(position));
-//
-//            }
-//
-//            @Override
-//            public void onLongItemClick(View view, int position) {
-//
-//            }
-//        }));
     }
 }
