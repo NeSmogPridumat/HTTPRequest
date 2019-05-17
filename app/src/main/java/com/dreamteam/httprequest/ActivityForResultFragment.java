@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -8,30 +7,18 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Camera;
 import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static android.app.Activity.RESULT_OK;
@@ -72,7 +59,7 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
             photoPickerIntent.setType("image/*");
             startActivityForResult(photoPickerIntent, i);
         }else if (i == dialogConfig.DELETE_PHOTO_REQUEST_CODE){
-            delegate.forResult(null);
+            delegate.forResult(null);//TODO: стоит заглушка, если нет фото
         }
     }
 
@@ -187,17 +174,19 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
                 Matrix matrix = new Matrix();
                 matrix.postRotate(orientation);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+                int width = bitmap.getWidth();
+                int height = bitmap.getHeight();
 
-
+                int nh = (int) ( bitmap.getHeight() * (512.0 / bitmap.getWidth()) );
+                Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);
                 //отпавляем Bitmap в делегат
-                delegate.forResult(bitmap);
+                delegate.forResult(scaled);
 
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
@@ -210,7 +199,8 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
         }
         cursor.moveToFirst();
         int orientation = cursor.getInt(0);
-        cursor.close(); cursor = null;
+        cursor.close();
+        cursor = null;
         return orientation;
     }
 }

@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     SharedPreferences sharedPreferences;
     public TextView bottomNavigationTextView;
 
-    public String userID;// = "328d21d2-9797-4802-9f5d-0e0b3f204866";
+    public String userID;
 
     public BottomNavigationView bottomNavigationView;
 
@@ -59,65 +59,53 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        authDataObject= new AuthDataObject();
+        authDataObject = new AuthDataObject();
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
-
         bottomNavigationView.setOnNavigationItemSelectedListener(
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-                    switch (menuItem.getItemId()) {
+                        switch (menuItem.getItemId()) {
 
-                        case R.id.activities:
-                            clearMainActivity();
-                            break;
+                            case R.id.activities:
+                                clearMainActivity();
+                                break;
 
-                        case R.id.groups:
-                            clearMainActivity();
-                            changeFragment(new GroupsListFragment(userID), null);
-                            break;
+                            case R.id.groups:
+                                clearMainActivity();
+                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new GroupsListFragment(userID)).commit();
+                                break;
 
-                        case R.id.profile:
-                            clearMainActivity();
-                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UserFragment(userID, true)).commit();
-                            break;
+                            case R.id.profile:
+                                clearMainActivity();
+                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UserFragment(userID)).commit();
+                                break;
 
-                        case R.id.notification:
-                            clearMainActivity();
-                            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new EventListController(userID)).commit();
-                            break;
+                            case R.id.notification:
+                                clearMainActivity();
+                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new EventListController(userID)).commit();
+                                break;
+                        }
+                        return true;
                     }
-
-                    return true;
-                }
-            });
+                });
 
         sharedPreferences = getPreferences(MODE_PRIVATE);
         userID = sharedPreferences.getString("userID", null);
-        if (!(sharedPreferences.getString("userID", "").equals(""))){
+        if (!(sharedPreferences.getString("userID", "").equals(""))) {
             sharedPreferences.getString("userID", null);
             userID = sharedPreferences.getString("userID", null);
             bottomNavigationView.setSelectedItemId(R.id.profile);
         } else {
             SharedPreferences.Editor e = sharedPreferences.edit();
             e.putBoolean("isStart", true);
-            e.commit();
+            e.apply();
             bottomNavigationView.setVisibility(View.INVISIBLE);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AuthorizationController(this)).commit();
         }
-
-        // Создаем PendingIntent для Task1
-        Intent intent = new Intent(this, EventService.class);
-        PendingIntent pi = createPendingResult(1, intent, 0);
-        // Создаем Intent для вызова сервиса, кладем туда параметр времени
-        // и созданный PendingIntent
-        intent.putExtra("userID", userID)
-                .putExtra("Pending", pi);
-        // стартуем сервис
-        startService(intent);
     }
 
     @Override
@@ -134,41 +122,47 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
         bottomNavigationTextView.setVisibility(View.INVISIBLE);
 
+        // Создаем PendingIntent для Task1
+        Intent intent = new Intent(this, EventService.class);
+        PendingIntent pi = createPendingResult(1, intent, 0);
+        // Создаем Intent для вызова сервиса, кладем туда параметр времени
+        // и созданный PendingIntent
+        intent.putExtra("userID", userID)
+                .putExtra("Pending", pi);
+        // стартуем сервис
+        startService(intent);
+
         super.onStart();
     }
 
-    public void clearMainActivity(){
-
+    public void clearMainActivity() {
         FragmentManager fm = getSupportFragmentManager();
-        int j = fm.getBackStackEntryCount();
-        for(int i = 0; i <= (fm.getBackStackEntryCount() + 1); ++i) {
+        for (int i = 0; i <= (fm.getBackStackEntryCount() + 1); ++i) {
             fm.popBackStack();
         }
-        for (Fragment fragment:getSupportFragmentManager().getFragments()) {//TODO: если нажата страница группы, то не удаляет список
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {//TODO: если нажата страница группы, то не удаляет список
             getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         }
         System.gc();
     }
 
     public void changeFragment(Fragment fragment, String type) {
-
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
     }
 
     public void changeFragmentWitchBackstack(Fragment fragment, String type) {
-
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, type).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, type).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit();
     }
 
-    public void openGroup(String id,  int rules){
-        GroupController controller = new GroupController(id,rules);
+    public void openGroup(String id, int rules) {
+        GroupController controller = new GroupController(id, rules);
         changeFragmentWitchBackstack(controller, "");//TODO: задать в backstack
     }
 
-    public void openGroupAfterSelect (String id, int rules){
+    public void openGroupAfterSelect(String id, int rules) {
         //так как после выбора элементов и совершения действия, нам, при нажатии кнопки назад, надо будет сбросить два шага назад
         FragmentManager fm = getSupportFragmentManager();
-        for(int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 20; ++i) {
             fm.popBackStack();
         }
         changeFragmentWitchBackstack(new GroupController(id, rules), null);
@@ -178,9 +172,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         changeFragmentWitchBackstack(new GroupController(id, rules), null);
     }
 
-
     @Override
-    public void showFragment (PresenterInterface delegate, int i){ //TODO: получается метод только для вызова ActivityForResultFragment из-за передачи аргументов
+    public void showFragment(PresenterInterface delegate, int i) { //TODO: получается метод только для вызова ActivityForResultFragment из-за передачи аргументов
 
         // Создание класса-фрагмента для отправки интентов, в аргументы передаем Presenter-delegate, выбранную позицию
         ActivityForResultFragment activityForResultFragment = new ActivityForResultFragment(delegate, i);
@@ -191,38 +184,37 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
                 .commit();
     }
 
-
-    public void showDialog(Bundle bundle, PresenterInterface delegate){
+    public void showDialog(Bundle bundle, PresenterInterface delegate) {
         CustomDialogFragment dialogFragment = new CustomDialogFragment(delegate);
         dialogFragment.setArguments(bundle);
         dialogFragment.show(getSupportFragmentManager(), "MyDialog");
 
     }
 
-    public void showUser (User user){
-        changeFragment(new UserFragment(user.id, false), null);
+    public void showUser(User user) {
+        changeFragment(new UserFragment(user.id), null);
     }
 
-    public void openGroupList(){
+    public void openGroupList() {
         changeFragment(new GroupsListFragment(userID), null);
     }
 
     //открыть список с полученными даннами и checkBox
-    public void openSelectList (ArrayList<SelectData> selectData,
-        PresenterInterface delegate, String TYPE){
+    public void openSelectList(ArrayList<SelectData> selectData,
+                               PresenterInterface delegate, String TYPE) {
         changeFragmentWitchBackstack(new SelectedListController(selectData, delegate, TYPE), null);
     }
 
-    public void openEditProfile (InfoProfileData infoProfileData, RequestInfo requestInfo, PresenterInterface delegate, String type){
-        changeFragmentWitchBackstack(new EditInfoProfileController(infoProfileData, requestInfo, delegate,  type), null);
+    public void openEditProfile(InfoProfileData infoProfileData, RequestInfo requestInfo, PresenterInterface delegate, String type) {
+        changeFragmentWitchBackstack(new EditInfoProfileController(infoProfileData, requestInfo, delegate, type), null);
     }
 
     @Override
     public void onBackPressed() {
         FragmentManager fm = getSupportFragmentManager();
         OnBackPressedListener backPressedListener = null;
-        for (Fragment fragment: fm.getFragments()) {
-            if (fragment instanceof  OnBackPressedListener) {
+        for (Fragment fragment : fm.getFragments()) {
+            if (fragment instanceof OnBackPressedListener) {
                 backPressedListener = (OnBackPressedListener) fragment;
                 break;
             }
@@ -246,26 +238,25 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         view.animate().translationY(0).setDuration(300);
     }
 
-    public void openProfile(){
-        changeFragment(new UserFragment(userID, false), null);
+    public void openProfile() {
+        changeFragment(new UserFragment(userID), null);
     }
 
-    public void openUser(String userID){
-        changeFragmentWitchBackstack(new UserFragment(userID, false), null);
+    public void openUser(String userID) {
+        changeFragmentWitchBackstack(new UserFragment(userID), null);
     }
 
-
-    public void openObjectList(ArrayList<ObjectData> objectDataArrayList, PresenterInterface delegate, String type){
+    public void openObjectList(ArrayList<ObjectData> objectDataArrayList, PresenterInterface delegate, String type) {
         changeFragmentWitchBackstack(new ObjectListController(objectDataArrayList, type), null);
     }
 
     //открытие контроллера для регистрации
-    public void openRegistration(){
+    public void openRegistration() {
         changeFragmentWitchBackstack(new RegistrationController(), null);
     }
 
     //открытие контроллера для ввода ключа регистрации
-    public void openKeyRegistration(){
+    public void openKeyRegistration() {
         changeFragment(new KeyRegistrationController(), null);
     }
 
@@ -274,7 +265,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         getSupportActionBar().setTitle(title);
     }
 
-    public void saveSharedPreferences (String userID){
+    public void saveSharedPreferences(String userID) {
 
         //с помощью метода getPreferences получаем объект sPref класса SharedPreferences, который позволяет работать с данными (читать и писать).Константа MODE_PRIVATE используется для настройки доступа и означает, что после сохранения, данные будут видны только этому приложению
         sharedPreferences = getPreferences(MODE_PRIVATE);
@@ -282,35 +273,35 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         editor.putString("userID", userID);
-        editor.commit();
+        editor.apply();
     }
 
-    public void exitLogin(){
+    public void exitLogin() {
         sharedPreferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
-        editor.commit();
+        editor.apply();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AuthorizationController(this)).commit();
     }
 
-    public void openEventType12 (EventType4 event){
+    public void openEventType12(EventType4 event) {
         changeFragmentWitchBackstack(new EventController(event), null);
     }
 
-    public void openEventType4(EventType4 event){
+    public void openEventType4(EventType4 event) {
         changeFragmentWitchBackstack(new EventType4Controller(event), null);
     }
 
-    public void openEventList (){
+    public void openEventList() {
         changeFragment(new EventListController(userID), null);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1){
+        if (requestCode == 1) {
             String event = data.getStringExtra("Events");
-            if(event.equals("0")){
+            if (event.equals("0")) {
                 bottomNavigationTextView.setVisibility(View.INVISIBLE);
             } else {
                 bottomNavigationTextView.setText(event);
@@ -319,10 +310,18 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         }
     }
 
+    public void deleteBackStack() {
+            FragmentManager fm = getSupportFragmentManager();
+        for(int i = 0; i < 2; ++i) {
+            fm.popBackStack();
+        }
+    }
+
+
     @Override
-    protected void onDestroy() {
+    protected void onStop() {
         Intent intent = new Intent(this, EventService.class);
         stopService(intent);
-        super.onDestroy();
+        super.onStop();
     }
 }

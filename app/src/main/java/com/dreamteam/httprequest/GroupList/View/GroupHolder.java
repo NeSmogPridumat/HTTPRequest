@@ -1,6 +1,8 @@
 package com.dreamteam.httprequest.GroupList.View;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
@@ -13,9 +15,10 @@ import com.dreamteam.httprequest.R;
 
 public class GroupHolder extends RecyclerView.ViewHolder {
     private TextView titleTextView, descriptionTextView;
-    private ImageView imageView;
+    private ImageView imageView, adminImage;
     LinearLayout linearLayout;
     private CheckBox checkBox;
+    private Bitmap imageData;
 
     GroupHolder(View item) {
         super(item);
@@ -24,15 +27,22 @@ public class GroupHolder extends RecyclerView.ViewHolder {
         imageView = item.findViewById(R.id.group_image_view);
         linearLayout = item.findViewById(R.id.linear_layout_item);
         checkBox = item.findViewById(R.id.item_check_box);
+        adminImage = item.findViewById(R.id.adminImage);
     }
 
+    @SuppressLint("ResourceType")
     public void bindGroup(Group group){
         titleTextView.setText(group.content.simpleData.title);
         descriptionTextView.setText(group.content.simpleData.description);
 
         checkBox.setChecked(false);
+            imageData = group.content.mediaData.imageData;
+            imageView.setImageBitmap(imageData);
 
-        Bitmap imageData = group.content.mediaData.imageData;
-        imageView.setImageBitmap(imageData);
+
+
+        if (group.rules == 7){
+            adminImage.setVisibility(View.VISIBLE);
+        }
     }
 }

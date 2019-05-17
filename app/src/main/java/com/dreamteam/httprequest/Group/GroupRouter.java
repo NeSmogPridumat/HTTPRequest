@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class GroupRouter {
 
-    MainActivity activity;
+    private MainActivity activity;
 
     public GroupRouter (MainActivity activity){
         this.activity = activity;

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthData;
@@ -36,13 +37,12 @@ public class AuthorizationController extends Fragment implements AuthorizationVi
 
      private AuthorizationPresenter authorizationPresenter;
      private MainActivity activity;
-
+     private RelativeLayout progressBar;
 
     public AuthorizationController(MainActivity activity) {
         // Required empty public constructor
         this.activity = activity;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,16 +54,13 @@ public class AuthorizationController extends Fragment implements AuthorizationVi
         authorizationButton = view.findViewById(R.id.authorization_button);
         registrationButton = view.findViewById(R.id.authorization_registration_button);
         activity.hideBottomNavigationView(activity.bottomNavigationView);
-
+        progressBar = view.findViewById(R.id.progressBarOverlay);
         return view;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-
-//        activity.bottomNavigationView.setVisibility(View.INVISIBLE);
-//        activity = (MainActivity) getActivity();
-        authorizationPresenter = new AuthorizationPresenter(activity);
+        authorizationPresenter = new AuthorizationPresenter(activity, this);
         super.onCreate(savedInstanceState);
     }
 
@@ -94,6 +91,7 @@ public class AuthorizationController extends Fragment implements AuthorizationVi
                     activity.authDataObject.authData = new AuthData();
                     activity.authDataObject.authData.login = loginEditText.getText().toString();
                     activity.authDataObject.authData.pass = loginEditText.getText().toString();
+                    progressBar.setVisibility(View.VISIBLE);
                     authorizationPresenter.enterUser(loginEditText.getText().toString(), passwordEditText.getText().toString());
                 }
             }
@@ -102,13 +100,8 @@ public class AuthorizationController extends Fragment implements AuthorizationVi
     }
 
     @Override
-    public void onResume() {
-
-        super.onResume();
-    }
-
-    @Override
     public void error(String title, String description) {
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
+        progressBar.setVisibility(View.GONE);
     }
 }

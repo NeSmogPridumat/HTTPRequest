@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
@@ -39,9 +40,11 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
     private TextView titleTextView, descriptionTextView;
     private Button saveButton;
     private ImageView editImageView;
+    private RelativeLayout progressBar;
 
     private InfoProfileData infoProfileData;
     private String type;
+    private boolean checkImage = false;
 
     private EditInfoProfilePresenter editProfilePresenter;
     private PresenterInterface delegate;
@@ -95,6 +98,7 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
         }else {
             infoProfileData = new InfoProfileData();
         }
+        progressBar = view.findViewById(R.id.progressBarOverlay);
         return view;
     }
 
@@ -111,6 +115,7 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
         editImageView.setOnClickListener(new View.OnClickListener() {//слушатель нажатия на ImageView
             @Override
             public void onClick(View v) {
+                checkImage = true;
                 editProfilePresenter.showDialog();
             }
         });
@@ -130,13 +135,17 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
                 } else {//---------------------------------------------------------------------------------код отправки изменеий на сервер
                     infoProfileData.title = titleEditTextView.getText().toString();
                     infoProfileData.description = descriptionEditTextView.getText().toString();
-                    if (((BitmapDrawable)editImageView.getDrawable()).getBitmap() != null) {
-                        infoProfileData.imageData = ((BitmapDrawable) editImageView.getDrawable()).getBitmap();
-                    } else {
-                        infoProfileData.imageData = null;
+                    if (checkImage) {
+                        if (((BitmapDrawable)editImageView.getDrawable()).getBitmap() == null) {
+                            //TODO: поставить какую-нибудь зашлушку, а-ля картинка по дэфолту
+                        }else{
+                            infoProfileData.imageData = ((BitmapDrawable)editImageView.getDrawable()).getBitmap();
+                        }
                     }
                     //отправка данных на изменение
-                    delegate.editInfo(infoProfileData, requestInfo, type);
+                    editProfilePresenter.editInfo(infoProfileData, requestInfo, type);
+//                    delegate.editInfo(infoProfileData, requestInfo, type);
+                    progressBar.setVisibility(View.VISIBLE);
                 }
             }
         });

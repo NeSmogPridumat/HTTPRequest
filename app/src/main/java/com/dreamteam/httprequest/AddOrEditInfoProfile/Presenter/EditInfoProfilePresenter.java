@@ -16,12 +16,12 @@ import java.util.ArrayList;
 
 public class EditInfoProfilePresenter implements PresenterInterface {
 
-    EditInfoProfileViewInterface delegateView;
-    PresenterInterface delegate;
+    private EditInfoProfileViewInterface delegateView;
+    private PresenterInterface delegate;
 
-    EditInfoProfileRouter router;
+    private EditInfoProfileRouter router;
 
-    DialogConfig dialogConfig = new DialogConfig();
+    private DialogConfig dialogConfig = new DialogConfig();
 
     //создание списка вариантов для диалога
     int[] photoActionArray = {dialogConfig.CAMERA_REQUEST_CODE, dialogConfig.GALLERY_REQUEST_CODE, dialogConfig.DELETE_PHOTO_REQUEST_CODE};

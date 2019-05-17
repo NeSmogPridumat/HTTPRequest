@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.dreamteam.httprequest.AutoAndReg.Authorization.AuthorizationRouter;
@@ -25,6 +26,7 @@ public class RegistrationController extends Fragment implements AuthorizationVie
 
     private MainActivity activity;
     private AuthorizationPresenter authorizationPresenter;
+    private RelativeLayout progressBar;
 
 
     public RegistrationController() {
@@ -42,13 +44,14 @@ public class RegistrationController extends Fragment implements AuthorizationVie
         loginEditText = view.findViewById(R.id.registration_login);
         passwordEditText = view.findViewById(R.id.registration_password);
         registrationButton = view.findViewById(R.id.registration_button);
+        progressBar = view.findViewById(R.id.progressBarOverlay);
         return view;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         activity = (MainActivity) getActivity();
-        authorizationPresenter = new AuthorizationPresenter(activity);
+        authorizationPresenter = new AuthorizationPresenter(activity, this);
         super.onCreate(savedInstanceState);
     }
 
@@ -68,6 +71,7 @@ public class RegistrationController extends Fragment implements AuthorizationVie
                 } else {//---------------------------------------------------------------------------------код отправки изменеий на сервер
                     String login = loginEditText.getText().toString();
                     String password = passwordEditText.getText().toString();
+                    progressBar.setVisibility(View.VISIBLE);
 
                     //отправка данных на изменение
                     authorizationPresenter.createLogin(login, password);
@@ -80,5 +84,7 @@ public class RegistrationController extends Fragment implements AuthorizationVie
     @Override
     public void error(String title, String description) {
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
+        progressBar.setVisibility(View.GONE);
+
     }
 }

@@ -15,11 +15,8 @@ import com.dreamteam.httprequest.SelectedList.SelectData;
 public class SelectHolder extends RecyclerView.ViewHolder {
 
     private TextView titleTextView, descriptionTextView;
-    public ImageView imageView;
-    public LinearLayout linearLayout;
-    public CheckBox checkBox;
-
-    private SelectData selectData;
+    private ImageView imageView;
+    CheckBox checkBox;
 
     public SelectHolder(@NonNull View item) {
         super(item);
@@ -30,7 +27,6 @@ public class SelectHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindGroup(SelectData selectData){
-        this.selectData = selectData;
         titleTextView.setText(selectData.title);
         descriptionTextView.setText(selectData.description);
 

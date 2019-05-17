@@ -101,7 +101,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 
     //открытие окна профиля после получения ответа
     private void getUserEditResponse(){
-        delegate.openUser ();
+        delegate.openUserAfterEdit ();
     }
 
     @Override
@@ -293,7 +293,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     //декодирование Bitmap в Base64
     private String decodeBitmapInBase64 (Bitmap bitmap){//------------------------------------------декодирование Bitmap в Base64
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         // Получаем изображение из потока в виде байтов
         byte[] bytes = byteArrayOutputStream.toByteArray();
         return constantConfig.PREFIX + Base64.encodeToString(bytes, Base64.DEFAULT);

@@ -24,9 +24,10 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
     private AuthDataObject authDataObject;
     private AuthorizationViewInterface delegate;
 
-    public AuthorizationPresenter(MainActivity activity){
+    public AuthorizationPresenter(MainActivity activity,  AuthorizationViewInterface delegate){
         router = new AuthorizationRouter(activity);
         authorizationInteractor = new AuthorizationInteractor(this);
+        this.delegate = delegate;
     }
 
     //создание логина

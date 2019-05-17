@@ -15,12 +15,12 @@ import java.util.ArrayList;
 
 public class SelectAdapter extends RecyclerView.Adapter<SelectHolder> {
 
-    public ArrayList<SelectData> selectCollection;
-    ArrayList<SelectHolder> selectHolders = new ArrayList<>();
-    SparseBooleanArray checkArray = new SparseBooleanArray();
+    ArrayList<SelectData> selectCollection;
+    private ArrayList<SelectHolder> selectHolders = new ArrayList<>();
+    private SparseBooleanArray checkArray = new SparseBooleanArray();
 
 
-    public SelectAdapter(ArrayList<SelectData> selectCollection){
+    SelectAdapter(ArrayList<SelectData> selectCollection){
         this.selectCollection = selectCollection;
     }
 
@@ -50,7 +50,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectHolder> {
         return size;
     }
 
-    public  void changeItem(String id, Bitmap bitmap){
+    void changeItem(String id, Bitmap bitmap){
         for (int i = 0; i < selectCollection.size(); i ++){
             SelectData selectData = selectCollection.get(i);
             if (selectData.id.equals(id)){

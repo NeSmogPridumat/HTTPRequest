@@ -18,13 +18,12 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder>{
     ArrayList<Group> groupCollection;
     private ArrayList<GroupHolder> groupHolders = new ArrayList<>();
 
-
-    public GroupAdapter(ArrayList<Group> groupCollection){
+    GroupAdapter(ArrayList<Group> groupCollection){
         this.groupCollection = groupCollection;
     }
 
     //приходящие позже картинки сравниваются по id группы и присваиваются
-    public  void changeItem(String groupID, Bitmap bitmap){
+    void changeItem(String groupID, Bitmap bitmap){
         for (int i = 0; i < groupCollection.size(); i ++){
             Group group = groupCollection.get(i);
             if (group.id.equals(groupID)){
@@ -70,7 +69,6 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder>{
 
     //анимация сдвига holder'ов влево
     void animationBack(){
-
         for (int i = 0; i < groupHolders.size(); i++) {
             ObjectAnimator animator = ObjectAnimator.ofFloat(groupHolders.get(i).linearLayout, "translationX", 0f);
             animator.setDuration(500);

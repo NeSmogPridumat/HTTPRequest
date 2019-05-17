@@ -87,7 +87,7 @@ public class GroupPresenter implements GroupPresenterInterface {
         for (int i = 0; i < users.size(); i++){
             selectData.add(new SelectData().initFromUser(users.get(i)));
         }
-        router.showSelectList(selectData, this, constantConfig.ADD);
+        router.showSelectList(selectData, this, constantConfig.ADMIN);
     }
 
     @Override
@@ -106,6 +106,7 @@ public class GroupPresenter implements GroupPresenterInterface {
 
     @Override
     public void answerAddGroup(EventType4 event) {
+        activity.deleteBackStack();
         groupInteractor.getGroupAfterEdit(event.data.groupCreatorID, userID);
     }
 

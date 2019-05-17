@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -16,20 +17,37 @@
         android:orientation="vertical"
         tools:context=".User.View.UserFragment">
 
-        <android.support.v7.view.menu.ActionMenuItemView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <ImageView
-            android:id="@+id/user_image"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="238dp" />
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/view2"
+                android:layout_width="240dp"
+                android:layout_height="240dp"
+                android:innerRadius="0dp"
+                android:shape="ring"
+                app:cardCornerRadius="120dp"
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/user_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:scaleType="centerCrop">
+
+                </ImageView>
+
+            </android.support.v7.widget.CardView>
+
+        </FrameLayout>
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/user_name_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorGray"
             tools:layout_editor_absoluteY="257dp">
 
 
@@ -40,6 +58,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="+79991234567"
+                android:textColor="@color/colorGray"
                 app:layout_constraintStart_toEndOf="@+id/mail_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/user_surname_text_view" />
 
@@ -50,6 +69,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="@email"
+                android:textColor="@color/colorGray"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/user_surname_text_view" />
 
@@ -60,6 +80,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="TextView"
+                android:textColor="@color/colorGray"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -67,13 +88,13 @@
                 android:id="@+id/user_surname_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:text="User"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="24sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@+id/user_name_text_view"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <RadioButton
                 android:id="@+id/radio_button_groups"
@@ -87,49 +108,23 @@
                 android:clickable="false"
                 android:duplicateParentState="false"
                 android:text="N groups"
+                android:textColor="@android:color/white"
+                android:buttonTint="@android:color/white"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/mail_text_view" />
 
-            <RadioButton
-                android:id="@+id/radio_button_event"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="16dp"
-                android:checked="false"
-                android:clickable="false"
-                android:duplicateParentState="false"
-                android:text="N event"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/radio_button_groups" />
-
-            <RadioButton
-                android:id="@+id/radio_button_votes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="16dp"
-                android:checked="false"
-                android:clickable="false"
-                android:duplicateParentState="false"
-                android:text="N votes"
-                android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/radio_button_event" />
-
             <TextView
                 android:id="@+id/user_name_text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:text="Name"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="24sp"
-                app:layout_constraintStart_toEndOf="@+id/user_surname_text_view"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </android.support.constraint.ConstraintLayout>
 
@@ -137,8 +132,7 @@
             android:id="@+id/rating_container"
             android:layout_width="match_parent"
             android:layout_height="64dp"
-            android:layout_marginTop="16dp"
-            android:background="@color/colorGray">
+            android:layout_marginTop="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -146,7 +140,7 @@
                 android:layout_marginStart="18dp"
                 android:gravity="start|top"
                 android:text="Rating"
-                android:textColor="@android:color/black" />
+                android:textColor="@color/colorGray" />
 
             <TextView
                 android:id="@+id/rating_text_view"
@@ -155,6 +149,7 @@
                 android:layout_gravity="end"
                 android:layout_marginEnd="18dp"
                 android:text="A"
+                android:textColor="@color/colorGray"
                 android:textSize="20dp" />
 
 
@@ -167,7 +162,7 @@
                 android:layout_marginTop="8dp"
                 android:gravity="start|top"
                 android:text="Main Group: "
-                android:textColor="@android:color/black" />
+                android:textColor="@color/colorGray" />
 
             <TextView
                 android:id="@+id/group_title"
@@ -179,56 +174,9 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="18dp"
                 android:text="Group Title  "
-                android:textColor="@android:color/black" />
+                android:textColor="@color/colorGray" />
 
         </GridLayout>
-
-        <LinearLayout
-            android:id="@+id/schedule_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@color/colorGray"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/rating_text_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="18dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/rating_icon"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_marginTop="10dp"
-                    android:src="@android:drawable/star_big_off" />
-
-                <TextView
-                    android:id="@+id/rating_story"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:text="Rating Story"
-                    android:textColor="@android:color/black"
-                    android:textSize="18sp" />
-
-                <ImageView
-                    android:id="@+id/rating_arrow_icon"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="10dp"
-                    android:src="@drawable/ic_action_name" />
-            </LinearLayout>
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginTop="16dp"/>
-        </LinearLayout>
 
     </LinearLayout>
 
@@ -238,7 +186,7 @@
         android:id="@+id/progressBarOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/blaaaaaaa"
+        android:background="@color/transparent_black"
         android:clickable="true"
         android:visibility="gone">
 

@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
@@ -32,12 +34,14 @@ public class EventListController extends Fragment implements EventListViewInterf
     private MainActivity activity;
     private EventAdapter adapter, nAdapter;
     private String userID;
+    private RelativeLayout progressBar;
+    private RadioButton activeEventRadio, inactiveEventRadio;
 
     private EventListPresenter eventListPresenter;
 
     private ArrayList<EventType4> eventArrayList = new ArrayList<>();
-    private ArrayList<EventType4> activeEvent = new ArrayList<>();
-
+    private ArrayList<EventType4> activeEvent;
+    private ArrayList<EventType4> notActiveEvent;
 
     public EventListController(String userID) {
         // Required empty public constructor
@@ -51,19 +55,13 @@ public class EventListController extends Fragment implements EventListViewInterf
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_event_list, container, false);
         eventsRecyclerView = view.findViewById(R.id.events_recycler_view);
-        eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()){
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        });
+        eventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        activeEventRadio = view.findViewById(R.id.activeEvent);
+        inactiveEventRadio = view.findViewById(R.id.inactiveEvent);
+
         noteventsRecyclerView = view.findViewById(R.id.events_not_active_recycler_view);
-        noteventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()){
-            @Override
-            public boolean canScrollVertically() {
-                return false;
-            }
-        });
+        noteventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        progressBar = view.findViewById(R.id.progressBarOverlay);
         return view;
     }
 
@@ -71,25 +69,24 @@ public class EventListController extends Fragment implements EventListViewInterf
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = (MainActivity) getActivity();
-
-        adapter = new EventAdapter(eventArrayList);
-        nAdapter = new EventAdapter(eventArrayList);
         eventListPresenter = new EventListPresenter(this, activity);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onStart() {
+        notActiveEvent = new ArrayList<>();
+        activeEvent = new ArrayList<>();
         activity.setActionBarTitle("Event List");
+        progressBar.setVisibility(View.VISIBLE);
         eventListPresenter.getEvents(userID);
-        adapter.eventArrayList = eventArrayList;
-        eventsRecyclerView.setAdapter(adapter);
-
+//        adapter.eventArrayList = eventArrayList;
+//        eventsRecyclerView.setAdapter(adapter);
 
         eventsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), eventsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                    eventListPresenter.openEvent(activeEvent.get(position));
+                eventListPresenter.openEvent(activeEvent.get(position));
             }
 
             @Override
@@ -102,8 +99,8 @@ public class EventListController extends Fragment implements EventListViewInterf
 
     @Override
     public void answerGetEvents(final ArrayList<EventType4> eventArrayList) {
+
         Collections.reverse(eventArrayList);
-        ArrayList<EventType4> notActiveEvent = new ArrayList<>();
         for (int i = 0; i < eventArrayList.size(); i++){
             if (eventArrayList.get(i).active){
                 activeEvent.add(eventArrayList.get(i));
@@ -111,17 +108,38 @@ public class EventListController extends Fragment implements EventListViewInterf
                 notActiveEvent.add(eventArrayList.get(i));
             }
         }
-        this.eventArrayList = eventArrayList;
+        adapter = new EventAdapter(activeEvent);
+        nAdapter = new EventAdapter(notActiveEvent);
+
         adapter.eventArrayList = activeEvent;
         eventsRecyclerView.setAdapter(adapter);
+        eventsRecyclerView.getAdapter().notifyDataSetChanged();
 
         nAdapter.eventArrayList = notActiveEvent;
         noteventsRecyclerView.setAdapter(nAdapter);
+        noteventsRecyclerView.getAdapter().notifyDataSetChanged();
+        progressBar.setVisibility(View.GONE);
 
+        activeEventRadio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eventsRecyclerView.setVisibility(View.VISIBLE);
+                noteventsRecyclerView.setVisibility(View.GONE);
+            }
+        });
+
+        inactiveEventRadio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                noteventsRecyclerView.setVisibility(View.VISIBLE);
+                eventsRecyclerView.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
     public void error(String title, String description) {
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
+        progressBar.setVisibility(View.GONE);
     }
 }

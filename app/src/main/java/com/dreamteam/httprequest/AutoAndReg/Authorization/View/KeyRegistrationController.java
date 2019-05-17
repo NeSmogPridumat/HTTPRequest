@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Presenter.AuthorizationPresenter;
@@ -29,14 +30,13 @@ public class KeyRegistrationController extends Fragment implements Authorization
     private EditText keyEditText;
     private Button enterKeyButton;
     private MainActivity activity;
+    private RelativeLayout progressBar;
 
     private AuthorizationPresenter authorizationPresenter;
-
 
     public KeyRegistrationController() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,13 +45,14 @@ public class KeyRegistrationController extends Fragment implements Authorization
         View view = inflater.inflate(R.layout.fragment_key_registration_controller, container, false);
         keyEditText = view.findViewById(R.id.key_edit_text);
         enterKeyButton = view.findViewById(R.id.enter_key_button);
+        progressBar = view.findViewById(R.id.progressBarOverlay);
         return view;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         activity = (MainActivity) getActivity();
-        authorizationPresenter = new AuthorizationPresenter(activity);
+        authorizationPresenter = new AuthorizationPresenter(activity, this);
         super.onCreate(savedInstanceState);
     }
 
@@ -62,6 +63,7 @@ public class KeyRegistrationController extends Fragment implements Authorization
             @Override
             public void onClick(View v) {
                 keyEditText.getText();
+                progressBar.setVisibility(View.VISIBLE);
                 authorizationPresenter.enableUserAuth(keyEditText.getText().toString(), activity.authDataObject);
             }
         });
@@ -77,5 +79,6 @@ public class KeyRegistrationController extends Fragment implements Authorization
     @Override
     public void error(String title, String description) {
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
+        progressBar.setVisibility(View.GONE);
     }
 }

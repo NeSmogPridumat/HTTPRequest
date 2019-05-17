@@ -11,7 +11,7 @@ import com.dreamteam.httprequest.R;
 
 public class EventHolder extends RecyclerView.ViewHolder {
 
-    public TextView titleTextView, descriptionTextView;
+    private TextView titleTextView, descriptionTextView;
     public ImageView imageView;
 
     public EventHolder(@NonNull View item) {

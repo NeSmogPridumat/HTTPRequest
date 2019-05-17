@@ -33,23 +33,20 @@ import com.dreamteam.httprequest.User.Protocols.ViewUserInterface;
 @SuppressLint("ValidFragment")
 public class UserFragment extends Fragment implements ViewUserInterface {
 
-    ImageView userImage, raitingStoryImage, scheduleImage;
-    TextView userName, userSurName, mail, call, rating, groupTitle;
-    LinearLayout userFragment;
-    RelativeLayout progressBar;
-    RadioButton groupsRadioButton;
-    MainActivity activity;
+    private ImageView userImage, raitingStoryImage, scheduleImage;
+    private TextView userName, userSurName, mail, call, rating, groupTitle;
+    private RelativeLayout progressBar;
+    private RadioButton groupsRadioButton;
+    private MainActivity activity;
 
     public PresenterUser presenterUser;
 
-    User user = new User();
-    Bitmap bitmapU;
-    String userID;
-    boolean root;
+    private User user = new User();
+    private Bitmap bitmapU;
+    private String userID;
 
-    public UserFragment(String userID, boolean root) {
+    public UserFragment(String userID) {
         this.userID = userID;
-        this.root = root;
     }
 
     @Override
@@ -66,7 +63,6 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         userImage = view.findViewById(R.id.user_image);
         groupsRadioButton = view.findViewById(R.id.radio_button_groups);
         progressBar = view.findViewById(R.id.progressBarOverlay);
-        userFragment = view.findViewById(R.id.user_fragment);
         return view;
     }
 

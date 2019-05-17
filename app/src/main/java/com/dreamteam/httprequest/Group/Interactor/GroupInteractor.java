@@ -12,6 +12,7 @@ import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.Group.Entity.GroupData.GroupMediaData;
+import com.dreamteam.httprequest.Group.Entity.GroupData.NodeData;
 import com.dreamteam.httprequest.Group.Protocols.GroupPresenterInterface;
 import com.dreamteam.httprequest.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager;
@@ -26,8 +27,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-
-import static android.support.constraint.Constraints.TAG;
 
 public class GroupInteractor implements GroupHTTPMangerInterface {
 
@@ -64,7 +63,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             prepareDeleteGroup();
         } else if (type.equals(constantConfig.POST_GROUP)){
             prepareAddSubgroupResponse(byteArray);
-        } else if (type.equals(constantConfig.GET_USERS_FOR_SELECT_ADMIN_TYPE)){
+        } else if (type.equals(constantConfig.ADMIN)){
             prepareGetUserForSelectAdmin(byteArray);
         } else if (type.equals(constantConfig.MEMBERS_FOR_LIST_TYPE)){
             prepareGetMembersForListResponse(byteArray);
@@ -140,21 +139,24 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
 
     private void prepareGetGroupResponse(byte[] byteArray) {//-----------------------------------------------получение json ответа, преобразование его в User и вывод в основной поток
         try {
-            final Group group = createGroupOfBytes(byteArray);
+            Group group = new Group();
+            group.nodeData = new NodeData();
+            group = createGroupOfBytes(byteArray);
             if (group == null) {
                 String error = "Объект не существует";
                 delegate.error(error, null);
             }
 
+            final Group finalGroup = group;
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         //отправка запроса на получение картинки
-                        getImageRequest(group);
+                        getImageRequest(finalGroup);
 
                         //отправка запроса на получение количества участников в группе
-                        getMembersRequest(group);
+                        getMembersRequest(finalGroup);
                     } catch (Exception error) {
                         error(error);
                     }
@@ -164,7 +166,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             Runnable myRunnable = new Runnable() {
                 @Override
                 public void run() {
-                delegate.answerGetGroup(group);
+                delegate.answerGetGroup(finalGroup);
                 }
             };
             mainHandler.post(myRunnable);
@@ -391,7 +393,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override
             public void run() {
-                httpManager.getRequest(path, constantConfig.GET_USERS_FOR_SELECT_ADMIN_TYPE, GroupInteractor.this);//----------отправка в HTTPManager
+                httpManager.getRequest(path, constantConfig.ADMIN, GroupInteractor.this);//----------отправка в HTTPManager
             }
         }).start();
     }

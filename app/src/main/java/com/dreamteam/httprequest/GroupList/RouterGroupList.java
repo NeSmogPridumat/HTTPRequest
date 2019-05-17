@@ -20,8 +20,8 @@ public class RouterGroupList {
     }
 
     //показать список с checkBox
-    public void showSelectList(ArrayList<SelectData> selectData, PresenterInterface delegate, MainActivity activity, String TYPE){
-        activity.openSelectList(selectData,delegate, TYPE);
+    public void showSelectList(ArrayList<SelectData> selectData, PresenterInterface delegate, MainActivity activity, String type){
+        activity.openSelectList(selectData,delegate, type);
     }
 
     public void openGroup(String id, int rules){

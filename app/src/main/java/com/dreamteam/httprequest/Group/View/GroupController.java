@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,9 +38,10 @@ public class GroupController extends Fragment implements GroupViewInterface {
 
     private TextView titleTextView, descriptionTextView;
     private ImageView groupImageView;
-    private RadioButton membersRadioButton;
+    private RadioButton membersRadioButton, subgroupRadioButton;
     private int rules;
     private Bitmap bitmap;
+    private RelativeLayout progressBar;
 
     GroupPresenter groupPresenter;
     Group group;
@@ -61,7 +63,9 @@ public class GroupController extends Fragment implements GroupViewInterface {
         titleTextView = view.findViewById(R.id.group_title_text_view);
         descriptionTextView = view.findViewById(R.id.group_description_text_view);
         groupImageView = view.findViewById(R.id.group_image_view);
+        progressBar = view.findViewById(R.id.progressBarOverlay);
         membersRadioButton = view.findViewById(R.id.radio_button_members_group);
+        subgroupRadioButton = view.findViewById(R.id.radio_button_subgroup);
         return view;
     }
 
@@ -77,6 +81,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
     @Override
     public void onStart() {
         Log.i("ControllerGROUP", "ONStart");
+        progressBar.setVisibility(View.VISIBLE);
         groupPresenter.getGroup(groupID);
         super.onStart();
 
@@ -99,13 +104,16 @@ public class GroupController extends Fragment implements GroupViewInterface {
         this.group = group;
         titleTextView.setText(group.content.simpleData.title);
         descriptionTextView.setText(group.content.simpleData.description);
+        subgroupRadioButton.setText(group.nodeData.childList.size() + " subgroups");
         activity.setActionBarTitle(group.content.simpleData.title);
         rules = group.rules;
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void error(String title, String description) {
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

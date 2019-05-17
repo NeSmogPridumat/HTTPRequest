@@ -23,7 +23,6 @@ import android.widget.Toast;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.GroupList.Presenter.GroupsPresenter;
 import com.dreamteam.httprequest.GroupList.Protocols.GroupsViewInterface;
-import com.dreamteam.httprequest.Interfaces.OnBackPressedListener;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
 
@@ -33,7 +32,7 @@ import java.util.ArrayList;
  * A simple {@link Fragment} subclass.
  */
 @SuppressLint("ValidFragment")
-public class GroupsListFragment extends Fragment implements GroupsViewInterface, OnBackPressedListener {
+public class GroupsListFragment extends Fragment implements GroupsViewInterface {
 
     //TODO: не забудь перенести обработчик клика в проект (class RecyclerItemClickListener и обработка outputGroupsView)
 
@@ -150,13 +149,5 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface,
         groupsPresenter = null;
         groups = null;
         super.onDestroy();
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        adapter.animationBack();
-        menu.clear();
-        inflater.inflate(R.menu.group_list_controller, menu);
     }
 }

@@ -18,5 +18,7 @@ public interface PresenterUserInterface extends PresenterInterface {
 
     void openUser();
 
+    void openUserAfterEdit();
+
     void answerGetGroupsForList(ArrayList<Group> groups);
 }

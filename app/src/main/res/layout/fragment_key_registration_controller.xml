@@ -1,36 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".AutoAndReg.Authorization.View.KeyRegistrationController"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <android.support.design.widget.TextInputLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <EditText
-        android:id="@+id/key_edit_text"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/enter_key"
-        android:imeActionId="6"
-        android:imeActionLabel="@string/action_sign_in_short"
-        android:imeOptions="actionUnspecified"
-        android:maxLines="1"
-        android:singleLine="true" />
+        android:layout_height="match_parent"
+        tools:context=".AutoAndReg.Authorization.View.KeyRegistrationController"
+        android:orientation="vertical"
+        android:background="@android:color/black">
 
-</android.support.design.widget.TextInputLayout>
-
-    <Button
-        android:id="@+id/enter_key_button"
-        style="?android:textAppearanceSmall"
+        <!-- TODO: Update blank fragment layout -->
+        <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/enter"
-        android:textStyle="bold" />
+        android:layout_height="wrap_content">
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/key_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/enter_key"
+            android:imeActionId="6"
+            android:imeActionLabel="@string/action_sign_in_short"
+            android:imeOptions="actionUnspecified"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:background="@android:color/white"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/enter_key_button"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="36dp"
+            android:text="@string/enter"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/progressBarOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent_black"
+        android:clickable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:indeterminateDrawable="@mipmap/ic_launcher"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:visibility="visible"
+            android:theme="@android:style/Widget.ProgressBar.Large.Inverse"
+            />
+    </RelativeLayout>
+
+</FrameLayout>

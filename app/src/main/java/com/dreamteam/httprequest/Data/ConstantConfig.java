@@ -9,7 +9,6 @@ public class ConstantConfig {
     public final String GET_GROUP_TYPE =                    "getGroup";
 
     public final String DELETE_GROUP =                      "delete";
-    public final String GET_USERS_FOR_SELECT_ADMIN_TYPE =   "Admin";
     public final String ADD =                               "Add";
     public final String DELETE =                            "Delete";
     public final String MEMBERS_TYPE =                      "members";

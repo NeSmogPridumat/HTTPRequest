@@ -59,6 +59,12 @@ public class PresenterUser implements PresenterUserInterface {
         router.openProfile();
     }
 
+    @Override
+    public void openUserAfterEdit() {
+        activity.deleteBackStack();
+        router.openProfile();
+    }
+
     @Override public void answerGetGroupsForList(ArrayList<Group> groups) {
         ArrayList<ObjectData> objectDataArrayList = new ArrayList<>();
         for (int i = 0; i < groups.size(); i++){
