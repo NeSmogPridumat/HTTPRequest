@@ -12,10 +12,6 @@ public class EventListRouter {
     }
 
     public void openEvent(EventType4 event){
-//        if (event.response.type != 4) {
-//            activity.openEventType12(event);
-//        }else{
             activity.openEventType4(event);
-//        }
     }
 }

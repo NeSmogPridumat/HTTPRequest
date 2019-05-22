@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.util.Log;
 
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Event.Entity.ChangeEvent.EventChoice;
@@ -105,7 +104,6 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
                         }
                     };
                     mainHandler.post(myRunnable);
-
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -147,9 +145,6 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
 
     @Override
     public void onDestroy() {
-        long threadId = Thread.currentThread().getId();
-        Log.v("SERVICE","Service killed." + " Task #" + threadId);
-
         //при вызове stopService() вызывается onDestroy() сервиса, но вызовы продолжают идти из-за того, что
         // "поток продолжает работать". Чтобы закрыть поток и прекратить запросы на сервер, надо вызвать у handler
         handler.removeCallbacksAndMessages(null);

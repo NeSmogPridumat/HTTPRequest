@@ -1,4 +1,4 @@
-package com.dreamteam.httprequest.AddOrEditInfoProfile;
+package com.dreamteam.httprequest.AddOrEditInfoProfile.Data;
 
 import android.graphics.Bitmap;
 

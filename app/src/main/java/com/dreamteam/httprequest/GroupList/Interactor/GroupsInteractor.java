@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
-import android.util.Log;
 
 import com.dreamteam.httprequest.Data.AddData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
@@ -24,6 +23,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
@@ -65,7 +65,6 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
                 .equals(constantConfig.IMAGE_TYPE))){
             prepareGetBitmapOfByte(parsingStringType(type)[1], byteArray);
         } else if(type.equals(constantConfig.DELETE_GROUP)){
-            Log.i(TAG, "Сообщение");
             delegate.answerDeleteGroups();
         } else if (type.equals(constantConfig.POST_GROUP)){
             delegate.answerAddGroup();
@@ -74,7 +73,7 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
 
     @Override
     public void error(Throwable t) {
-        if (t instanceof SocketTimeoutException){
+        if (t instanceof SocketTimeoutException || t instanceof ConnectException){
             final String title = "Ошибка соединения с сервером";
             final String description = "Проверте соединение с интернетом. Не удается подключится с серверу";
             Handler mainHandler = new Handler(Looper.getMainLooper());

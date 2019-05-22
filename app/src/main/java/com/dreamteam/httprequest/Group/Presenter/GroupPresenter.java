@@ -3,9 +3,8 @@ package com.dreamteam.httprequest.Group.Presenter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.Data.AddData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
@@ -239,11 +238,8 @@ public class GroupPresenter implements GroupPresenterInterface {
     }
 
     public void exitGroup(RequestInfo requestInfo){
-        SelectData selectData = new SelectData();
-        selectData.id = userID;
         groupInteractor.exitGroup(requestInfo);
     }
-
 
     public void getMembers (String groupID){
         groupInteractor.getUserForList(groupID);

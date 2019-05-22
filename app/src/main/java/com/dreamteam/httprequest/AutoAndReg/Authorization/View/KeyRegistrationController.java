@@ -2,6 +2,7 @@ package com.dreamteam.httprequest.AutoAndReg.Authorization.View;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -16,11 +17,6 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.Presenter.Authorizatio
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationViewInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
-
-import java.util.Timer;
-import java.util.TimerTask;
-
-import okio.Timeout;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,10 +35,11 @@ public class KeyRegistrationController extends Fragment implements Authorization
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_key_registration_controller, container, false);
+        View view = inflater.inflate(R.layout.fragment_key_registration_controller, container,
+                false);
         keyEditText = view.findViewById(R.id.key_edit_text);
         enterKeyButton = view.findViewById(R.id.enter_key_button);
         progressBar = view.findViewById(R.id.progressBarOverlay);

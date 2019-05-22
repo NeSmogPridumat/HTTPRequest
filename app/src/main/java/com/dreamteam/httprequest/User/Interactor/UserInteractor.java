@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
-import android.util.Log;
 
 import com.dreamteam.httprequest.Data.AddData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
@@ -108,8 +107,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         if (t instanceof SocketTimeoutException|| t instanceof ConnectException) {
             title = "Ошибка соединения с сервером";
             description = "Проверте соединение с интернетом. Не удается подключится с серверу";
-        }
-        if (t instanceof NullPointerException) {
+        }else if (t instanceof NullPointerException) {
             title = "Объект не найден";
             description = "";
         }
@@ -123,7 +121,6 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
             }
         };
         mainHandler.post(myRunnable);
-        Log.e(TAG, "Failed server" + t.toString());
     }
 
     @Override
@@ -133,7 +130,6 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 
 
     private void getUserResponse(byte[] byteArray) {//----------------------------------------------получение json ответа, преобразование его в User и вывод в основной поток
-        Log.i("UserInteractor", "jsonString");
         try {
             final User user = createUserOfBytes(byteArray);
             if (user.equals(null)) {

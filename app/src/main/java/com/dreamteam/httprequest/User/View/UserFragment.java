@@ -13,9 +13,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
@@ -37,7 +37,8 @@ public class UserFragment extends Fragment implements ViewUserInterface {
 
     private ImageView userImage, raitingStoryImage, scheduleImage;
     private TextView userName, userSurName, mail, call, rating, groupTitle;
-    private RelativeLayout progressBar;
+    private RelativeLayout progressBarOverlay;
+    private ProgressBar progressBar;
     private RadioButton groupsRadioButton;
     private MainActivity activity;
 
@@ -64,7 +65,8 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         groupTitle = view.findViewById(R.id.group_title);
         userImage = view.findViewById(R.id.user_image);
         groupsRadioButton = view.findViewById(R.id.radio_button_groups);
-        progressBar = view.findViewById(R.id.progressBarOverlay);
+        progressBarOverlay = view.findViewById(R.id.progressBarOverlay);
+        progressBar = view.findViewById(R.id.progressBar);
         return view;
     }
 
@@ -81,7 +83,9 @@ public class UserFragment extends Fragment implements ViewUserInterface {
 
     @Override
     public void onStart() {
-        progressBar.setVisibility(View.VISIBLE);
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.progress_rotate);
+        progressBar.startAnimation(animation);
+        progressBarOverlay.setVisibility(View.VISIBLE);
         presenterUser.getUser(userID);
         super.onStart();
         groupsRadioButton.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +112,7 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         userSurName.setText(user.content.simpleData.surname);
         this.user = user;
         activity.setActionBarTitle(user.content.simpleData.name);
-        progressBar.setVisibility(View.GONE);
+        progressBarOverlay.setVisibility(View.GONE);
     }
 
     @Override
@@ -120,7 +124,7 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     @Override
     public void error(String title, String description) {
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
-        progressBar.setVisibility(View.GONE);
+        progressBarOverlay.setVisibility(View.GONE);
     }
 
     @Override

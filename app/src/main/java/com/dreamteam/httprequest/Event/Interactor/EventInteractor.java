@@ -26,11 +26,28 @@ public class EventInteractor implements EventFromHTTPManagerInterface {
 
     private ConstantConfig constantConfig = new ConstantConfig();
 
-
     public EventInteractor(EventPresenterInterface delegate){
         this.delegate = delegate;
     }
 
+    //=========================================REQUESTS====================================//
+
+    public void answerEvent (final AnswerQuestion eventResponse){
+        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.EVENT
+                + httpConfig.USER;
+
+        startPostRequest(path, eventResponse, constantConfig.ANSWER_FOR_EVENT_TYPE,
+                EventInteractor.this);
+    }
+
+    public void resultToQuestion (final AnswerQuestion answerQuestion){
+        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.EVENT
+                + httpConfig.USER;
+        startPostRequest(path, answerQuestion, constantConfig.RESULT_TO_QUESTION_TYPE,
+                EventInteractor.this);
+    }
+
+    //=========================ANSWERS=========================================================//
     @Override
     public void response(byte[] byteArray, String type) {
         if (type.equals(constantConfig.ANSWER_FOR_EVENT_TYPE)){
@@ -80,21 +97,6 @@ public class EventInteractor implements EventFromHTTPManagerInterface {
     @Override
     public void errorHanding(int resposeCode) {
 
-    }
-
-    public void answerEvent (final AnswerQuestion eventResponse){
-        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.EVENT
-                + httpConfig.USER;
-
-        startPostRequest(path, eventResponse, constantConfig.ANSWER_FOR_EVENT_TYPE,
-                EventInteractor.this);
-    }
-
-    public void resultToQuestion (final AnswerQuestion answerQuestion){
-        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.EVENT
-                + httpConfig.USER;
-        startPostRequest(path, answerQuestion, constantConfig.RESULT_TO_QUESTION_TYPE,
-                EventInteractor.this);
     }
 
     private void answerServerToQuestion(){

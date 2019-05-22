@@ -3,8 +3,8 @@ package com.dreamteam.httprequest.AutoAndReg.Authorization.View;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -23,7 +23,6 @@ import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.Service.EventService;
 
-//TODO: порт 9000
 
 //create new login
 //enable user auth
@@ -49,7 +48,7 @@ public class AuthorizationController extends Fragment implements AuthorizationVi
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_authorization_controller, container, false);
@@ -57,11 +56,9 @@ public class AuthorizationController extends Fragment implements AuthorizationVi
         passwordEditText = view.findViewById(R.id.password);
         authorizationButton = view.findViewById(R.id.authorization_button);
         registrationTextView = view.findViewById(R.id.authorization_registration_text_view);
-//        activity.hideBottomNavigationView(activity.bottomNavigationView);
         progressBar = view.findViewById(R.id.progressBarOverlay);
         activity.bottomNavigationTextView.setText("");
         stopService();
-
         return view;
     }
 
@@ -114,8 +111,8 @@ public class AuthorizationController extends Fragment implements AuthorizationVi
 
     @Override
     public void error(String title, String description) {
-
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

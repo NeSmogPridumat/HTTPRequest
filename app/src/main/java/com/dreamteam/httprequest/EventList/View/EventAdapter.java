@@ -16,7 +16,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventHolder> {
     ArrayList<EventType4> eventArrayList;
     private ArrayList<EventHolder> eventHolders = new ArrayList<>();
 
-    public EventAdapter (ArrayList<EventType4> eventArrayList){
+    EventAdapter(ArrayList<EventType4> eventArrayList){
         this.eventArrayList = eventArrayList;
     }
 

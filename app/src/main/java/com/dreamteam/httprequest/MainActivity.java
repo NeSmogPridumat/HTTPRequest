@@ -17,7 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.View.EditInfoProfileController;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.AuthorizationController;
@@ -62,30 +62,36 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-                        switch (menuItem.getItemId()) {
+                switch (menuItem.getItemId()) {
 
-                            case R.id.groups:
-                                clearMainActivity();
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new GroupsListFragment(userID)).commit();
-                                break;
+                    case R.id.groups:
+                        clearMainActivity();
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new GroupsListFragment(userID))
+                                .commit();
+                        break;
 
-                            case R.id.profile:
-                                clearMainActivity();
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UserFragment(userID)).commit();
-                                break;
+                    case R.id.profile:
+                        clearMainActivity();
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new UserFragment(userID))
+                                .commit();
+                        break;
 
-                            case R.id.notification:
-                                clearMainActivity();
-                                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new EventListController(userID)).commit();
-                                break;
-                        }
-                        return true;
-                    }
-                });
+                    case R.id.notification:
+                        clearMainActivity();
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new EventListController(userID))
+                                .commit();
+                        break;
+                }
+                return true;
+                }
+            });
 
         sharedPreferences = getPreferences(MODE_PRIVATE);
         userID = sharedPreferences.getString("userID", null);
@@ -99,7 +105,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
             e.putBoolean("isStart", true);
             e.apply();
             bottomNavigationView.setVisibility(View.GONE);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AuthorizationController(this)).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                    new AuthorizationController(this)).commit();
         }
     }
 
@@ -147,7 +154,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
     public void changeFragmentWitchBackstack(Fragment fragment, String type) {
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, type).addToBackStack(null).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, type)
+                .addToBackStack(null).commit();
     }
 
     public void openGroup(String id, int rules) {
@@ -201,7 +209,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         changeFragmentWitchBackstack(new SelectedListController(selectData, delegate, TYPE), null);
     }
 
-    public void openEditProfile(InfoProfileData infoProfileData, RequestInfo requestInfo, PresenterInterface delegate, String type) {
+    public void openEditProfile(InfoProfileData infoProfileData, RequestInfo requestInfo,
+                                PresenterInterface delegate, String type) {
         changeFragmentWitchBackstack(new EditInfoProfileController(infoProfileData, requestInfo, delegate, type), null);
     }
 
@@ -233,7 +242,6 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         bottomNavigationView.setVisibility(View.VISIBLE);
         view.clearAnimation();
         view.animate().translationY(0).setDuration(300);
-
     }
 
     public void openProfile() {
@@ -244,7 +252,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         changeFragmentWitchBackstack(new UserFragment(userID), null);
     }
 
-    public void openObjectList(ArrayList<ObjectData> objectDataArrayList, PresenterInterface delegate, String type) {
+    public void openObjectList(ArrayList<ObjectData> objectDataArrayList, PresenterInterface delegate,
+                               String type) {
         changeFragmentWitchBackstack(new ObjectListController(objectDataArrayList, type), null);
     }
 

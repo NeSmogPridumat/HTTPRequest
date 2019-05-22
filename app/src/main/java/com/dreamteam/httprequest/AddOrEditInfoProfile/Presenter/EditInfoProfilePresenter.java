@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.EditInfoProfileRouter;
-import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Protocols.EditInfoProfileViewInterface;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.DialogConfig;

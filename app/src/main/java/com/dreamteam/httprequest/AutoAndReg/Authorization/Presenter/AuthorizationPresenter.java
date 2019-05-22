@@ -1,10 +1,8 @@
 package com.dreamteam.httprequest.AutoAndReg.Authorization.Presenter;
 
 import android.graphics.Bitmap;
-import android.util.Log;
-import android.view.View;
 
-import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.AuthorizationRouter;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthData;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
@@ -36,20 +34,13 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
         authorizationInteractor.createLogin(login, password);
     }
 
-    //ответ создания логина, если true, открываем контроллер для ввода ключа
-    @Override
-    public void answerCreateLogin(boolean answer, AuthDataObject authDataObject) {
-        if (answer) {
-            router.getKeyLogin(authDataObject);
-        }
-    }
-
-    //если ответ true открываем фрагмент для изменения и добавления данных
-    @Override
-    public void answerEnableUserAuth(boolean answer, AuthDataObject authDataObject) {
-        if (answer) {
-            router.createUserToAuth(authDataObject, this);
-        }
+    public void enterUser(String login, String password){
+        authDataObject = new AuthDataObject();
+        authDataObject.authData = new AuthData();
+        authDataObject.authData.login = login;
+        authDataObject.authData.pass = password;
+        authDataObject.authData.key = null;
+        authorizationInteractor.getUserToken(authDataObject);
     }
 
     //открытие контроллера для регистрации
@@ -65,6 +56,22 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
         //сохраняем данные с ключом в актиности
         authDataObject.authData.key = key;
         router.setAuthData(authDataObject);
+    }
+
+    //ответ создания логина, если true, открываем контроллер для ввода ключа
+    @Override
+    public void answerCreateLogin(boolean answer, AuthDataObject authDataObject) {
+        if (answer) {
+            router.getKeyLogin(authDataObject);
+        }
+    }
+
+    //если ответ true открываем фрагмент для изменения и добавления данных
+    @Override
+    public void answerEnableUserAuth(boolean answer, AuthDataObject authDataObject) {
+        if (answer) {
+            router.createUserToAuth(authDataObject, this);
+        }
     }
 
     @Override
@@ -103,7 +110,6 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
 
     @Override
     public void answerGetUserToken(Token token) {
-        Log.i("sgfsf", token.id);
         router.getUserID(token.id);
     }
 
@@ -120,14 +126,5 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
     @Override
     public void error(String title, String description) {
         delegate.error(title, description);
-    }
-
-    public void enterUser(String login, String password){
-        authDataObject = new AuthDataObject();
-        authDataObject.authData = new AuthData();
-        authDataObject.authData.login = login;
-        authDataObject.authData.pass = password;
-        authDataObject.authData.key = null;
-        authorizationInteractor.getUserToken(authDataObject);
     }
 }

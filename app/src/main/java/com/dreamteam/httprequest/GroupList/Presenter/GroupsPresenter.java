@@ -1,9 +1,8 @@
 package com.dreamteam.httprequest.GroupList.Presenter;
 
 import android.graphics.Bitmap;
-import android.widget.Toast;
 
-import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;

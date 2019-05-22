@@ -1,10 +1,8 @@
 package com.dreamteam.httprequest.Event.View;
 
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +22,8 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsHolder> {
 
     private EventType4Controller eventType4Controller;
 
-    public QuestionsAdapter(ArrayList<Questions> questions, String userID, EventType4Controller eventType4Controller) {
+    QuestionsAdapter(ArrayList<Questions> questions, String userID,
+                     EventType4Controller eventType4Controller) {
         this.userID = userID;
         this.questions = questions;
         this.eventType4Controller = eventType4Controller;
@@ -99,12 +98,5 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsHolder> {
         }
         return size;
     }
-
-    private void animationOn(QuestionsHolder questionsHolder){
-            Display display = eventType4Controller.getActivity().getWindowManager().getDefaultDisplay();
-            ObjectAnimator animator = ObjectAnimator.ofFloat(questionsHolder.linearLayout, "translationX",1000);
-            animator.setDuration(10000);
-            animator.start();
-        }
-    }
+}
 

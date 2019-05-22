@@ -14,7 +14,7 @@ import com.dreamteam.httprequest.Service.EventService;
 
 public class AuthorizationRouter {
 
-    MainActivity activity;
+    private MainActivity activity;
 
     public AuthorizationRouter (MainActivity activity){
         this.activity = activity;
@@ -31,15 +31,14 @@ public class AuthorizationRouter {
         activity.authDataObject = authDataObject;
     }
 
+    //переключение на окно создания Юзера
     public void createUserToAuth(AuthDataObject authDataObject, PresenterInterface delegate){
         Toast.makeText(activity, "Введите личные данные", Toast.LENGTH_LONG).show();
         activity.openEditProfile(null, null,delegate, "User");
-
     }
 
     public AuthDataObject getAuthDataObject(){
-        AuthDataObject authDataObject = activity.authDataObject;
-        return authDataObject;
+        return activity.authDataObject;
     }
 
     public void setAuthData(AuthDataObject authDataObject){
@@ -65,6 +64,8 @@ public class AuthorizationRouter {
         activity.openProfile();
     }
 
+
+    //метод для скрытия клавиатуры
     private void hideKeyboard(){
         InputMethodManager inputManager =
                 (InputMethodManager) activity.

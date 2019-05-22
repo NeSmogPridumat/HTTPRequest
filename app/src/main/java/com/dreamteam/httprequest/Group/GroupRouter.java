@@ -1,6 +1,6 @@
 package com.dreamteam.httprequest.Group;
 
-import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;

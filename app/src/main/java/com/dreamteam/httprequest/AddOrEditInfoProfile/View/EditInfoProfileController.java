@@ -7,23 +7,19 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Presenter.EditInfoProfilePresenter;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Protocols.EditInfoProfileViewInterface;
-import com.dreamteam.httprequest.Data.AddData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
@@ -58,7 +54,6 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
         this.type = type;
         this.requestInfo = requestInfo;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

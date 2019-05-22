@@ -2,7 +2,7 @@ package com.dreamteam.httprequest.Interfaces;
 
 import android.graphics.Bitmap;
 
-import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.SelectedList.SelectData;
 

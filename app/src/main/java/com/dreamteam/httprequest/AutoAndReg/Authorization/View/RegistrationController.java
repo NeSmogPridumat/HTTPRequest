@@ -1,8 +1,7 @@
 package com.dreamteam.httprequest.AutoAndReg.Authorization.View;
 
-
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,7 +12,6 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.dreamteam.httprequest.AutoAndReg.Authorization.AuthorizationRouter;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Presenter.AuthorizationPresenter;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationViewInterface;
 import com.dreamteam.httprequest.MainActivity;
@@ -28,17 +26,15 @@ public class RegistrationController extends Fragment implements AuthorizationVie
     private AuthorizationPresenter authorizationPresenter;
     private RelativeLayout progressBar;
 
+    private EditText loginEditText, passwordEditText;
+    private Button registrationButton;
 
     public RegistrationController() {
         // Required empty public constructor
     }
 
-    private EditText loginEditText, passwordEditText;
-    private Button authorizationButton, registrationButton;
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_registration_controller, container, false);
         loginEditText = view.findViewById(R.id.registration_login);
@@ -85,7 +81,6 @@ public class RegistrationController extends Fragment implements AuthorizationVie
     public void error(String title, String description) {
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
         progressBar.setVisibility(View.GONE);
-
     }
 
     @Override

@@ -6,7 +6,7 @@ import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
 
-import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AnswerAuth;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthData;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
@@ -15,7 +15,6 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.Token;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationHTTPManagerInterface;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationPresenterInterface;
 import com.dreamteam.httprequest.Data.ConstantConfig;
-import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
@@ -46,6 +45,8 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
         this.delegate = delegate;
     }
 
+    //===================================REQUESTS========================================//
+
     //создание логина
     public void createLogin (String login, String password){
         authDataObject.authData = new AuthData();
@@ -56,21 +57,55 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
         startPostRequest(path, authDataObject, CREATE_LOGIN, AuthorizationInteractor.this);
     }
 
+    public void enableUserAuth (String key, final AuthDataObject authDataObject){
+        authDataObject.authData.key = key;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH + httpConfig.ENABLE;
+
+        startPostRequest(path, authDataObject, ENABLE_USER_AUTH, AuthorizationInteractor.this);
+    }
+
+    //создание User'a
+    public void createUserToAuth (InfoProfileData infoProfileData, final AuthDataObject authDataObject){
+        authDataObject.content = new Content();
+        authDataObject.content.simpleData.name = infoProfileData.title;
+        authDataObject.content.simpleData.surname = infoProfileData.description;
+        if (infoProfileData.imageData != null) {
+            authDataObject.content.mediaData.image = decodeBitmapInBase64(infoProfileData.imageData);
+        }
+        authDataObject.authData.key = null;
+
+        final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH + httpConfig.USER;
+
+        startPostRequest(path, authDataObject, ADD_USER_AUTH, AuthorizationInteractor.this);
+    }
+
+    public void getUserToken (AuthDataObject authDataObject){
+        authDataObject.authData.key = null;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH;
+
+        startPostRequest(path, authDataObject, GET_USER_TOKEN, AuthorizationInteractor.this);
+    }
+
+    //============================================ANSWERS===================================//
+
     @Override
     public void response(byte[] byteArray, String type) {
         if (byteArray != null){
-            if (type.equals(CREATE_LOGIN)) {
-                answerCreateLogin(byteArray);
-            } else if (type.equals(ENABLE_USER_AUTH)){
-                answerEnableUserAuth(byteArray);
-            }else if (type.equals(ADD_USER_AUTH)){
-                Log.i("TAF", "TTTTTTTTTTTTT");
-                answerCreateUserToAuth(byteArray);
-            } else if ((type.equals(GET_USER_TOKEN))){
-                answerGetUserToken(byteArray);
+            switch (type) {
+                case CREATE_LOGIN:
+                    answerCreateLogin(byteArray);
+                    break;
+                case ENABLE_USER_AUTH:
+                    answerEnableUserAuth(byteArray);
+                    break;
+                case ADD_USER_AUTH:
+                    answerCreateUserToAuth(byteArray);
+                    break;
+                case GET_USER_TOKEN:
+                    answerGetUserToken(byteArray);
+                    break;
             }
-
-            }else {
+        }else {
             Log.i("Error", "NOT TRUE");
         }
 
@@ -113,6 +148,7 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
         mainHandler.post(myRunnable);
     }
 
+    //ответ на получение Токена
     private void answerGetUserToken(byte[] byteArray){
         Gson gson = new Gson();
         String jsonString = new String(byteArray);
@@ -154,40 +190,6 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
         mainHandler.post(myRunnable);
     }
 
-    private boolean createBooleanOfBytes(byte[] byteArray){
-        Gson gson = new Gson();
-        String jsonString = new String(byteArray);
-        AnswerAuth answerAuth =  gson.fromJson(jsonString, AnswerAuth.class);
-        boolean responseBoolean = false;
-        if (answerAuth.status.equals("ok")){
-            responseBoolean = true;
-        }
-        final boolean answer = responseBoolean;
-        return answer;
-    }
-
-    public void enableUserAuth (String key, final AuthDataObject authDataObject){
-        authDataObject.authData.key = key;
-        final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH + httpConfig.ENABLE;
-
-        startPostRequest(path, authDataObject, ENABLE_USER_AUTH, AuthorizationInteractor.this);
-    }
-
-    public void createUserToAuth (InfoProfileData infoProfileData, final AuthDataObject authDataObject){
-        Log.i("ЧЁ", "НАДО??????");
-        authDataObject.content = new Content();
-        authDataObject.content.simpleData.name = infoProfileData.title;
-        authDataObject.content.simpleData.surname = infoProfileData.description;
-        if (infoProfileData.imageData != null) {
-            authDataObject.content.mediaData.image = decodeBitmapInBase64(infoProfileData.imageData);
-        }
-        authDataObject.authData.key = null;
-
-        final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH + httpConfig.USER;
-
-        startPostRequest(path, authDataObject, ADD_USER_AUTH, AuthorizationInteractor.this);
-    }
-
     private void answerCreateUserToAuth(byte[] byteArray){
         final boolean answer = createBooleanOfBytes(byteArray);
         Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -200,14 +202,18 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
         mainHandler.post(myRunnable);
     }
 
-    public void getUserToken (AuthDataObject authDataObject){
-        authDataObject.authData.key = null;
-        final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH;
+    //============================SUPPORT METHODS=============================================//
 
-        startPostRequest(path, authDataObject, GET_USER_TOKEN, AuthorizationInteractor.this);
+    private boolean createBooleanOfBytes(byte[] byteArray){
+        Gson gson = new Gson();
+        String jsonString = new String(byteArray);
+        AnswerAuth answerAuth =  gson.fromJson(jsonString, AnswerAuth.class);
+        boolean responseBoolean = false;
+        if (answerAuth.status.equals("ok")){
+            responseBoolean = true;
+        }
+        return responseBoolean;
     }
-
-    //================================SUPPORT METHODS============================================//
 
     private String decodeBitmapInBase64 (Bitmap bitmap){//------------------------------------------декодирование Bitmap в Base64
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

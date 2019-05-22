@@ -1,6 +1,6 @@
 package com.dreamteam.httprequest.GroupList;
 
-import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.SelectedList.SelectData;

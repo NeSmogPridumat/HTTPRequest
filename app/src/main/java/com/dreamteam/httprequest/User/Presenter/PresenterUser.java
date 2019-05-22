@@ -1,9 +1,8 @@
 package com.dreamteam.httprequest.User.Presenter;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
-import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
+import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
@@ -35,8 +34,6 @@ public class PresenterUser implements PresenterUserInterface {
 
     @Override
     public void answerGetUser(User user) {
-        long threadId = Thread.currentThread().getId();
-        Log.i("","Thread # " + threadId + " is doing this task");
         delegate.View(user);
     }
 

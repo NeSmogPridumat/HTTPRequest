@@ -4,9 +4,9 @@ package com.dreamteam.httprequest.Group.View;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -56,7 +56,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_group_controller, container, false);
@@ -73,14 +73,12 @@ public class GroupController extends Fragment implements GroupViewInterface {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         activity = (MainActivity) getActivity();
         groupPresenter = new GroupPresenter(this, activity);
-        Log.i("ControllerGROUP", "ONCreate");
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
     @Override
     public void onStart() {
-        Log.i("ControllerGROUP", "ONStart");
         progressBar.setVisibility(View.VISIBLE);
         groupPresenter.getGroup(groupID);
         super.onStart();
@@ -150,8 +148,8 @@ public class GroupController extends Fragment implements GroupViewInterface {
             inflater.inflate(R.menu.group_profile_rules7_controller_menu, menu);
         } else if (rules == 1) {
             inflater.inflate(R.menu.group_profile_rules1_controller_menu, menu);
-        } else {
-            setHasOptionsMenu(false);
+        } else if (rules == 0) {
+            inflater.inflate(R.menu.group_profile_rules0_controller_menu, menu);
         }
     }
 
@@ -186,7 +184,9 @@ public class GroupController extends Fragment implements GroupViewInterface {
             case R.id.exit_group:
                 RequestInfo requestInfoExit = new RequestInfo();
                 requestInfoExit.creatorID = activity.userID;
-                requestInfoExit.groupID = groupID;
+                requestInfoExit.groupID = group.id;
+                requestInfoExit.userID = activity.userID;
+                requestInfoExit.groupCreatorID = group.id;
                 groupPresenter.exitGroup(requestInfoExit);
                 break;
 

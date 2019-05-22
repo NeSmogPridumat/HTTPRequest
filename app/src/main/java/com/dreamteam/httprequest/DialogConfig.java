@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest;
 
-import android.util.Log;
 import android.util.SparseArray;
 
 import java.util.ArrayList;

@@ -2,7 +2,6 @@ package com.dreamteam.httprequest.EventList.Interactor;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
@@ -32,6 +31,8 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
         this.delegate = delegate;
     }
 
+    //======================================REQUESTS====================================//
+
     public void getEvents(String userID){
         final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.EVENT + httpConfig.USER + httpConfig.USER_ID_PARAM + userID;
         //TODO путь для получения списка эвентов
@@ -43,6 +44,8 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
             }
         }).start();
     }
+
+    //=======================================ANSWERS========================================//
 
     @Override
     public void response(byte[] byteArray, String type) {
@@ -73,7 +76,6 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
             }
         };
         mainHandler.post(myRunnable);
-        Log.e(TAG, "Failed server" + t.toString());
     }
 
     private void prepareGetEventsResponse (byte[] byteArray){
@@ -85,7 +87,6 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
                     String error = " ";
                     delegate.error(error, null);
                 } else {
-
                     Handler mainHandler = new Handler(Looper.getMainLooper());
                     Runnable myRunnable = new Runnable() {
                         @Override
@@ -100,6 +101,12 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
             }
         }
     }
+
+    @Override
+    public void errorHanding(int responseCode) {
+    }
+
+    //====================================SUPPORT METHODS===================================//
 
     private ArrayList<EventType4> createEventsOfBytes (byte[] byteArray)throws Exception{
 
@@ -116,14 +123,9 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
             if(!(jsonArray.get(i).equals("null"))) {
                 EventType4 event = gson.fromJson((list.get(i)), new TypeToken<EventType4>() {}.getType());
                 events.add(event);
-                Log.i("FFFF", Integer.toString(i));
             }
         }
         return events;
     }
 
-    @Override
-    public void errorHanding(int responseCode) {
-
-    }
 }

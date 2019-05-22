@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.GroupList.View;
 
-
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -9,13 +8,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -39,7 +40,8 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
     private GroupAdapter adapter;
     private MainActivity activity;
     public GroupsPresenter groupsPresenter;
-    private RelativeLayout progressBar;
+    private RelativeLayout progressBarOverlay;
+    private ProgressBar progressBar;
     MenuInflater inflater;
     Menu menu;
 
@@ -58,7 +60,8 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
         groupsRecyclerView = view.findViewById(R.id.groups_recycler_view);
         groupsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         groupsRecyclerView.setAdapter(adapter);
-        progressBar = view.findViewById(R.id.progressBarOverlay);
+        progressBarOverlay = view.findViewById(R.id.progressBarOverlay);
+        progressBar = view.findViewById(R.id.progressBar);
         return view;
     }
 
@@ -74,7 +77,9 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
 
     @Override
     public void onStart() {
-        progressBar.setVisibility(View.VISIBLE);
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.progress_rotate);
+        progressBar.startAnimation(animation);
+        progressBarOverlay.setVisibility(View.VISIBLE);
         groupsPresenter.getGroups(userID);//здесь ID User'а
         activity.setActionBarTitle("List Group");
         super.onStart();
@@ -107,7 +112,7 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
         groups = groupCollection;
         adapter.groupCollection = groupCollection;
         groupsRecyclerView.setAdapter(adapter);
-        progressBar.setVisibility(View.GONE);
+        progressBarOverlay.setVisibility(View.GONE);
 
         //TODO: внедрить измененное состояние для флажка и синхронизировать недавно обновленное состояние с флагом isChecked текущего объекта. Когда вы связываете свой держатель вида, проверьте, является ли флаг истинным или ложным, и обновите макет в соответствии с флагом.
         groupsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), groupsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
@@ -121,13 +126,12 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
 
             }
         }));
-
     }
 
     @Override
     public void error(String title, String description) {
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
-        progressBar.setVisibility(View.GONE);
+        progressBarOverlay.setVisibility(View.GONE);
     }
 
     public void redrawAdapter(String groupID, Bitmap bitmap){//presenter отправляет bitmap/картинку в этот метод, он отправляет их на отображение в адаптере
@@ -136,7 +140,6 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
         }
     }
 
-
     public void initAdapter(ArrayList<Group> groups){//инициализация адаптера
 //        adapter  = new GroupAdapter(groups);
 //        groupsRecyclerView.setAdapter(adapter);
@@ -144,7 +147,6 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
 
     @Override
     public void onDestroy() {
-        Log.i("LISTLISTLIST", "DESTROOOOOOOOOOY");
         groupsPresenter = null;
         groups = null;
         super.onDestroy();

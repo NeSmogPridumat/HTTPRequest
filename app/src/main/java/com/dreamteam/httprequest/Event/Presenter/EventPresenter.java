@@ -16,11 +16,6 @@ public class EventPresenter implements EventPresenterInterface {
     public EventPresenter (EventViewInterface delegate, MainActivity activity){
         this.delegate = delegate;
         eventRouter = new EventRouter(activity);
-
-    }
-
-    public void answerEvent (AnswerQuestion eventResponse){
-        eventInteractor.answerEvent(eventResponse);
     }
 
     @Override

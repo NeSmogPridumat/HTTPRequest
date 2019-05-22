@@ -3,6 +3,7 @@ package com.dreamteam.httprequest.Event.View;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,7 +26,6 @@ import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 
 import java.util.ArrayList;
-import java.util.Timer;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,7 +53,7 @@ public class EventType4Controller extends Fragment implements EventViewInterface
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_event_type4_controller, container, false);
@@ -142,7 +142,6 @@ public class EventType4Controller extends Fragment implements EventViewInterface
 
     @Override
     public void answerServerToQuestion() {
-        Log.i("ГЫГЫГЫ", "ЫЫЫЫЫЫ");
 
         if (event.response.type != 4){
            eventPresenter.openEventList();
