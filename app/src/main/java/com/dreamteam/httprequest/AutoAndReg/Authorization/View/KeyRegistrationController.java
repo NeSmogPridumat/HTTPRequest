@@ -81,4 +81,9 @@ public class KeyRegistrationController extends Fragment implements Authorization
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
         progressBar.setVisibility(View.GONE);
     }
+
+    @Override
+    public void showNotFound() {
+
+    }
 }

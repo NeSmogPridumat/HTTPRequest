@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Event.View.EventController">
+    android:background="@android:color/black">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
@@ -12,20 +12,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="30sp"
-        android:textColor="@android:color/black"
-        android:background="@color/colorGray"/>
+        android:textColor="@android:color/white"/>
 
     <TextView
         android:id="@+id/event_type4_description_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="24sp" />
+        android:textSize="12sp"
+        android:textColor="@android:color/white"/>
 
     <TextView
         android:id="@+id/event_type4_name_user_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        android:textColor="@android:color/white"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/questions_recycler_view"

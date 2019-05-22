@@ -1,6 +1,8 @@
 package com.dreamteam.httprequest.AutoAndReg.Authorization;
 
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -8,6 +10,7 @@ import android.widget.Toast;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
+import com.dreamteam.httprequest.Service.EventService;
 
 public class AuthorizationRouter {
 
@@ -48,6 +51,17 @@ public class AuthorizationRouter {
         activity.saveSharedPreferences(userID);
         activity.bottomNavigationView.setVisibility(View.VISIBLE);
         activity.showBottomNavigationView(activity.bottomNavigationView);
+
+        // Создаем PendingIntent для Task1
+        Intent intent = new Intent(activity, EventService.class);
+        PendingIntent pi = activity.createPendingResult(1, intent, 0);
+        // Создаем Intent для вызова сервиса, кладем туда параметр времени
+        // и созданный PendingIntent
+        intent.putExtra("userID", userID)
+                .putExtra("Pending", pi);
+        // стартуем сервис
+        activity.startService(intent);
+
         activity.openProfile();
     }
 
@@ -60,7 +74,4 @@ public class AuthorizationRouter {
                 InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
-    public void showNotFound(){
-        Toast.makeText(activity, "Пользователь не зарегестрирован", Toast.LENGTH_LONG).show();
-    }
 }

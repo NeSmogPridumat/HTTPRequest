@@ -12,10 +12,10 @@ import com.dreamteam.httprequest.R;
 
 public class QuestionsHolder extends RecyclerView.ViewHolder {
 
-    public TextView titleTextView, descriptionTextView;
-    public LinearLayout linearLayout;
+    private TextView titleTextView, descriptionTextView;
+    LinearLayout linearLayout;
 
-    public QuestionsHolder(@NonNull View item) {
+    QuestionsHolder(@NonNull View item) {
         super(item);
         titleTextView = item.findViewById(R.id.title_questions);
         descriptionTextView = item.findViewById(R.id.description_questions);

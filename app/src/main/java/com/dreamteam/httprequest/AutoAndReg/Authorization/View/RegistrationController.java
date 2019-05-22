@@ -87,4 +87,9 @@ public class RegistrationController extends Fragment implements AuthorizationVie
         progressBar.setVisibility(View.GONE);
 
     }
+
+    @Override
+    public void showNotFound() {
+
+    }
 }

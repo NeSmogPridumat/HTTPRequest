@@ -24,7 +24,7 @@ public class EditInfoProfilePresenter implements PresenterInterface {
     private DialogConfig dialogConfig = new DialogConfig();
 
     //создание списка вариантов для диалога
-    int[] photoActionArray = {dialogConfig.CAMERA_REQUEST_CODE, dialogConfig.GALLERY_REQUEST_CODE, dialogConfig.DELETE_PHOTO_REQUEST_CODE};
+    int[] photoActionArray = {dialogConfig.CAMERA_REQUEST_CODE, dialogConfig.GALLERY_REQUEST_CODE}; //, dialogConfig.DELETE_PHOTO_REQUEST_CODE - для удаления фото
 
     public EditInfoProfilePresenter(MainActivity activity, EditInfoProfileViewInterface delegateView, PresenterInterface delegate){
         this.delegate = delegate;

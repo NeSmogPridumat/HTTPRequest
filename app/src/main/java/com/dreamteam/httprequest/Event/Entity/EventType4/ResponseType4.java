@@ -8,4 +8,5 @@ public class ResponseType4 {
     public ArrayList<Questions> questions = new ArrayList<>();
     public int type;
     public ArrayList<User> users = new ArrayList<>();
+    public ContentEventType4 content = new ContentEventType4();
 }

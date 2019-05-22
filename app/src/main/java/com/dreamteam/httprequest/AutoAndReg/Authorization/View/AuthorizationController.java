@@ -2,6 +2,7 @@ package com.dreamteam.httprequest.AutoAndReg.Authorization.View;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthData;
@@ -19,6 +21,7 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.Presenter.Authorizatio
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationViewInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
+import com.dreamteam.httprequest.Service.EventService;
 
 //TODO: порт 9000
 
@@ -33,7 +36,8 @@ import com.dreamteam.httprequest.R;
 public class AuthorizationController extends Fragment implements AuthorizationViewInterface {
 
     private EditText loginEditText, passwordEditText;
-    private Button authorizationButton, registrationButton;
+    private Button authorizationButton;
+    private TextView registrationTextView;
 
      private AuthorizationPresenter authorizationPresenter;
      private MainActivity activity;
@@ -52,10 +56,19 @@ public class AuthorizationController extends Fragment implements AuthorizationVi
         loginEditText = view.findViewById(R.id.login);
         passwordEditText = view.findViewById(R.id.password);
         authorizationButton = view.findViewById(R.id.authorization_button);
-        registrationButton = view.findViewById(R.id.authorization_registration_button);
-        activity.hideBottomNavigationView(activity.bottomNavigationView);
+        registrationTextView = view.findViewById(R.id.authorization_registration_text_view);
+//        activity.hideBottomNavigationView(activity.bottomNavigationView);
         progressBar = view.findViewById(R.id.progressBarOverlay);
+        activity.bottomNavigationTextView.setText("");
+        stopService();
+
         return view;
+    }
+
+    //остановка работы сервиса
+    private void stopService(){
+        Intent intent = new Intent(activity, EventService.class);
+        activity.stopService(intent);
     }
 
     @Override
@@ -69,7 +82,7 @@ public class AuthorizationController extends Fragment implements AuthorizationVi
         activity.hideBottomNavigationView(activity.bottomNavigationView);
 
         //кнопка для регистрации, перекидывает на фрагмент для регистрации
-        registrationButton.setOnClickListener(new View.OnClickListener() {
+        registrationTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 authorizationPresenter.getRegistration();
@@ -101,7 +114,13 @@ public class AuthorizationController extends Fragment implements AuthorizationVi
 
     @Override
     public void error(String title, String description) {
+
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showNotFound() {
+        Toast.makeText(activity, "Пользователь не зарегестрирован", Toast.LENGTH_LONG).show();
         progressBar.setVisibility(View.GONE);
     }
 }

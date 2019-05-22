@@ -41,8 +41,7 @@ public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface 
 
   @Override public void response(byte[] byteArray, String type) {
       if (byteArray != null) {
-        byte[] copyArray = byteArray;
-        prepareGetBitmapOfByte(parsingStringType(type)[1], copyArray);
+          prepareGetBitmapOfByte(parsingStringType(type)[1], byteArray);
       }
   }
 

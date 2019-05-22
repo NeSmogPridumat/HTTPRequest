@@ -4,7 +4,7 @@ import com.dreamteam.httprequest.MainActivity;
 
 public class ObjectListRouter {
 
-  MainActivity activity;
+  private MainActivity activity;
 
   public ObjectListRouter(MainActivity activity){
     this.activity = activity;

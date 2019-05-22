@@ -2,6 +2,7 @@ package com.dreamteam.httprequest.User.View;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,6 +24,7 @@ import android.widget.Toast;
 
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
+import com.dreamteam.httprequest.Service.EventService;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.dreamteam.httprequest.User.Presenter.PresenterUser;
 import com.dreamteam.httprequest.User.Protocols.ViewUserInterface;
@@ -134,6 +136,7 @@ public class UserFragment extends Fragment implements ViewUserInterface {
                 break;
 
             case R.id.exit_menu_item_edit:
+                activity.stopService(new Intent(activity, EventService.class));
                 activity.exitLogin();//TODO
         }
         return super.onOptionsItemSelected(item);

@@ -10,7 +10,6 @@ import android.support.design.internal.BottomNavigationMenuView;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,7 +25,6 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.View.KeyRegistrationCo
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.RegistrationController;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
-import com.dreamteam.httprequest.Event.View.EventController;
 import com.dreamteam.httprequest.Event.View.EventType4Controller;
 import com.dreamteam.httprequest.EventList.View.EventListController;
 import com.dreamteam.httprequest.Group.Protocols.ActivityAction;
@@ -70,10 +68,6 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
                         switch (menuItem.getItemId()) {
 
-                            case R.id.activities:
-                                clearMainActivity();
-                                break;
-
                             case R.id.groups:
                                 clearMainActivity();
                                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new GroupsListFragment(userID)).commit();
@@ -99,28 +93,18 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
             sharedPreferences.getString("userID", null);
             userID = sharedPreferences.getString("userID", null);
             bottomNavigationView.setSelectedItemId(R.id.profile);
+
         } else {
             SharedPreferences.Editor e = sharedPreferences.edit();
             e.putBoolean("isStart", true);
             e.apply();
-            bottomNavigationView.setVisibility(View.INVISIBLE);
+            bottomNavigationView.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AuthorizationController(this)).commit();
         }
     }
 
     @Override
     protected void onStart() {
-
-        BottomNavigationMenuView bottomNavigationMenuView =
-                (BottomNavigationMenuView) bottomNavigationView.getChildAt(0);
-        View v = bottomNavigationMenuView.getChildAt(2);
-        BottomNavigationItemView itemView = (BottomNavigationItemView) v;
-
-        View badge = LayoutInflater.from(this)
-                .inflate(R.layout.bottomnavigation_event_notification, itemView, true);
-        bottomNavigationTextView = badge.findViewById(R.id.notification_badge);
-
-        bottomNavigationTextView.setVisibility(View.INVISIBLE);
 
         // Создаем PendingIntent для Task1
         Intent intent = new Intent(this, EventService.class);
@@ -131,6 +115,17 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
                 .putExtra("Pending", pi);
         // стартуем сервис
         startService(intent);
+
+        BottomNavigationMenuView bottomNavigationMenuView =
+                (BottomNavigationMenuView) bottomNavigationView.getChildAt(0);
+        View v = bottomNavigationMenuView.getChildAt(1);
+        BottomNavigationItemView itemView = (BottomNavigationItemView) v;
+
+        View badge = LayoutInflater.from(this)
+                .inflate(R.layout.bottomnavigation_event_notification, itemView, true);
+        bottomNavigationTextView = badge.findViewById(R.id.notification_badge);
+
+        bottomNavigationTextView.setVisibility(View.INVISIBLE);
 
         super.onStart();
     }
@@ -147,11 +142,12 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     }
 
     public void changeFragment(Fragment fragment, String type) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
     }
 
     public void changeFragmentWitchBackstack(Fragment fragment, String type) {
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, type).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).addToBackStack(null).commit();
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment, type).addToBackStack(null).commit();
     }
 
     public void openGroup(String id, int rules) {
@@ -230,12 +226,14 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     public void hideBottomNavigationView(BottomNavigationView view) {
         view.clearAnimation();
         view.animate().translationY(view.getHeight()).setDuration(300);
-
+        bottomNavigationView.setVisibility(View.GONE);
     }
 
     public void showBottomNavigationView(BottomNavigationView view) {
+        bottomNavigationView.setVisibility(View.VISIBLE);
         view.clearAnimation();
         view.animate().translationY(0).setDuration(300);
+
     }
 
     public void openProfile() {
@@ -284,10 +282,6 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AuthorizationController(this)).commit();
     }
 
-    public void openEventType12(EventType4 event) {
-        changeFragmentWitchBackstack(new EventController(event), null);
-    }
-
     public void openEventType4(EventType4 event) {
         changeFragmentWitchBackstack(new EventType4Controller(event), null);
     }
@@ -302,7 +296,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         if (requestCode == 1) {
             String event = data.getStringExtra("Events");
             if (event.equals("0")) {
-                bottomNavigationTextView.setVisibility(View.INVISIBLE);
+                bottomNavigationTextView.setVisibility(View.GONE);
             } else {
                 bottomNavigationTextView.setText(event);
                 bottomNavigationTextView.setVisibility(View.VISIBLE);
@@ -316,7 +310,6 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
             fm.popBackStack();
         }
     }
-
 
     @Override
     protected void onStop() {

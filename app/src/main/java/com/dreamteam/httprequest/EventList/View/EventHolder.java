@@ -21,8 +21,8 @@ public class EventHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindGroup(EventType4 event){
-        titleTextView.setText(event.data.content.simpleData.title);
-        descriptionTextView.setText(event.data.content.simpleData.description);
+        titleTextView.setText(event.response.content.simpleData.title);
+        descriptionTextView.setText(event.response.content.simpleData.description);
 
     }
 }

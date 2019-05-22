@@ -2,6 +2,7 @@ package com.dreamteam.httprequest.AutoAndReg.Authorization.Presenter;
 
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.view.View;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.InfoProfileData;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.AuthorizationRouter;
@@ -112,7 +113,7 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
             router.createUserToAuth(router.getAuthDataObject(), this);
         }
         if (responseCode == 404){
-            router.showNotFound();//TODO: возможно надо передать во View
+            delegate.showNotFound();//TODO: возможно надо передать во View
         }
     }
 

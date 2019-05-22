@@ -17,6 +17,7 @@ import com.dreamteam.httprequest.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.GroupsHTTPManagerInterface;
 
+import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
 import com.dreamteam.httprequest.SelectedList.SelectData;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -47,21 +48,11 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
         final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqGroup +
                 httpConfig.reqUser + httpConfig.USER_ID_PARAM + userId;
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                httpManager.getRequest(path, constantConfig.GET_GROUP_TYPE, GroupsInteractor.this);
-            }
-        }).start();
+        startGetRequest(path, constantConfig.GET_GROUP_TYPE, GroupsInteractor.this);
     }
 
     private void uploadImage(final String groupID, final String pathImage ){
-            new Thread(new Runnable() {
-            @Override
-            public void run() {
-                httpManager.getRequest(pathImage,constantConfig.IMAGE_TYPE + ":" + groupID, GroupsInteractor.this);
-            }
-        }).start();
+        startGetRequest(pathImage,constantConfig.IMAGE_TYPE + ":" + groupID, GroupsInteractor.this);
     }
 
     //--------------------------Получение данных из HTTP MANAGER и вызов функций обработки---------//
@@ -124,22 +115,22 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
     private void prepareGetGroupsResponse(byte[] byteArray){
         //TODO: узнать что делает final
         if (byteArray != null){
-            final ArrayList<Group> groupCollection = createGroupsOfBytes(byteArray);
-        if (groupCollection == null){
-            String error = " ";
-            delegate.error(error, null);
-        } else {
-            Handler mainHandler = new Handler(Looper.getMainLooper());
-            Runnable myRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    delegate.answerGetGroups(groupCollection);
-                }
-            };
-            mainHandler.post(myRunnable);
+                final ArrayList<Group> groupCollection = createGroupsOfBytes(byteArray);
+            if (groupCollection == null){
+                String error = " ";
+                delegate.error(error, null);
+            } else {
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+                Runnable myRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        delegate.answerGetGroups(groupCollection);
+                    }
+                };
+                mainHandler.post(myRunnable);
 
-            getImageRequest(groupCollection);
-        }
+                getImageRequest(groupCollection);
+            }
         }
     }
 
@@ -211,6 +202,23 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
             }
         }).start();
     }
+
+    //================================SUPPORT METHODS======================================//
+
+    //get-запросы на сервер
+    private void startGetRequest(final String path, final String type, final OutputHTTPManagerInterface delegate){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    httpManager.getRequest(path, type, delegate);
+                } catch (Exception error) {
+                    error(error);
+                }
+            }
+        }).start();
+    }
+
 
     private String createJsonObject(Bitmap bitmap, RequestInfo requestInfo){
         Gson gson = new Gson();

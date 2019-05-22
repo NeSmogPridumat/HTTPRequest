@@ -58,9 +58,9 @@ public class EventType4Controller extends Fragment implements EventViewInterface
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_event_type4_controller, container, false);
         titleTextView = view.findViewById(R.id.event_type4_title_text_view);
-        titleTextView.setText(event.data.content.simpleData.title);
+        titleTextView.setText(event.response.content.simpleData.title);
         descriptionTextView = view.findViewById(R.id.event_type4_description_text_view);
-        descriptionTextView.setText(event.data.content.simpleData.description);
+        descriptionTextView.setText(event.response.content.simpleData.description);
         userTextView = view.findViewById(R.id.event_type4_name_user_text_view);
         questionsRecyclerView = view.findViewById(R.id.questions_recycler_view);
         questionsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -78,7 +78,6 @@ public class EventType4Controller extends Fragment implements EventViewInterface
     @Override
     public void onStart() {
         createListForUser(event);
-
         super.onStart();
     }
 
@@ -94,28 +93,38 @@ public class EventType4Controller extends Fragment implements EventViewInterface
     }
 
     @SuppressLint("SetTextI18n")
-    private void createListForUser(EventType4 event){
+    private void createListForUser(EventType4 event) {
 
-        int counter = 0;
-        for (int i = 0; i < event.response.users.size(); i++){
-            if(checkUser(event.response.users.get(i))){
+        if (event.response.type != 4) {
+            for (int j = 0; j < event.response.questions.size(); j++) {
                 ArrayList<Questions> questions = new ArrayList<>();
-                userID = event.response.users.get(i).id;
-                userTextView.setText("User: " + event.response.users.get(i).content.simpleData.name + " " + event.response.users.get(i).content.simpleData.surname);
-                for (int j = 0; j < event.response.users.get(i).questions.size(); j++){
-                    if (event.response.users.get(i).questions.get(j).active){
-                        questions.add(event.response.questions.get(j));
-                        counter++;
-                    }
-                }
-                adapter = new QuestionsAdapter(questions, event.response.users.get(i).id, this);
+                questions.add(event.response.questions.get(j));
+                adapter = new QuestionsAdapter(questions, null, this);
                 questionsRecyclerView.setAdapter(adapter);
                 break;
             }
-        }
-        if( counter == 0){
-            Toast.makeText(getContext(), "Благодарим за ответы", Toast.LENGTH_LONG);
-            eventPresenter.openEventList();
+        } else {
+            int counter = 0;
+            for (int i = 0; i < event.response.users.size(); i++) {
+                if (checkUser(event.response.users.get(i))) {
+                    ArrayList<Questions> questions = new ArrayList<>();
+                    userID = event.response.users.get(i).id;
+                    userTextView.setText("User: " + event.response.users.get(i).content.simpleData.name + " " + event.response.users.get(i).content.simpleData.surname);
+                    for (int j = 0; j < event.response.users.get(i).questions.size(); j++) {
+                        if (event.response.users.get(i).questions.get(j).active) {
+                            questions.add(event.response.questions.get(j));
+                            counter++;
+                        }
+                    }
+                    adapter = new QuestionsAdapter(questions, event.response.users.get(i).id, this);
+                    questionsRecyclerView.setAdapter(adapter);
+                    break;
+                }
+            }
+            if (counter == 0) {
+                Toast.makeText(getContext(), "Благодарим за ответы", Toast.LENGTH_LONG);
+                eventPresenter.openEventList();
+            }
         }
     }
 
@@ -134,10 +143,15 @@ public class EventType4Controller extends Fragment implements EventViewInterface
     @Override
     public void answerServerToQuestion() {
         Log.i("ГЫГЫГЫ", "ЫЫЫЫЫЫ");
-        for (int i = 0; i < event.response.users.size(); i++){
-            for(int j = 0; j < event.response.users.get(i).questions.size(); j++){
-                if(event.response.users.get(i).id.equals(userID) && event.response.users.get(i).questions.get(j).id == position){
-                    event.response.users.get(i).questions.get(j).active = false;
+
+        if (event.response.type != 4){
+           eventPresenter.openEventList();
+        }else {
+            for (int i = 0; i < event.response.users.size(); i++) {
+                for (int j = 0; j < event.response.users.get(i).questions.size(); j++) {
+                    if (event.response.users.get(i).id.equals(userID) && event.response.users.get(i).questions.get(j).id == position) {
+                        event.response.users.get(i).questions.get(j).active = false;
+                    }
                 }
             }
         }

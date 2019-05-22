@@ -43,7 +43,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
     private Bitmap bitmap;
     private RelativeLayout progressBar;
 
-    GroupPresenter groupPresenter;
+    private GroupPresenter groupPresenter;
     Group group;
     String groupID;
 
@@ -87,8 +87,20 @@ public class GroupController extends Fragment implements GroupViewInterface {
 
         membersRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                groupPresenter.getMembers(groupID);
                 membersRadioButton.setChecked(false);
+                groupPresenter.getMembers(groupID);
+
+            }
+        });
+
+        subgroupRadioButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                subgroupRadioButton.setChecked(false);
+                if (group.nodeData.childList.size() != 0) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    groupPresenter.getSubgroup(group.nodeData.childList);
+                }
             }
         });
     }

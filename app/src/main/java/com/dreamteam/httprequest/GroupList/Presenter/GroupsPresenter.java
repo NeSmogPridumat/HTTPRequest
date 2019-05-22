@@ -61,9 +61,8 @@ public class GroupsPresenter implements GroupsPresenterInterface {
 
     public void showAddGroup(){
         InfoProfileData infoProfileData = null;
-        routerGroupList.showAddGroup(infoProfileData, this, constantConfig.GROUP_TYPE);
+        routerGroupList.showAddGroup(infoProfileData, this, constantConfig.ADD_GROUP_TYPE);
     }
-
 
     //отправляем запрос на показ списка с checkBox
     public void showSelectedList(ArrayList<Group> groups, MainActivity activity, String TYPE){

@@ -129,6 +129,21 @@ public class GroupPresenter implements GroupPresenterInterface {
         router.openGroup(group.id, group.rules);
     }
 
+    @Override
+    public void answerGetSubgroup(ArrayList<Group> subgroups) {
+        ArrayList<ObjectData> objectDataList = new ArrayList<>();
+        for (int i = 0; i < subgroups.size(); i++){
+            ObjectData objectData = new ObjectData();
+            objectData.id = subgroups.get(i).id;
+            objectData.title = subgroups.get(i).content.simpleData.title;
+            objectData.description = subgroups.get(i).content.simpleData.description;
+            objectData.image = subgroups.get(i).content.mediaData.image;
+            objectData.rules = subgroups.get(i).rules;
+            objectDataList.add(objectData);
+        }
+        router.openObjectList(objectDataList, this);
+    }
+
     public void openGroup(Group group, Router myRouter, Context context) {
         myRouter.getGroup(group, context);
     }
@@ -232,5 +247,9 @@ public class GroupPresenter implements GroupPresenterInterface {
 
     public void getMembers (String groupID){
         groupInteractor.getUserForList(groupID);
+    }
+
+    public void getSubgroup(ArrayList<String> subgroups){
+        groupInteractor.getSubgroup(subgroups, userID);
     }
 }

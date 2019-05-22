@@ -15,8 +15,10 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.Token;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationHTTPManagerInterface;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationPresenterInterface;
 import com.dreamteam.httprequest.Data.ConstantConfig;
+import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager;
+import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
@@ -49,19 +51,9 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
         authDataObject.authData = new AuthData();
         authDataObject.authData.login = login;
         authDataObject.authData.pass = password;
-        Gson gson = new Gson();
-        final String jsonObject = gson.toJson(authDataObject);
         final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH + httpConfig.CREATE;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    httpManager.postRequest(path, jsonObject, CREATE_LOGIN, AuthorizationInteractor.this);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+
+        startPostRequest(path, authDataObject, CREATE_LOGIN, AuthorizationInteractor.this);
     }
 
     @Override
@@ -178,18 +170,7 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
         authDataObject.authData.key = key;
         final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH + httpConfig.ENABLE;
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Gson gson = new Gson();
-                String jsonObject = gson.toJson(authDataObject);
-                try {
-                    httpManager.postRequest(path, jsonObject, ENABLE_USER_AUTH, AuthorizationInteractor.this);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        startPostRequest(path, authDataObject, ENABLE_USER_AUTH, AuthorizationInteractor.this);
     }
 
     public void createUserToAuth (InfoProfileData infoProfileData, final AuthDataObject authDataObject){
@@ -204,21 +185,10 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
 
         final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH + httpConfig.USER;
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Gson gson = new Gson();
-                    final String jsonObject = gson.toJson(authDataObject);
-                    httpManager.postRequest(path, jsonObject, ADD_USER_AUTH, AuthorizationInteractor.this);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        startPostRequest(path, authDataObject, ADD_USER_AUTH, AuthorizationInteractor.this);
     }
 
-    public void answerCreateUserToAuth (byte[] byteArray){
+    private void answerCreateUserToAuth(byte[] byteArray){
         final boolean answer = createBooleanOfBytes(byteArray);
         Handler mainHandler = new Handler(Looper.getMainLooper());
         Runnable myRunnable = new Runnable() {
@@ -233,19 +203,11 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
     public void getUserToken (AuthDataObject authDataObject){
         authDataObject.authData.key = null;
         final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH;
-        Gson gson = new Gson();
-        final String jsonObject = gson.toJson(authDataObject);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    httpManager.postRequest(path, jsonObject, GET_USER_TOKEN, AuthorizationInteractor.this);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+
+        startPostRequest(path, authDataObject, GET_USER_TOKEN, AuthorizationInteractor.this);
     }
+
+    //================================SUPPORT METHODS============================================//
 
     private String decodeBitmapInBase64 (Bitmap bitmap){//------------------------------------------декодирование Bitmap в Base64
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -255,4 +217,19 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
         return constantConfig.PREFIX + Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
+    private void startPostRequest (final String path, final AuthDataObject authDataObject,
+                                   final String type, final OutputHTTPManagerInterface delegate){
+        new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
+            @Override
+            public void run() {
+                try {
+                    Gson gson = new Gson();
+                    final String jsonObject = gson.toJson(authDataObject);
+                    httpManager.postRequest(path, jsonObject, type, delegate);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 }

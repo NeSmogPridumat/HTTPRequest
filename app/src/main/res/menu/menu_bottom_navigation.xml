@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/activities"
-        android:icon="@drawable/ic_action_info"
-        android:title=""/>
-    <item
         android:id="@+id/groups"
         android:icon="@drawable/ic_action_groups"
         android:title=""/>
@@ -16,5 +12,4 @@
         android:id="@+id/profile"
         android:icon="@drawable/ic_action_profile"
         android:title=""/>
-
 </menu>

@@ -29,6 +29,7 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
     private HTTPConfig httpConfig = new HTTPConfig();
     private ConstantConfig constantConfig = new ConstantConfig();
     private PendingIntent pi;
+    private Handler handler;
 
     public EventService() {
     }
@@ -41,17 +42,24 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
+        String userID = intent.getStringExtra("userID");
+        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.EVENT + httpConfig.USER + httpConfig.USER_ID_PARAM + userID;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                httpManager.getRequest(path, constantConfig.GET_EVENT_TYPE,  EventService.this);
+            }
+        }).start();
 
         pi = intent.getParcelableExtra("Pending");
 
-        final Handler handler = new Handler();
+        handler = new Handler();
         final int delay = 5000; //milliseconds
 
         handler.postDelayed(new Runnable(){
             public void run(){
                 //do something
-                String userID = intent.getStringExtra("userID");
-                final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.EVENT + httpConfig.USER + httpConfig.USER_ID_PARAM + userID;
                 //TODO путь для получения списка эвентов
 
                 new Thread(new Runnable() {
@@ -70,6 +78,7 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
     @Override
     public void response(byte[] byteArray, String type) {
         if (type.equals(constantConfig.GET_EVENT_TYPE)){
+
             prepareGetEventsResponse(byteArray);
         }
     }
@@ -133,6 +142,18 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
 
     @Override
     public void errorHanding(int resposeCode) {
+
+    }
+
+    @Override
+    public void onDestroy() {
+        long threadId = Thread.currentThread().getId();
+        Log.v("SERVICE","Service killed." + " Task #" + threadId);
+
+        //при вызове stopService() вызывается onDestroy() сервиса, но вызовы продолжают идти из-за того, что
+        // "поток продолжает работать". Чтобы закрыть поток и прекратить запросы на сервер, надо вызвать у handler
+        handler.removeCallbacksAndMessages(null);
+        super.onDestroy();
 
     }
 }

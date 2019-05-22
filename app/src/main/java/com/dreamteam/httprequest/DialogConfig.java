@@ -4,7 +4,6 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class DialogConfig {
     public final int CAMERA_REQUEST_CODE        = 0b1;
@@ -20,10 +19,10 @@ public class DialogConfig {
         i = Integer.parseInt(null);
     }
 
-    public ArrayList<String> getStringArray(int[] intArray){
+    ArrayList<String> getStringArray(int[] intArray){
         array.put(CAMERA_REQUEST_CODE, "Сделать фото");
         array.put(GALLERY_REQUEST_CODE, "Выбрать из Галлереи");
-        array.put(DELETE_PHOTO_REQUEST_CODE, "Удалить");
+//        array.put(DELETE_PHOTO_REQUEST_CODE, "Удалить");
         ArrayList<String> stringArrayList = new ArrayList<>();
         for (int i = 0; i<array.size(); i++ ){
             for (int j = 0; j<array.size(); j++){
@@ -36,21 +35,6 @@ public class DialogConfig {
     }
 
     public int getAnswer(String answer){
-
-//
-//        int request = CAMERA_REQUEST_CODE | DELETE_PHOTO_REQUEST_CODE;
-//
-//        if ((request & CAMERA_REQUEST_CODE) != 0){
-//            Log.i("","CAMERA_REQUEST_CODE");
-//        }
-//
-//        if ((request & GALLERY_REQUEST_CODE) != 0){
-//            Log.i("","GALLERY_REQUEST_CODE");
-//        }
-//
-//        if ((request & DELETE_PHOTO_REQUEST_CODE) != 0){
-//            Log.i("","DELETE_PHOTO_REQUEST_CODE");
-//        }
 
         int requestCode = 0;
             for (int i = 0; i < array.size(); i++){

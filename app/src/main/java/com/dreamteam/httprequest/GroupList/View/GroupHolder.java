@@ -36,10 +36,9 @@ public class GroupHolder extends RecyclerView.ViewHolder {
         descriptionTextView.setText(group.content.simpleData.description);
 
         checkBox.setChecked(false);
-            imageData = group.content.mediaData.imageData;
-            imageView.setImageBitmap(imageData);
-
-
+        imageData = group.content.mediaData.imageData;
+        imageView.setImageBitmap(imageData);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         if (group.rules == 7){
             adminImage.setVisibility(View.VISIBLE);

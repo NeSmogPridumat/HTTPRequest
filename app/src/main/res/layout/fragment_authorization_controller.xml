@@ -83,14 +83,14 @@
                     android:text="@string/sign_in"
                     android:textStyle="bold" />
 
-                <Button
-                    android:id="@+id/authorization_registration_button"
-                    style="?android:textAppearanceSmall"
+                <TextView
+                    android:layout_marginTop="60sp"
+                    android:id="@+id/authorization_registration_text_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:gravity="center"
+                    android:layout_height="match_parent"
                     android:text="@string/registration"
-                    android:textStyle="bold" />
+                    android:textColor="@android:color/holo_blue_dark"/>
 
             </LinearLayout>
 

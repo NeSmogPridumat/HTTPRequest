@@ -80,8 +80,6 @@ public class EventListController extends Fragment implements EventListViewInterf
         activity.setActionBarTitle("Event List");
         progressBar.setVisibility(View.VISIBLE);
         eventListPresenter.getEvents(userID);
-//        adapter.eventArrayList = eventArrayList;
-//        eventsRecyclerView.setAdapter(adapter);
 
         eventsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), eventsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
@@ -105,9 +103,12 @@ public class EventListController extends Fragment implements EventListViewInterf
             if (eventArrayList.get(i).active){
                 activeEvent.add(eventArrayList.get(i));
             } else {
-                notActiveEvent.add(eventArrayList.get(i));
+                if(notActiveEvent.size() < 20) {
+                    notActiveEvent.add(eventArrayList.get(i));
+                }
             }
         }
+
         adapter = new EventAdapter(activeEvent);
         nAdapter = new EventAdapter(notActiveEvent);
 

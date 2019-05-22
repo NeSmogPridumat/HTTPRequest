@@ -6,20 +6,25 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -31,6 +36,9 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
     PresenterInterface delegate;
     int i;
     DialogConfig dialogConfig;
+    private Uri photoURI;
+    String mCurrentPhotoPath;
+    File photoFile = null;
 
     private static final int REQUEST_ID_READ_WRITE_PERMISSION = 99;
     private static final int REQUEST_ID_IMAGE_CAPTURE = 100;
@@ -38,6 +46,11 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
     private int CAMERA;
     private int GALLERY;
     private int DELETE;
+
+    public ActivityForResultFragment(PresenterInterface delegate, int i) {
+        this.i = i;
+        this.delegate = delegate;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,80 +60,41 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
         GALLERY = dialogConfig.GALLERY_REQUEST_CODE;
         DELETE = dialogConfig.DELETE_PHOTO_REQUEST_CODE;
 
-        if (i == dialogConfig.CAMERA_REQUEST_CODE){
-//            if (android.os.Build.VERSION.SDK_INT >= 21) {
-//            }
+        //определяем, что было выбрано камера/Галлерея/удалить
+        if (i == dialogConfig.CAMERA_REQUEST_CODE) {
 
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, REQUEST_ID_IMAGE_CAPTURE);
-
-        }else if (i == dialogConfig.GALLERY_REQUEST_CODE){
+            //если "Камера", то подготавливаем место для сохранения файла и запускаем камеру
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            // Ensure that there's a camera activity to handle the intent
+            if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                // Create the File where the photo should go
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+                }
+                // Continue only if the File was successfully created
+                if (photoFile != null) {
+                    photoURI = FileProvider.getUriForFile(getActivity(),
+                            "com.example.android.provider",
+                            photoFile);
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                    startActivityForResult(takePictureIntent, REQUEST_ID_IMAGE_CAPTURE);
+                }
+            }
+        } else if(i ==dialogConfig.GALLERY_REQUEST_CODE){
+            //Если "Галлерея, то запускаем Галлерею
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
             photoPickerIntent.setType("image/*");
             startActivityForResult(photoPickerIntent, i);
-        }else if (i == dialogConfig.DELETE_PHOTO_REQUEST_CODE){
+        } else if(i ==dialogConfig.DELETE_PHOTO_REQUEST_CODE){
             delegate.forResult(null);//TODO: стоит заглушка, если нет фото
         }
     }
 
-    public ActivityForResultFragment(PresenterInterface delegate, int i){
-        this.i = i;
-        this.delegate = delegate;
-    }
-
-    //при добавлении форагмента сравниваем полученую позицию
-
-
-
-//        switch (i){
-//            //открываем камеру
-//            case CAMERA:
-//                if (android.os.Build.VERSION.SDK_INT >= 21) {
-////
-////                    int readPermission = ActivityCompat.checkSelfPermission(getContext(),
-////                            Manifest.permission.READ_EXTERNAL_STORAGE);
-////                    int writePermission = ActivityCompat.checkSelfPermission(getContext(),
-////                            Manifest.permission.WRITE_EXTERNAL_STORAGE);
-////
-////                    if (writePermission != PackageManager.PERMISSION_GRANTED ||
-////                            readPermission != PackageManager.PERMISSION_GRANTED) {
-////                        // If don't have permission so prompt the user.
-////                        this.requestPermissions(
-////                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
-////                                        Manifest.permission.READ_EXTERNAL_STORAGE},
-////                                REQUEST_ID_READ_WRITE_PERMISSION
-////                        );
-////                    }
-//                }
-////                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-////                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-////                    startActivityForResult(cameraIntent, i);
-////                }
-////                else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                    // your code here - is api 21
-//                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                    this.startActivityForResult(intent, REQUEST_ID_IMAGE_CAPTURE);
-////                }
-//                break;
-//
-//            //открываем Галлерею
-//            case dialogGonfig.GALLERY_REQUEST_CODE:
-//                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-//                photoPickerIntent.setType("image/*");
-//                startActivityForResult(photoPickerIntent, i);
-//                break;
-//
-//            //отправляем делегату null(при удалении фото)
-//            case 2:
-//                delegate.forResult(null);
-//                break;
-//        }
-
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
-
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         //
         switch (requestCode) {
@@ -133,7 +107,6 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
 
                     Toast.makeText(getContext(), "Permission granted!", Toast.LENGTH_LONG).show();
-
                 }
                 // Cancelled or denied.
                 else {
@@ -150,16 +123,38 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Bitmap bitmap = null;
-
         //если код запроса совпадает и запрос выполнен успешно (resultCode == RESULT_OK)
         if (requestCode == 100 && resultCode == RESULT_OK) {
+            //считываем с эксиф-данных ориентацию и при необходимости поворчиваем на нужный градус (Samsung)
+            int rotate = 0;
+            ExifInterface exif = null;
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.fromFile(photoFile));
+                exif = new ExifInterface(photoFile.getAbsolutePath());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
 
-            // перобразуем сделанное фото в Bitmap
-            bitmap = (Bitmap) data.getExtras().get("data");
+            Matrix matrix = new Matrix();
+            matrix.postRotate(rotate);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
-            //отправляем Bitmap в делегат
-            delegate.forResult(bitmap);
-
+            int nh = (int) ( bitmap.getHeight() * (512.0 / bitmap.getWidth()) );
+            Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);
+            delegate.forResult(scaled);
         } else if (requestCode == dialogConfig.GALLERY_REQUEST_CODE && resultCode == RESULT_OK) {
             //получаем Bitmap из интента (data.getData())
             try {
@@ -174,8 +169,6 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
                 Matrix matrix = new Matrix();
                 matrix.postRotate(orientation);
                 bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                int width = bitmap.getWidth();
-                int height = bitmap.getHeight();
 
                 int nh = (int) ( bitmap.getHeight() * (512.0 / bitmap.getWidth()) );
                 Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);
@@ -193,15 +186,42 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
     //Получение ориетации картинки
     private static int getOrientation(Context context, Uri photoUri) {
         Cursor cursor = context.getContentResolver().query(photoUri, new String[]{MediaStore.Images.ImageColumns.ORIENTATION}, null, null, null);
-        if (cursor.getCount() != 1) {
+        int i = cursor.getColumnCount();
+        if (cursor.getColumnCount() != 1) {
             cursor.close();
             return -1;
         }
         cursor.moveToFirst();
-        int orientation = cursor.getInt(0);
+        int orientation = 0;
+        if( cursor != null && cursor.moveToFirst() ) {
+            orientation = cursor.getInt(0);
+        }
         cursor.close();
-        cursor = null;
         return orientation;
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_ID_IMAGE_CAPTURE);
+        }
+    }
+
+    //создание файла фото
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "PNG_" + timeStamp + "_";
+        File storageDir = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 }
 

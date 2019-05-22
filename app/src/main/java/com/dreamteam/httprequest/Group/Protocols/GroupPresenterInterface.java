@@ -38,4 +38,6 @@ public interface GroupPresenterInterface extends PresenterInterface {
     void answerStartVoited();
 
     void answerGetGroupAfterEdit (Group group);
+
+    void answerGetSubgroup (ArrayList<Group> subgroups);
 }
