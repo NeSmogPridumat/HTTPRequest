@@ -4,6 +4,7 @@ package com.dreamteam.httprequest.ObjectList.View;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,8 +21,6 @@ import com.dreamteam.httprequest.ObjectList.Presenter.ObjectListPresenter;
 import com.dreamteam.httprequest.ObjectList.Protocols.ObjectListViewInterface;
 import com.dreamteam.httprequest.R;
 
-import com.dreamteam.httprequest.SelectedList.Preseter.SelectListPresenter;
-import com.dreamteam.httprequest.SelectedList.View.SelectAdapter;
 import java.util.ArrayList;
 
 /**
@@ -47,7 +46,7 @@ public class ObjectListController extends Fragment implements ObjectListViewInte
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_groups_list, container, false);

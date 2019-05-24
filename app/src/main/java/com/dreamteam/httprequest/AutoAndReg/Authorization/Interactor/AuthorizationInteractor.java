@@ -15,8 +15,8 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.Token;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationHTTPManagerInterface;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationPresenterInterface;
 import com.dreamteam.httprequest.Data.ConstantConfig;
-import com.dreamteam.httprequest.HTTPConfig;
-import com.dreamteam.httprequest.HTTPManager;
+import com.dreamteam.httprequest.Data.HTTPConfig;
+import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
 import com.google.gson.Gson;
 
@@ -137,7 +137,7 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
     }
 
     @Override
-    public void errorHanding(final int responseCode) {
+    public void errorHanding(final int responseCode, String type) {
         Handler mainHandler = new Handler(Looper.getMainLooper());
         Runnable myRunnable = new Runnable() {
             @Override

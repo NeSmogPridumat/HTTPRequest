@@ -109,7 +109,7 @@ public class EventType4Controller extends Fragment implements EventViewInterface
                 if (checkUser(event.response.users.get(i))) {
                     ArrayList<Questions> questions = new ArrayList<>();
                     userID = event.response.users.get(i).id;
-                    userTextView.setText("User: " + event.response.users.get(i).content.simpleData.name + " " + event.response.users.get(i).content.simpleData.surname);
+                    userTextView.setText(getResources().getText(R.string.user) + ": " + event.response.users.get(i).content.simpleData.name + " " + event.response.users.get(i).content.simpleData.surname);
                     for (int j = 0; j < event.response.users.get(i).questions.size(); j++) {
                         if (event.response.users.get(i).questions.get(j).active) {
                             questions.add(event.response.questions.get(j));

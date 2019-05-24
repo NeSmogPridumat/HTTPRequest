@@ -13,11 +13,11 @@ import com.dreamteam.httprequest.R;
 public class ObjectListHolder extends RecyclerView.ViewHolder {
 
   private TextView titleTextView, descriptionTextView;
-  public ImageView imageView;
+  private ImageView imageView;
 
-  ObjectData objectData = new ObjectData();
+  private ObjectData objectData = new ObjectData();
 
-  public ObjectListHolder(@NonNull View item) {
+  ObjectListHolder(@NonNull View item) {
     super(item);
     titleTextView = item.findViewById(R.id.object_list_title_text_view);
     descriptionTextView = item.findViewById(R.id.object_list_description_text_view);

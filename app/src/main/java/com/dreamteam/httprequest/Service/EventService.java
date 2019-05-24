@@ -3,17 +3,14 @@ package com.dreamteam.httprequest.Service;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Event.Entity.ChangeEvent.EventChoice;
-import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
-import com.dreamteam.httprequest.EventList.Interactor.EventListInteractor;
-import com.dreamteam.httprequest.HTTPConfig;
-import com.dreamteam.httprequest.HTTPManager;
+import com.dreamteam.httprequest.Data.HTTPConfig;
+import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -139,7 +136,7 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
     }
 
     @Override
-    public void errorHanding(int resposeCode) {
+    public void errorHanding(int resposeCode, String type) {
 
     }
 

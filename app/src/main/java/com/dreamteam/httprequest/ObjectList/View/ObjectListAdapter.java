@@ -8,15 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import com.dreamteam.httprequest.ObjectList.ObjectData;
 import com.dreamteam.httprequest.R;
-import com.dreamteam.httprequest.SelectedList.SelectData;
 import java.util.ArrayList;
 
 public class ObjectListAdapter extends RecyclerView.Adapter<ObjectListHolder>  {
 
-  public ArrayList<ObjectData> objectDataArrayList;
-  ArrayList<ObjectListHolder> selectHolders = new ArrayList<>();
+  ArrayList<ObjectData> objectDataArrayList;
+  private ArrayList<ObjectListHolder> selectHolders = new ArrayList<>();
 
-  public ObjectListAdapter( ArrayList<ObjectData> objectDataArrayList){
+  ObjectListAdapter(ArrayList<ObjectData> objectDataArrayList){
     this.objectDataArrayList = objectDataArrayList;
   }
 
@@ -31,20 +30,20 @@ public class ObjectListAdapter extends RecyclerView.Adapter<ObjectListHolder>  {
 
   @Override
   public void onBindViewHolder(@NonNull ObjectListHolder objectListHolder, int i) {
-    ObjectData objectData = objectDataArrayList.get(i);
-    objectListHolder.bindGroup(objectData);
+      ObjectData objectData = objectDataArrayList.get(i);
+      objectListHolder.bindGroup(objectData);
   }
 
   @Override
-  public int getItemCount() {
-    int size = 0;
-    if (objectDataArrayList.size()!=0){
-      size = objectDataArrayList.size();
-    }
-    return size;
+    public int getItemCount() {
+      int size = 0;
+      if (objectDataArrayList.size()!=0){
+        size = objectDataArrayList.size();
+      }
+      return size;
   }
 
-  public  void changeItem(String id, Bitmap bitmap){
+  void changeItem(String id, Bitmap bitmap){
     for (int i = 0; i < objectDataArrayList.size(); i ++){
       ObjectData objectData = objectDataArrayList.get(i);
       if (objectData.id.equals(id)){

@@ -12,8 +12,8 @@ import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.Group.Entity.GroupData.GroupMediaData;
 import com.dreamteam.httprequest.GroupList.Protocols.GroupsPresenterInterface;
-import com.dreamteam.httprequest.HTTPConfig;
-import com.dreamteam.httprequest.HTTPManager;
+import com.dreamteam.httprequest.Data.HTTPConfig;
+import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.GroupsHTTPManagerInterface;
 
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
@@ -88,7 +88,7 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
     }
 
     @Override
-    public void errorHanding(int resposeCode) {
+    public void errorHanding(int resposeCode, String type) {
 
     }
 

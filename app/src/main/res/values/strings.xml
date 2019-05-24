@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HTTP Request</string>
+    <string name="app_name">Dream Team</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -48,4 +48,10 @@
     <string name="edit_group">Edit Group</string>
     <string name="inactive">Inactive</string>
     <string name="active">Active</string>
+    <string name="edit_profile">Edit profile</string>
+    <string name="group_name">Group Name</string>
+    <string name="members">members</string>
+    <string name="subgroups">subgroups</string>
+    <string name="user">User</string>
+    <string name="rating">Rating</string>
 </resources>

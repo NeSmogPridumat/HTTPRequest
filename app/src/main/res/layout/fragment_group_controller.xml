@@ -59,7 +59,7 @@
 
                     <TextView
                         android:id="@+id/group_title_text_view"
-                        android:text="Group Name"
+                        android:text="@string/group_name"
                         android:textSize="42sp"
                         android:textColor="@android:color/white"
                         android:layout_width="wrap_content"
@@ -67,7 +67,7 @@
 
                     <TextView
                         android:id="@+id/group_description_text_view"
-                        android:text="Description"
+                        android:text="@string/description"
                         android:textColor="@color/colorGray"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
@@ -80,7 +80,7 @@
 
                         <RadioButton
                             android:id="@+id/radio_button_members_group"
-                            android:text="members"
+                            android:text="@string/members"
                             android:checked="false"
                             android:clickable="false"
                             android:textColor="@android:color/white"
@@ -90,7 +90,7 @@
 
                         <RadioButton
                             android:id="@+id/radio_button_subgroup"
-                            android:text="subgroup"
+                            android:text="@string/subgroups"
                             android:checked="false"
                             android:clickable="false"
                             android:textColor="@android:color/white"

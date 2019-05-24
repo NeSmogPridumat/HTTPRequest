@@ -4,17 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.dreamteam.httprequest.Data.ConstantConfig;
-import com.dreamteam.httprequest.HTTPConfig;
-import com.dreamteam.httprequest.HTTPManager;
+import com.dreamteam.httprequest.Data.HTTPConfig;
+import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.SelectListHTTPManagerInterface;
 import com.dreamteam.httprequest.SelectedList.Protocols.SelectListPresenterInterface;
 
 import java.net.SocketTimeoutException;
-
-import static android.support.constraint.Constraints.TAG;
 
 public class SelectListInteractor implements SelectListHTTPManagerInterface {
 
@@ -68,11 +65,10 @@ public class SelectListInteractor implements SelectListHTTPManagerInterface {
             }
         };
         mainHandler.post(myRunnable);
-        Log.e(TAG, "Failed server" + t.toString());
     }
 
     @Override
-    public void errorHanding(int resposeCode) {
+    public void errorHanding(int resposeCode, String type) {
 
     }
 

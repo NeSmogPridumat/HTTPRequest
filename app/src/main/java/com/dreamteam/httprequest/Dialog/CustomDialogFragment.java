@@ -1,4 +1,4 @@
-package com.dreamteam.httprequest;
+package com.dreamteam.httprequest.Dialog;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;

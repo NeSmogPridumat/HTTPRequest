@@ -44,5 +44,4 @@ public class SelectListPresenter implements SelectListPresenterInterface {
     public void error(String title, String description) {
         delegate.error(title, description);
     }
-
 }

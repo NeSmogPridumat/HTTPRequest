@@ -32,7 +32,8 @@ public class ConstantConfig {
     public final String RESULT_TO_QUESTION_TYPE =           "Result To Question";
     public final String GET_SUB_GROUP_TYPE =                "Get subgroup";
 
-
     public final String GET_USERS_FOR_ADD_STEP_1_TYPE =     "add users";
     public final String GET_USERS_FOR_ADD_STEP_2_TYPE =     "Get user";
+
+    public final String GET_RATING_TYPE =                   "Get rating";
 }

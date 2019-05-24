@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dreamteam.httprequest.R;
@@ -18,7 +17,7 @@ public class SelectHolder extends RecyclerView.ViewHolder {
     private ImageView imageView;
     CheckBox checkBox;
 
-    public SelectHolder(@NonNull View item) {
+    SelectHolder(@NonNull View item) {
         super(item);
         titleTextView = item.findViewById(R.id.select_list_title_text_view);
         descriptionTextView = item.findViewById(R.id.select_list_description_text_view);

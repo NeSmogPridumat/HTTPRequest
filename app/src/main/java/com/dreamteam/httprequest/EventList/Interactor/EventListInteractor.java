@@ -7,8 +7,8 @@ import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.EventList.Protocols.EventListFromHTTPManagerInterface;
 import com.dreamteam.httprequest.EventList.Protocols.EventListPresenterInterface;
-import com.dreamteam.httprequest.HTTPConfig;
-import com.dreamteam.httprequest.HTTPManager;
+import com.dreamteam.httprequest.Data.HTTPConfig;
+import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -16,8 +16,6 @@ import org.json.JSONArray;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-
-import static android.support.constraint.Constraints.TAG;
 
 public class EventListInteractor implements EventListFromHTTPManagerInterface {
 
@@ -103,7 +101,7 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
     }
 
     @Override
-    public void errorHanding(int responseCode) {
+    public void errorHanding(int responseCode, String type) {
     }
 
     //====================================SUPPORT METHODS===================================//

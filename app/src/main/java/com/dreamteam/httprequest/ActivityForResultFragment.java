@@ -19,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
+import com.dreamteam.httprequest.Dialog.DialogConfig;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 
 import java.io.File;

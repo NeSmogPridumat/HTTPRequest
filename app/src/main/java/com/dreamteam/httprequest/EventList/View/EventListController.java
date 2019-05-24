@@ -11,6 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -35,7 +38,8 @@ public class EventListController extends Fragment implements EventListViewInterf
     private MainActivity activity;
     private EventAdapter adapter, nAdapter;
     private String userID;
-    private RelativeLayout progressBar;
+    private RelativeLayout progressBarOverlay;
+    private ProgressBar progressBar;
     private RadioButton activeEventRadio, inactiveEventRadio;
 
     private EventListPresenter eventListPresenter;
@@ -60,7 +64,8 @@ public class EventListController extends Fragment implements EventListViewInterf
 
         noteventsRecyclerView = view.findViewById(R.id.events_not_active_recycler_view);
         noteventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        progressBar = view.findViewById(R.id.progressBarOverlay);
+        progressBarOverlay = view.findViewById(R.id.progressBarOverlay);
+        progressBar = view.findViewById(R.id.progressBar);
         return view;
     }
 
@@ -77,6 +82,8 @@ public class EventListController extends Fragment implements EventListViewInterf
         notActiveEvent = new ArrayList<>();
         activeEvent = new ArrayList<>();
         activity.setActionBarTitle("Event List");
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.progress_rotate);
+        progressBar.startAnimation(animation);
         progressBar.setVisibility(View.VISIBLE);
         eventListPresenter.getEvents(userID);
 

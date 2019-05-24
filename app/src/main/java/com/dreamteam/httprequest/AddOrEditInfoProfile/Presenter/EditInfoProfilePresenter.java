@@ -7,7 +7,7 @@ import com.dreamteam.httprequest.AddOrEditInfoProfile.EditInfoProfileRouter;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Protocols.EditInfoProfileViewInterface;
 import com.dreamteam.httprequest.Data.RequestInfo;
-import com.dreamteam.httprequest.DialogConfig;
+import com.dreamteam.httprequest.Dialog.DialogConfig;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.SelectedList.SelectData;

@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
+import com.dreamteam.httprequest.Data.QuestionRating.QuestionRating;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.MainActivity;
@@ -76,6 +77,11 @@ public class PresenterUser implements PresenterUserInterface {
 
     }
 
+    @Override
+    public void answerGetRating(ArrayList<QuestionRating> questionRatings) {
+        delegate.answerGetRating(questionRatings);
+    }
+
     public void getUser(String id){
         userInteractor.getUser(id);
     }
@@ -83,7 +89,6 @@ public class PresenterUser implements PresenterUserInterface {
     public void postUser(String name, String surname){
         userInteractor.postUser(name, surname);
     }
-
 
     //отправка на объекта на изменение
     public void showEditProfile(User user, Bitmap bitmap){
@@ -129,5 +134,9 @@ public class PresenterUser implements PresenterUserInterface {
 
     public void getGroups(String userID){
         userInteractor.getGroupForList(userID);
+    }
+
+    public void getRating (String userID){
+        userInteractor.getRating(userID);
     }
 }

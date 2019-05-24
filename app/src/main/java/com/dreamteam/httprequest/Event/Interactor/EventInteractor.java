@@ -8,8 +8,8 @@ import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Event.Entity.AnswerQuestion.AnswerQuestion;
 import com.dreamteam.httprequest.Event.Protocols.EventFromHTTPManagerInterface;
 import com.dreamteam.httprequest.Event.Protocols.EventPresenterInterface;
-import com.dreamteam.httprequest.HTTPConfig;
-import com.dreamteam.httprequest.HTTPManager;
+import com.dreamteam.httprequest.Data.HTTPConfig;
+import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
 import com.google.gson.Gson;
 
@@ -95,7 +95,7 @@ public class EventInteractor implements EventFromHTTPManagerInterface {
     }
 
     @Override
-    public void errorHanding(int resposeCode) {
+    public void errorHanding(int resposeCode, String type) {
 
     }
 

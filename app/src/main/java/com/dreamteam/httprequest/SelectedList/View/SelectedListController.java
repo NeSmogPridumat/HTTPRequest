@@ -4,6 +4,7 @@ package com.dreamteam.httprequest.SelectedList.View;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,7 +36,6 @@ public class SelectedListController extends Fragment implements SelectListViewCo
 
     private ArrayList<SelectData> listObject;
     private String type;
-    private final String TAG = "SelectListController";
 
     private RecyclerView selectRecyclerView;
     private MainActivity activity;
@@ -58,7 +58,7 @@ public class SelectedListController extends Fragment implements SelectListViewCo
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_selected_list_controller, container, false);

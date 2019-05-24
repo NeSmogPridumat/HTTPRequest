@@ -80,7 +80,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:text="TextView"
                     android:textColor="@color/colorGray"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -91,7 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:text="User"
+                    android:text="@string/user"
                     android:textColor="@android:color/white"
                     android:textSize="24sp"
                     app:layout_constraintStart_toEndOf="@+id/user_name_text_view"
@@ -129,55 +128,12 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </android.support.constraint.ConstraintLayout>
 
-            <GridLayout
-                android:id="@+id/rating_container"
+            <ExpandableListView
+                android:id="@+id/expListView"
                 android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginTop="16dp">
+                android:layout_height="wrap_content" >
+            </ExpandableListView>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="18dp"
-                    android:gravity="start|top"
-                    android:text="Rating"
-                    android:textColor="@color/colorGray" />
-
-                <TextView
-                    android:id="@+id/rating_text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="18dp"
-                    android:text="A"
-                    android:textColor="@color/colorGray"
-                    android:textSize="20dp" />
-
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_row="1"
-                    android:layout_column="0"
-                    android:layout_marginStart="18dp"
-                    android:layout_marginTop="8dp"
-                    android:gravity="start|top"
-                    android:text="Main Group: "
-                    android:textColor="@color/colorGray" />
-
-                <TextView
-                    android:id="@+id/group_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_row="1"
-                    android:layout_column="1"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="18dp"
-                    android:text="Group Title  "
-                    android:textColor="@color/colorGray" />
-
-            </GridLayout>
 
         </LinearLayout>
 

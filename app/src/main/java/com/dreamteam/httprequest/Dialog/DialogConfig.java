@@ -1,4 +1,4 @@
-package com.dreamteam.httprequest;
+package com.dreamteam.httprequest.Dialog;
 
 import android.util.SparseArray;
 
@@ -8,8 +8,9 @@ public class DialogConfig {
     public final int CAMERA_REQUEST_CODE        = 0b1;
     public final int GALLERY_REQUEST_CODE       = 0b10;
     public final int DELETE_PHOTO_REQUEST_CODE  = 0b100;
+    public final int OK_CODE                    = 0b1000;
 
-    SparseArray array = new SparseArray();
+    private SparseArray array = new SparseArray();
 
     void addInArray(){
 
@@ -21,9 +22,10 @@ public class DialogConfig {
     ArrayList<String> getStringArray(int[] intArray){
         array.put(CAMERA_REQUEST_CODE, "Сделать фото");
         array.put(GALLERY_REQUEST_CODE, "Выбрать из Галлереи");
-//        array.put(DELETE_PHOTO_REQUEST_CODE, "Удалить");
+        array.put(OK_CODE, "Ok");
+        array.put(DELETE_PHOTO_REQUEST_CODE, "Удалить");
         ArrayList<String> stringArrayList = new ArrayList<>();
-        for (int i = 0; i<array.size(); i++ ){
+        for (int i = 0; i<intArray.length; i++ ){
             for (int j = 0; j<array.size(); j++){
                 if (intArray[i] == array.keyAt(j)){
                     stringArrayList.add(array.valueAt(j).toString());
@@ -33,7 +35,7 @@ public class DialogConfig {
         return stringArrayList;
     }
 
-    public int getAnswer(String answer){
+    int getAnswer(String answer){
 
         int requestCode = 0;
             for (int i = 0; i < array.size(); i++){

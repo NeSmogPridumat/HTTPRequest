@@ -8,6 +8,7 @@ import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.Data.AddData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
+import com.dreamteam.httprequest.Dialog.DialogConfig;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.Group.GroupRouter;
@@ -30,6 +31,8 @@ public class GroupPresenter implements GroupPresenterInterface {
     private String userID;
     private ConstantConfig constantConfig = new ConstantConfig();
     private MainActivity activity;
+
+    private DialogConfig dialogConfig = new DialogConfig();
 
     public GroupPresenter(GroupViewInterface delegate, MainActivity activity){
         this.delegate = delegate;
@@ -143,6 +146,13 @@ public class GroupPresenter implements GroupPresenterInterface {
         router.openObjectList(objectDataList, this);
     }
 
+    @Override
+    public void backPressAfterSelectAdmin() {
+        backPress();
+        int[] photoActionArray = {dialogConfig.OK_CODE};
+        router.showDialog("Ваша заявка отправлена на подтверждение", photoActionArray, this);
+    }
+
     public void openGroup(Group group, Router myRouter, Context context) {
         myRouter.getGroup(group, context);
     }
@@ -157,7 +167,6 @@ public class GroupPresenter implements GroupPresenterInterface {
 
     @Override
     public void inputSelect(ArrayList<SelectData> arrayList, String type) {
-        Log.i("F", "to respect");
         if (type.equals(constantConfig.ADD)){
             groupInteractor.addSelectUser(arrayList, groupID, userID);
         } else if (type.equals(constantConfig.DELETE)){

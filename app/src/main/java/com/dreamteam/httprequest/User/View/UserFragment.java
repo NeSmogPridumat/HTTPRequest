@@ -1,10 +1,10 @@
 package com.dreamteam.httprequest.User.View;
 
-
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,13 +15,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
+import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dreamteam.httprequest.Data.QuestionRating.QuestionRating;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.Service.EventService;
@@ -29,18 +33,23 @@ import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.dreamteam.httprequest.User.Presenter.PresenterUser;
 import com.dreamteam.httprequest.User.Protocols.ViewUserInterface;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  */
 @SuppressLint("ValidFragment")
 public class UserFragment extends Fragment implements ViewUserInterface {
 
-    private ImageView userImage, raitingStoryImage, scheduleImage;
-    private TextView userName, userSurName, mail, call, rating, groupTitle;
+    private ImageView userImage;
+    private TextView userName, userSurName, mail, call;
     private RelativeLayout progressBarOverlay;
     private ProgressBar progressBar;
     private RadioButton groupsRadioButton;
     private MainActivity activity;
+    private LinearLayout userLinear;
+    private ExpandableListView expandableListView;
 
     public PresenterUser presenterUser;
 
@@ -53,7 +62,7 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_user, container, false);
@@ -61,12 +70,12 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         userSurName = view.findViewById(R.id.user_surname_text_view);
         mail = view.findViewById(R.id.mail_text_view);
         call = view.findViewById(R.id.call_number_text_view);
-        rating = view.findViewById(R.id.rating_text_view);
-        groupTitle = view.findViewById(R.id.group_title);
         userImage = view.findViewById(R.id.user_image);
         groupsRadioButton = view.findViewById(R.id.radio_button_groups);
         progressBarOverlay = view.findViewById(R.id.progressBarOverlay);
         progressBar = view.findViewById(R.id.progressBar);
+        userLinear = view.findViewById(R.id.user_fragment);
+        expandableListView = view.findViewById(R.id.expListView);
         return view;
     }
 
@@ -79,6 +88,7 @@ public class UserFragment extends Fragment implements ViewUserInterface {
             setHasOptionsMenu(true);
         }
         presenterUser = new PresenterUser(this, activity);
+        presenterUser.getRating(userID);
     }
 
     @Override
@@ -90,12 +100,12 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         super.onStart();
         groupsRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                if (activity.userID.equals(userID)) {
-                   activity.bottomNavigationView.setSelectedItemId(R.id.groups);
-                }else {
-                    presenterUser.getGroups(userID);
-                }
-                groupsRadioButton.setChecked(false);
+            if (activity.userID.equals(userID)) {
+               activity.bottomNavigationView.setSelectedItemId(R.id.groups);
+            }else {
+                presenterUser.getGroups(userID);
+            }
+            groupsRadioButton.setChecked(false);
             }
         });
     }
@@ -129,7 +139,34 @@ public class UserFragment extends Fragment implements ViewUserInterface {
 
     @Override
     public void answerGetGroups(int groups) {
-        groupsRadioButton.setText((Integer.toString(groups) + " groups"));
+        groupsRadioButton.setText(((groups) + " groups"));
+    }
+
+    @Override
+    public void answerGetRating(ArrayList<QuestionRating> questionRatings) {
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
+        layoutParams.setMargins(24,30,0,0);
+        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
+        DecimalFormat df= new DecimalFormat("#.##");
+        layoutParams1.setMarginStart(48);
+        float j = 0;
+        for (int i = 0; i < questionRatings.get(0).question.size(); i++){
+            j = j + questionRatings.get(0).question.get(i).middleValue;
+        }
+        TextView textView = new TextView(getContext());
+        textView.setText("Общая оценка: " + df.format(j/questionRatings.get(0).question.size()));
+        textView.setTextSize(36f);
+        textView.setTextColor( getResources().getColor(android.R.color.white));
+        textView.setLayoutParams(layoutParams);
+        userLinear.addView(textView);
+        for (int i = 0; i < questionRatings.get(0).question.size(); i++) {
+            TextView textView1 = new TextView(getContext());
+            textView1.setTextColor( getResources().getColor(android.R.color.white));
+            textView.setTextSize(18f);
+            textView1.setText(questionRatings.get(0).question.get(i).title + ": " + df.format(questionRatings.get(0).question.get(i).middleValue));
+            textView1.setLayoutParams(layoutParams1);
+            userLinear.addView(textView1);
+        }
     }
 
     @Override

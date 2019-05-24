@@ -1,4 +1,4 @@
-package com.dreamteam.httprequest;
+package com.dreamteam.httprequest.HTTPManager;
 
 import android.util.Log;
 
@@ -94,7 +94,8 @@ public class HTTPManager {
 
     }
 
-    private boolean isUrlConnect (HttpURLConnection urlConnection, OutputHTTPManagerInterface delegate){//-------------------------------проверка ответа сервера
+    private boolean isUrlConnect (HttpURLConnection urlConnection, OutputHTTPManagerInterface delegate,
+                                  String type){//-------------------------------проверка ответа сервера
         boolean result = false;
         try{
             if (urlConnection.getResponseCode() == 200){
@@ -104,7 +105,7 @@ public class HTTPManager {
                 int responseCode = urlConnection.getResponseCode();
                 Log.i("RESPONSE ERROR", "URL - " + urlConnection.getURL() +
                         "\nERROR CODE - " + responseCode + " RESPONSE MESSAGE : " + message);
-                errorHanding(responseCode, delegate);
+                errorHanding(responseCode, delegate, type);
             }
         } catch (Exception error){
             delegate.error(error);
@@ -118,8 +119,8 @@ public class HTTPManager {
         }
     }
 
-    private void errorHanding(int responseCode, OutputHTTPManagerInterface delegate){
-        delegate.errorHanding(responseCode);
+    private void errorHanding(int responseCode, OutputHTTPManagerInterface delegate, String type){
+        delegate.errorHanding(responseCode, type);
     }
 
     //---------------------------------------RESPONSE------------------------------------------------//
@@ -127,7 +128,7 @@ public class HTTPManager {
     private void prepareResponce(HttpURLConnection httpURLConnection, String type, OutputHTTPManagerInterface delegate){
         byte [] byteArray = null;
         Exception error = null;
-        if (isUrlConnect(httpURLConnection, delegate)) {
+        if (isUrlConnect(httpURLConnection, delegate, type)) {
             try {
                 byteArray = readDataFromRequestStream(httpURLConnection.getInputStream()).toByteArray();
             } catch (Exception e) {

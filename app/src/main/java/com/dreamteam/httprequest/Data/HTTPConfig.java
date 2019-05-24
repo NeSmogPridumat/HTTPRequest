@@ -1,4 +1,4 @@
-package com.dreamteam.httprequest;
+package com.dreamteam.httprequest.Data;
 
 public class HTTPConfig {
     public final String serverURL = "http://89.189.159.160:";
@@ -49,4 +49,6 @@ public class HTTPConfig {
     public final String USER_ID_PARAM_2 = "&userID=";
     public final String GET = "/get";
     public final String ADD = "/add";
+
+    public final String RATING = "/rating";
 }

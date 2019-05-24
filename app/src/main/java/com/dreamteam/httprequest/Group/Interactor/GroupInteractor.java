@@ -13,8 +13,8 @@ import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.Group.Entity.GroupData.GroupMediaData;
 import com.dreamteam.httprequest.Group.Entity.GroupData.NodeData;
 import com.dreamteam.httprequest.Group.Protocols.GroupPresenterInterface;
-import com.dreamteam.httprequest.HTTPConfig;
-import com.dreamteam.httprequest.HTTPManager;
+import com.dreamteam.httprequest.Data.HTTPConfig;
+import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.GroupHTTPMangerInterface;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
 import com.dreamteam.httprequest.ObjectList.ObjectData;
@@ -257,9 +257,10 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             title = "Объект не найден";
             description = "";
         }
-        Handler mainHandler = new Handler(Looper.getMainLooper());
+
         final String finalTitle = title;
         final String finalDescription = description;
+        Handler mainHandler = new Handler(Looper.getMainLooper());
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
@@ -270,8 +271,36 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     }
 
     @Override
-    public void errorHanding(int resposeCode) {
-
+    public void errorHanding(int resposeCode, String type) {
+        String title = null;
+        String description = null;
+        if(resposeCode == 403 && type.equals(constantConfig.SET_USER_IN_GROUP_TYPE)){
+            title = "Ошибка добавления";
+            description = "Пользователь приглашен в группу";
+            Handler mainHandler = new Handler(Looper.getMainLooper());
+            final String finalTitle1 = title;
+            final String finalDescription1 = description;
+            Runnable myRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    delegate.error(finalTitle1, finalDescription1);
+                }
+            };
+            mainHandler.post(myRunnable);
+        }else if(resposeCode == 403 && type.equals(constantConfig.SET_DELETE_USER_IN_GROUP_TYPE)){
+            title = "Ошибка удаления";
+            description = "Удаление будет доступно после завершения события";
+            Handler mainHandler = new Handler(Looper.getMainLooper());
+            final String finalTitle1 = title;
+            final String finalDescription1 = description;
+            Runnable myRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    delegate.error(finalTitle1, finalDescription1);
+                }
+            };
+            mainHandler.post(myRunnable);
+        }
     }
 
     private void prepareGetGroupAfterEditResponse(byte[] byteArray) {//-----------------------------------------------получение json ответа, преобразование его в User и вывод в основной поток
@@ -413,7 +442,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                delegate.backPress();
+                delegate.backPressAfterSelectAdmin();
             }
         };
         mainHandler.post(myRunnable);
@@ -508,29 +537,25 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     }
 
     private void prepareGetSubGroupResponse(byte[] byteArray){
-        try {
-            Group group = new Group();
-            group.nodeData = new NodeData();
-            group = createGroupOfBytes(byteArray);
-            if (group == null) {
-                String error = "Объект не существует";
-                delegate.error(error, null);
-            }
-            getSubgroups.add(group);
-            if(getSubgroups.size() == countSubgroup){
-                Handler mainHandler = new Handler(Looper.getMainLooper());
-                Runnable myRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        delegate.answerGetSubgroup(getSubgroups);
-                        getSubgroups.clear();
-                        countSubgroup = 0;
-                    }
-                };
-                mainHandler.post(myRunnable);
-            }
-        } catch (Exception error) {
-            error(error);
+        Group group = new Group();
+        group.nodeData = new NodeData();
+        group = createGroupOfBytes(byteArray);
+        if (group == null) {
+            String error = "Объект не существует";
+            delegate.error(error, null);
+        }
+        getSubgroups.add(group);
+        if(getSubgroups.size() == countSubgroup){
+            Handler mainHandler = new Handler(Looper.getMainLooper());
+            Runnable myRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    delegate.answerGetSubgroup(getSubgroups);
+                    getSubgroups.clear();
+                    countSubgroup = 0;
+                }
+            };
+            mainHandler.post(myRunnable);
         }
     }
 

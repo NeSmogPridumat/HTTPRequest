@@ -4,17 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import com.dreamteam.httprequest.Data.ConstantConfig;
-import com.dreamteam.httprequest.HTTPConfig;
-import com.dreamteam.httprequest.HTTPManager;
+import com.dreamteam.httprequest.Data.HTTPConfig;
+import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.ObjectListFromHTTPManagerInterface;
 import com.dreamteam.httprequest.ObjectList.Protocols.ObjectListPresenterInterface;
 
 import java.net.SocketTimeoutException;
-
-import static android.support.constraint.Constraints.TAG;
 
 public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface {
 
@@ -45,11 +42,6 @@ public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface 
       }
   }
 
-  private String[] parsingStringType(String string){//--------------------------------------------разбор строки (getImageGroupType + ":" + groupID)
-    String delimiter = ":";
-    return string.split(delimiter);
-  }
-
   private synchronized void prepareGetBitmapOfByte(final String groupID, byte[] byteArray){
     if (byteArray != null){
       Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -59,8 +51,6 @@ public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface 
       }
       final Bitmap finalBitmap = bitmap;
 
-      byteArray = null;
-      bitmap = null;
       Runnable myRunnable = new Runnable() {
         @Override
         public void run() {
@@ -92,11 +82,17 @@ public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface 
         }
       };
       mainHandler.post(myRunnable);
-      Log.e(TAG, "Failed server" + t.toString());
   }
 
   @Override
-  public void errorHanding(int resposeCode) {
+  public void errorHanding(int resposeCode, String type) {
+
 
   }
+
+  private String[] parsingStringType(String string){//--------------------------------------------разбор строки (getImageGroupType + ":" + groupID)
+        String delimiter = ":";
+        return string.split(delimiter);
+    }
+
 }

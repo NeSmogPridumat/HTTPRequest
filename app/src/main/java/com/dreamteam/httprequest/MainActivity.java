@@ -24,6 +24,7 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.View.AuthorizationCont
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.KeyRegistrationController;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.View.RegistrationController;
 import com.dreamteam.httprequest.Data.RequestInfo;
+import com.dreamteam.httprequest.Dialog.CustomDialogFragment;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.Event.View.EventType4Controller;
 import com.dreamteam.httprequest.EventList.View.EventListController;

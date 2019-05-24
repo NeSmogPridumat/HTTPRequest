@@ -2,6 +2,7 @@ package com.dreamteam.httprequest.User.Protocols;
 
 import android.graphics.Bitmap;
 
+import com.dreamteam.httprequest.Data.QuestionRating.QuestionRating;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
@@ -21,4 +22,6 @@ public interface PresenterUserInterface extends PresenterInterface {
     void openUserAfterEdit();
 
     void answerGetGroupsForList(ArrayList<Group> groups);
+
+    void answerGetRating(ArrayList<QuestionRating> questionRatings);
 }
