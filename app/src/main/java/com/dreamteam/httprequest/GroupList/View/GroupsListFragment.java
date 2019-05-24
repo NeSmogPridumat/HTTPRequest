@@ -1,11 +1,14 @@
 package com.dreamteam.httprequest.GroupList.View;
 
 import android.annotation.SuppressLint;
+import android.app.SearchManager;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,6 +21,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
@@ -92,6 +96,9 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
         super.onCreateOptionsMenu(menu, inflater);
         if (!deleteOn) {
             inflater.inflate(R.menu.group_list_controller, menu);
+            MenuItem search1 = menu.findItem(R.id.app_bar_search);
+            final SearchView searchView = (SearchView) search1.getActionView();
+            search(searchView);
         } else {
             inflater.inflate(R.menu.delete_select_list_controller, menu);
         }
@@ -107,9 +114,27 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
         return super.onOptionsItemSelected(item);
     }
 
+    private void search(SearchView searchView) {
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+    }
+
     @Override
     public void outputGroupsView(final ArrayList<Group> groupCollection) {//отправка полученного списка групп на отображение в адаптере
         groups = groupCollection;
+        adapter.allGroup = groupCollection;
         adapter.groupCollection = groupCollection;
         groupsRecyclerView.setAdapter(adapter);
         progressBarOverlay.setVisibility(View.GONE);
@@ -118,7 +143,11 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
         groupsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), groupsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                groupsPresenter.openGroup (groupCollection.get(position).id, groupCollection.get(position).rules);
+                if(adapter.mFilteredList.size() != 0) {
+                    groupsPresenter.openGroup(adapter.mFilteredList.get(position).id, adapter.mFilteredList.get(position).rules);
+                }else{
+                    groupsPresenter.openGroup(adapter.allGroup.get(position).id, adapter.allGroup.get(position).rules);
+                }
             }
 
             @Override

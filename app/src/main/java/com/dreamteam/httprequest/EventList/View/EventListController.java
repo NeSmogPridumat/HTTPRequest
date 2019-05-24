@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.EventList.View;
 
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -84,10 +83,11 @@ public class EventListController extends Fragment implements EventListViewInterf
         activity.setActionBarTitle("Event List");
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.progress_rotate);
         progressBar.startAnimation(animation);
-        progressBar.setVisibility(View.VISIBLE);
+        progressBarOverlay.setVisibility(View.VISIBLE);
         eventListPresenter.getEvents(userID);
 
-        eventsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), eventsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+        eventsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(),
+                eventsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 eventListPresenter.openEvent(activeEvent.get(position));
@@ -125,7 +125,7 @@ public class EventListController extends Fragment implements EventListViewInterf
         nAdapter.eventArrayList = notActiveEvent;
         noteventsRecyclerView.setAdapter(nAdapter);
         noteventsRecyclerView.getAdapter().notifyDataSetChanged();
-        progressBar.setVisibility(View.GONE);
+        progressBarOverlay.setVisibility(View.GONE);
 
         activeEventRadio.setOnClickListener(new View.OnClickListener() {
             @Override

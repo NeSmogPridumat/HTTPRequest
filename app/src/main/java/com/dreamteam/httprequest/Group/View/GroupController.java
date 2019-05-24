@@ -74,7 +74,6 @@ public class GroupController extends Fragment implements GroupViewInterface {
         activity = (MainActivity) getActivity();
         groupPresenter = new GroupPresenter(this, activity);
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
     }
 
     @Override
@@ -135,6 +134,17 @@ public class GroupController extends Fragment implements GroupViewInterface {
     @Override
     public void outputMembersView(ArrayList<User> members) {//TODO возможно стоит передавать не список а int значение
         membersRadioButton.setText(Integer.toString(members.size()) + " members");
+        int count = 0;
+        for (int i = 0; i < members.size(); i++){
+            if (!(activity.userID.equals(members.get(i).id))){
+                count = count++;
+            }
+        }
+        if (count!=0){
+            setHasOptionsMenu(false);
+        } else {
+            setHasOptionsMenu(true);
+        }
     }
 
     @Override

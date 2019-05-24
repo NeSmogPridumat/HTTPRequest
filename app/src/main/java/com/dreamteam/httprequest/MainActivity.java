@@ -212,7 +212,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
     public void openEditProfile(InfoProfileData infoProfileData, RequestInfo requestInfo,
                                 PresenterInterface delegate, String type) {
-        changeFragmentWitchBackstack(new EditInfoProfileController(infoProfileData, requestInfo, delegate, type), null);
+        changeFragmentWitchBackstack(new EditInfoProfileController(infoProfileData, requestInfo,
+                delegate, type), null);
     }
 
     @Override
@@ -289,7 +290,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AuthorizationController(this)).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new AuthorizationController(this)).commit();
     }
 
     public void openEventType4(EventType4 event) {
