@@ -1,5 +1,6 @@
 package com.dreamteam.httprequest.User.Presenter;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
@@ -9,6 +10,7 @@ import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.ObjectList.ObjectData;
+import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.User.Protocols.PresenterUserInterface;
 import com.dreamteam.httprequest.User.Router;
 import com.dreamteam.httprequest.SelectedList.SelectData;
@@ -16,6 +18,8 @@ import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.dreamteam.httprequest.User.Interactor.UserInteractor;
 import com.dreamteam.httprequest.User.Protocols.ViewUserInterface;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 public class PresenterUser implements PresenterUserInterface {
@@ -43,8 +47,9 @@ public class PresenterUser implements PresenterUserInterface {
     }
 
     @Override
-    public void error(String title, String description) {
-        delegate.error(title, description);
+    public void error(Throwable t) {
+
+        delegate.error(t);
     }
 
     @Override

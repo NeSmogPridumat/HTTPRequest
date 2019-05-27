@@ -1,5 +1,6 @@
 package com.dreamteam.httprequest.GroupList.Interactor;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -17,6 +18,7 @@ import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.GroupsHTTPManagerInterface;
 
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
+import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.SelectedList.SelectData;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -52,7 +54,8 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
     }
 
     private void uploadImage(final String groupID, final String pathImage ){
-        startGetRequest(pathImage,constantConfig.IMAGE_TYPE + ":" + groupID, GroupsInteractor.this);
+        startGetRequest(pathImage,constantConfig.IMAGE_TYPE + ":" + groupID,
+                GroupsInteractor.this);
     }
 
     //--------------------------Получение данных из HTTP MANAGER и вызов функций обработки---------//
@@ -72,20 +75,17 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
     }
 
     @Override
-    public void error(Throwable t) {
-        if (t instanceof SocketTimeoutException || t instanceof ConnectException){
-            final String title = "Ошибка соединения с сервером";
-            final String description = "Проверте соединение с интернетом. Не удается подключится с серверу";
-            Handler mainHandler = new Handler(Looper.getMainLooper());
-            Runnable myRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    delegate.error(title, description);
-                }
-            };
-            mainHandler.post(myRunnable);
-        }
+    public void error(final Throwable t) {
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                delegate.error(t);
+            }
+        };
+        mainHandler.post(myRunnable);
     }
+
 
     @Override
     public void errorHanding(int resposeCode, String type) {
@@ -112,12 +112,10 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
     }
 
     private void prepareGetGroupsResponse(byte[] byteArray){
-        //TODO: узнать что делает final
         if (byteArray != null){
                 final ArrayList<Group> groupCollection = createGroupsOfBytes(byteArray);
             if (groupCollection == null){
-                String error = " ";
-                delegate.error(error, null);
+                delegate.error(new NullPointerException());
             } else {
                 Handler mainHandler = new Handler(Looper.getMainLooper());
                 Runnable myRunnable = new Runnable() {
@@ -139,7 +137,8 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
         if (groupCollection != null){
             for (int i = 0 ; i<groupCollection.size(); i++){
                 Group group = groupCollection.get(i);
-                String pathImage = httpConfig.serverURL + httpConfig.SERVER_GETTER + group.content.mediaData.image;
+                String pathImage = httpConfig.serverURL + httpConfig.SERVER_GETTER
+                        + group.content.mediaData.image;
                 uploadImage(group.id, pathImage);
             }
         }
@@ -167,19 +166,21 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < arrayList.size(); i++){
-                    setNullSelectData(arrayList.get(i));
+            for (int i = 0; i < arrayList.size(); i++){
+                setNullSelectData(arrayList.get(i));
 
-                    //собираем путь запроса
-                    String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.reqGroup + httpConfig.DEL;//TODO
-                    Gson gson = new Gson();
-                    String jsonObject = gson.toJson(arrayList.get(i));
-                    try {
-                        httpManager.postRequest(path, jsonObject, constantConfig.DELETE_GROUP, GroupsInteractor.this);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                //собираем путь запроса
+                String path = httpConfig.serverURL + httpConfig.SERVER_SETTER
+                        + httpConfig.reqGroup + httpConfig.DEL;//TODO
+                Gson gson = new Gson();
+                String jsonObject = gson.toJson(arrayList.get(i));
+                try {
+                    httpManager.postRequest(path, jsonObject, constantConfig.DELETE_GROUP,
+                            GroupsInteractor.this);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+            }
             }
         }).start();
     }
@@ -194,7 +195,8 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
                     requestInfo.addData = new AddData();
                     requestInfo.addData.content = group.content;
                     final String jsonObject = createJsonObject(bitmap, requestInfo);
-                    httpManager.postRequest(path, jsonObject, constantConfig.POST_GROUP, GroupsInteractor.this);
+                    httpManager.postRequest(path, jsonObject, constantConfig.POST_GROUP,
+                            GroupsInteractor.this);
                 } catch (Exception error) {
                     error(error);
                 }
@@ -205,7 +207,8 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
     //================================SUPPORT METHODS======================================//
 
     //get-запросы на сервер
-    private void startGetRequest(final String path, final String type, final OutputHTTPManagerInterface delegate){
+    private void startGetRequest(final String path, final String type,
+                                 final OutputHTTPManagerInterface delegate){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -230,7 +233,7 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
 
     private String decodeBitmapInBase64 (Bitmap bitmap){//------------------------------------------декодирование Bitmap в Base64
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);//TODO: поставил 50, потому что долго грузит большие картинки
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);//поставил 50, потому что долго грузит большие картинки
         // Получаем изображение из потока в виде байтов
         byte[] bytes = byteArrayOutputStream.toByteArray();
         return constantConfig.PREFIX + Base64.encodeToString(bytes, Base64.DEFAULT);

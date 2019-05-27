@@ -1,5 +1,6 @@
 package com.dreamteam.httprequest.AutoAndReg.Authorization.View;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,8 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.Presenter.Authorizatio
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationViewInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
+
+import java.net.SocketTimeoutException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,12 +60,12 @@ public class RegistrationController extends Fragment implements AuthorizationVie
         registrationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if ((loginEditText.getText().toString().equals("")))//-----------------------------------проверка на заполнение поля
+                if ((loginEditText.getText().toString().isEmpty()))//-----------------------------------проверка на заполнение поля
                 {
-                    loginEditText.setError("Заполните поле");
+                    loginEditText.setError(getResources().getString(R.string.fill_in_the_field));
                     loginEditText.requestFocus();
-                } else if (passwordEditText.getText().toString().equals("")){
-                    passwordEditText.setError("Заполниет поле");
+                } else if (passwordEditText.getText().toString().isEmpty()){
+                    passwordEditText.setError(getResources().getString(R.string.fill_in_the_field));
                     passwordEditText.requestFocus();
                 } else {//---------------------------------------------------------------------------------код отправки изменеий на сервер
                     String login = loginEditText.getText().toString();
@@ -78,7 +81,17 @@ public class RegistrationController extends Fragment implements AuthorizationVie
     }
 
     @Override
-    public void error(String title, String description) {
+    public void error(Throwable t) {
+        String title = null;
+        String description  = null;
+        if (t instanceof SocketTimeoutException) {
+            title = getResources().getString(R.string.error_connecting_to_server);
+            description = getResources()
+                    .getString(R.string.check_the_connection_to_the_internet);
+        }else if (t instanceof NullPointerException) {
+            title = getResources().getString(R.string.object_not_found);
+            description = "";
+        }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
         progressBar.setVisibility(View.GONE);
     }

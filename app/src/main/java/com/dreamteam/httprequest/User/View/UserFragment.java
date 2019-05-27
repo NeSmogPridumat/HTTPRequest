@@ -2,6 +2,7 @@ package com.dreamteam.httprequest.User.View;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,7 +22,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
-import android.widget.SimpleExpandableListAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +33,8 @@ import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.dreamteam.httprequest.User.Presenter.PresenterUser;
 import com.dreamteam.httprequest.User.Protocols.ViewUserInterface;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -132,14 +134,25 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     }
 
     @Override
-    public void error(String title, String description) {
+    public void error(Throwable t) {
+        String title = null;
+        String description = null;
+        if (t instanceof SocketTimeoutException || t instanceof ConnectException) {
+            title = getResources().getString(R.string.error_connecting_to_server);
+            description = getResources().getString(R.string.check_the_connection_to_the_internet);
+        }else if (t instanceof NullPointerException) {
+            title = getResources().getString(R.string.object_not_found);
+            description = "";
+        }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
         progressBarOverlay.setVisibility(View.GONE);
     }
 
     @Override
-    public void answerGetGroups(int groups) {
-        groupsRadioButton.setText(((groups) + " groups"));
+    public void answerGetGroups(int groupsint) {
+        if(isAdded()) {
+            groupsRadioButton.setText(String.valueOf(groupsint) + getResources().getString(R.string.groups));
+        }
     }
 
     @Override
@@ -154,7 +167,7 @@ public class UserFragment extends Fragment implements ViewUserInterface {
             j = j + questionRatings.get(0).question.get(i).middleValue;
         }
         TextView textView = new TextView(getContext());
-        textView.setText("Общая оценка: " + df.format(j/questionRatings.get(0).question.size()));
+        textView.setText(getResources().getText(R.string.overall_rating) + df.format(j/questionRatings.get(0).question.size()));
         textView.setTextSize(36f);
         textView.setTextColor( getResources().getColor(android.R.color.white));
         textView.setLayoutParams(layoutParams);
@@ -178,7 +191,7 @@ public class UserFragment extends Fragment implements ViewUserInterface {
 
             case R.id.exit_menu_item_edit:
                 activity.stopService(new Intent(activity, EventService.class));
-                activity.exitLogin();//TODO
+                activity.exitLogin();
         }
         return super.onOptionsItemSelected(item);
     }

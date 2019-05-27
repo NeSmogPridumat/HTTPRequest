@@ -1,7 +1,7 @@
 package com.dreamteam.httprequest.SelectedList.View;
 
-
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.dreamteam.httprequest.Data.ConstantConfig;
@@ -26,6 +27,7 @@ import com.dreamteam.httprequest.SelectedList.Preseter.SelectListPresenter;
 import com.dreamteam.httprequest.SelectedList.Protocols.SelectListViewController;
 import com.dreamteam.httprequest.SelectedList.SelectData;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 /**
@@ -92,6 +94,25 @@ public class SelectedListController extends Fragment implements SelectListViewCo
         } else if (type.equals(constantConfig.ADMIN)){
             inflater.inflate(R.menu.one_change_select_list, menu);
         }
+        MenuItem search1 = menu.findItem(R.id.app_bar_search);
+        final SearchView searchView = (SearchView) search1.getActionView();
+        search(searchView);
+    }
+
+    private void search(SearchView searchView) {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                adapter.getFilter().filter(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
     }
 
     //при нажатии на корзину, собираем список выбранных элементов и отправляем в презентер
@@ -135,10 +156,10 @@ public class SelectedListController extends Fragment implements SelectListViewCo
             selectRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), selectRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-                    for (int i = 0; i < listObject.size(); i++) {
-                        listObject.get(i).check = false;
+                    for (int i = 0; i < adapter.mFilteredList.size(); i++) {
+                        adapter.mFilteredList.get(i).check = false;
                     }
-                    listObject.get(position).check = !listObject.get(position).check;
+                    adapter.mFilteredList.get(position).check = !adapter.mFilteredList.get(position).check;
                     adapter.notifyDataSetChanged();
                 }
 
@@ -151,7 +172,7 @@ public class SelectedListController extends Fragment implements SelectListViewCo
             selectRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), selectRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-                    listObject.get(position).check = !listObject.get(position).check;
+                    adapter.mFilteredList.get(position).check = !adapter.mFilteredList.get(position).check;
                     adapter.notifyItemChanged(position);
                 }
 
@@ -181,7 +202,16 @@ public class SelectedListController extends Fragment implements SelectListViewCo
     }
 
     @Override
-    public void error(String title, String description) {
+    public void error(Throwable t) {
+        String title = null;
+        String description = null;
+        if (t instanceof SocketTimeoutException) {
+            title = getResources().getString(R.string.error_connecting_to_server);
+            description = getResources().getString(R.string.check_the_connection_to_the_internet);
+        }else if (t instanceof NullPointerException) {
+            title = getResources().getString(R.string.object_not_found);
+            description = "";
+        }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
     }
 

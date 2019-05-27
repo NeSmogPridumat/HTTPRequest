@@ -7,21 +7,27 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.SelectedList.SelectData;
 
 import java.util.ArrayList;
 
-public class SelectAdapter extends RecyclerView.Adapter<SelectHolder> {
+public class SelectAdapter extends RecyclerView.Adapter<SelectHolder> implements Filterable {
 
     ArrayList<SelectData> selectCollection;
     private ArrayList<SelectHolder> selectHolders = new ArrayList<>();
     private SparseBooleanArray checkArray = new SparseBooleanArray();
+    ArrayList<SelectData> mFilteredList;
+    ArrayList<SelectData> allObject;
 
 
     SelectAdapter(ArrayList<SelectData> selectCollection){
         this.selectCollection = selectCollection;
+        mFilteredList = selectCollection;
+        allObject = selectCollection;
     }
 
     @NonNull
@@ -44,7 +50,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectHolder> {
     @Override
     public int getItemCount() {
         int size = 0;
-        if (selectCollection.size()!=0){
+        if (selectCollection != null && selectCollection.size()!=0){
             size = selectCollection.size();
         }
         return size;
@@ -58,5 +64,35 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectHolder> {
             }
             notifyItemChanged(i);
         }
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    mFilteredList = allObject;
+                } else {
+                    ArrayList<SelectData> filteredList = new ArrayList<>();
+                    for (int i = 0; i < allObject.size(); i++) {
+                        if (allObject.get(i).title.toLowerCase().contains(charString)) { // Сортируем по тексту из Formula
+                            filteredList.add(allObject.get(i));
+                        }
+                    }
+                    mFilteredList = filteredList;
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = mFilteredList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                selectCollection = (ArrayList<SelectData>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 }

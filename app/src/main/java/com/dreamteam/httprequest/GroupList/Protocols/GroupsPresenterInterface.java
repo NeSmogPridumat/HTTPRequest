@@ -15,7 +15,7 @@ public interface GroupsPresenterInterface extends PresenterInterface {
 
     void answerDeleteGroups();
 
-    void error (String titleError, String descriptionError);
+    void error (Throwable t);
 
     void answerAddGroup();
 }

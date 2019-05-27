@@ -1,6 +1,7 @@
 package com.dreamteam.httprequest.EventList.View;
 
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +25,8 @@ import com.dreamteam.httprequest.GroupList.View.RecyclerItemClickListener;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -145,8 +148,18 @@ public class EventListController extends Fragment implements EventListViewInterf
     }
 
     @Override
-    public void error(String title, String description) {
+    public void error(Throwable t) {
+        String title = null;
+        String description  = null;
+        if (t instanceof SocketTimeoutException || t instanceof ConnectException) {
+            title = getResources().getString(R.string.error_connecting_to_server);
+            description = getResources()
+                    .getString(R.string.check_the_connection_to_the_internet);
+        }else if (t instanceof NullPointerException) {
+            title = getResources().getString(R.string.object_not_found);
+            description = "";
+        }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
-        progressBar.setVisibility(View.GONE);
+        progressBarOverlay.setVisibility(View.GONE);
     }
 }

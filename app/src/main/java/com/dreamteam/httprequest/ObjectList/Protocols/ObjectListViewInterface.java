@@ -6,5 +6,5 @@ public interface ObjectListViewInterface {
 
   void redrawAdapter(String groupID, Bitmap bitmap);
 
-  void error (String title, String description);
+  void error (Throwable t);
 }

@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
     public void openGroup(String id, int rules) {
         GroupController controller = new GroupController(id, rules);
-        changeFragmentWitchBackstack(controller, "");//TODO: задать в backstack
+        changeFragmentWitchBackstack(controller, "");
     }
 
     public void openGroupAfterSelect(String id, int rules) {
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     }
 
     public void showDialog(Bundle bundle, PresenterInterface delegate) {
-        CustomDialogFragment dialogFragment = new CustomDialogFragment(delegate);
+        CustomDialogFragment dialogFragment = new CustomDialogFragment(delegate, this);
         dialogFragment.setArguments(bundle);
         dialogFragment.show(getSupportFragmentManager(), "MyDialog");
 

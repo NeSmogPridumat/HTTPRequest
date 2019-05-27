@@ -1,5 +1,6 @@
 package com.dreamteam.httprequest.AutoAndReg.Authorization.Interactor;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,6 +19,7 @@ import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
+import com.dreamteam.httprequest.R;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
@@ -112,24 +114,13 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
     }
 
     @Override
-    public void error(Throwable t) {
-        String title = null;
-        String description  = null;
-        if (t instanceof SocketTimeoutException) {
-            title = "Ошибка соединения с сервером";
-            description = "Проверте соединение с интернетом. Не удается подключится с серверу";
-        }
-        if (t instanceof NullPointerException) {
-            title = "Объект не найден";
-            description = "";
-        }
+    public void error(final Throwable t) {
+
         Handler mainHandler = new Handler(Looper.getMainLooper());
-        final String finalTitle = title;
-        final String finalDescription = description;
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                delegate.error(finalTitle, finalDescription);
+                delegate.error(t);
             }
         };
         mainHandler.post(myRunnable);
@@ -217,7 +208,7 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
 
     private String decodeBitmapInBase64 (Bitmap bitmap){//------------------------------------------декодирование Bitmap в Base64
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);//TODO: поставил 50, потому что долго грузит большие картинки
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);// поставил 50, потому что долго грузит большие картинки
         // Получаем изображение из потока в виде байтов
         byte[] bytes = byteArrayOutputStream.toByteArray();
         return constantConfig.PREFIX + Base64.encodeToString(bytes, Base64.DEFAULT);

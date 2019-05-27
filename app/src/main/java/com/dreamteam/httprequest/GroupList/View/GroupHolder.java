@@ -42,6 +42,8 @@ public class GroupHolder extends RecyclerView.ViewHolder {
 
         if (group.rules == 7){
             adminImage.setVisibility(View.VISIBLE);
+        } else {
+            adminImage.setVisibility(View.GONE);
         }
     }
 }

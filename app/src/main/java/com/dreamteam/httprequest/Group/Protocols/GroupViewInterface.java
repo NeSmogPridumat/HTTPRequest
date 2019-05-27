@@ -12,9 +12,11 @@ public interface GroupViewInterface {
 
     void outputGroupView(Group group);
 
-    void error(String title, String description);
+    void error(Throwable t);
 
     void outputMembersView(ArrayList<User> members);
 
     void answerStartVoited();
+
+    void errorHanding(String title, String descripton);
 }

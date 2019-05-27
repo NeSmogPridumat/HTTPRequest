@@ -81,7 +81,7 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
 
     private void prepareGetEventsResponse (byte[] byteArray){
         if (byteArray != null){
-            final ArrayList<EventChoice> eventArrayList;//TODO занимает много времени на Samsung
+            final ArrayList<EventChoice> eventArrayList;
             try {
                 eventArrayList = createEventsOfBytes(byteArray);
                 if (eventArrayList == null){

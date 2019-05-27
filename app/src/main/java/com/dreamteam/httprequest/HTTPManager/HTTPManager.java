@@ -43,7 +43,8 @@ public class HTTPManager {
     }
 
     //---------------------------------------------------------------------------POST-------------//
-    public void postRequest (String urlPath, String object, String type, OutputHTTPManagerInterface delegate) throws IOException {// -----------post запрос
+    public void postRequest (String urlPath, String object, String type,
+                             OutputHTTPManagerInterface delegate) throws IOException {// -----------post запрос
         HttpURLConnection urlConnection = createUrlConnection(urlPath);
 
         settingResponseGeneral(urlConnection);
@@ -53,7 +54,8 @@ public class HTTPManager {
         prepareResponce(urlConnection, type, delegate);
     }
 
-    public void putRequest (String urlPath, String object, String type, OutputHTTPManagerInterface delegate) throws IOException {
+    public void putRequest (String urlPath, String object, String type,
+                            OutputHTTPManagerInterface delegate) throws IOException {
         HttpURLConnection urlConnection = createUrlConnection(urlPath);
 
         settingResponseGeneral(urlConnection);
@@ -125,7 +127,8 @@ public class HTTPManager {
 
     //---------------------------------------RESPONSE------------------------------------------------//
 
-    private void prepareResponce(HttpURLConnection httpURLConnection, String type, OutputHTTPManagerInterface delegate){
+    private void prepareResponce(HttpURLConnection httpURLConnection, String type,
+                                 OutputHTTPManagerInterface delegate){
         byte [] byteArray = null;
         Exception error = null;
         if (isUrlConnect(httpURLConnection, delegate, type)) {
@@ -141,7 +144,8 @@ public class HTTPManager {
     }
 
 
-    private void sendDelegate(byte[] byteArray, Exception error, String type, OutputHTTPManagerInterface delegate){
+    private void sendDelegate(byte[] byteArray, Exception error, String type,
+                              OutputHTTPManagerInterface delegate){
         if (error != null){
             delegate.error(error);
         }
@@ -164,7 +168,6 @@ public class HTTPManager {
     }
 
     private void settingResponsePost(HttpURLConnection httpURLConnection) throws ProtocolException {
-        //TODO: оставить только что  необходимо
         httpURLConnection.setDoOutput(true);//true если надо использовать соединеие URL для вывода, и false, если нет. По умолчанию false
         httpURLConnection.setRequestMethod("POST");
         httpURLConnection.setChunkedStreamingMode(0);//если неизвестна длина тела вызывается метод setChunkedStreamingMode(0), противном случае HTTPUrlConnection будет вынужден буферизовать полное тело увеличивая задержку

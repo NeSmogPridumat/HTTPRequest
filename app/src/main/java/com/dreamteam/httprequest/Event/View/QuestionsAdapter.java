@@ -45,6 +45,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsHolder> {
         final Questions question = questions.get(i);
         questionsHolder.bindGroup(question);
 
+        //с помощью циклов программно создаем LinearLayout и кнопки для соответствующего кол-ва ответов
         int linearCount = questions.get(i).answers.size()/2;
         for(int c = 0; c <= linearCount; c++ ){
             LinearLayout linearLayout = new LinearLayout(questionsHolder.linearLayout.getContext());

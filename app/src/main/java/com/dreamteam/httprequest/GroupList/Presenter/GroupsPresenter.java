@@ -45,8 +45,8 @@ public class GroupsPresenter implements GroupsPresenterInterface {
     }
 
     @Override
-    public void error(String title, String description) {
-        delegate.error(title, description);
+    public void error(Throwable t) {
+        delegate.error(t);
     }
 
     @Override

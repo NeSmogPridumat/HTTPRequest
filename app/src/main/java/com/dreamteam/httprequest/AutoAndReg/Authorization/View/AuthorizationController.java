@@ -3,6 +3,7 @@ package com.dreamteam.httprequest.AutoAndReg.Authorization.View;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +23,8 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.Authorizatio
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.Service.EventService;
+
+import java.net.SocketTimeoutException;
 
 
 //create new login
@@ -89,12 +92,12 @@ public class AuthorizationController extends Fragment implements AuthorizationVi
         authorizationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if ((loginEditText.getText().toString().equals("")))//-----------------------------------проверка на заполнение поля
+                if ((loginEditText.getText().toString().isEmpty()))//-----------------------------------проверка на заполнение поля
                 {
-                    loginEditText.setError("Заполните поле");
+                    loginEditText.setError(getResources().getString(R.string.fill_in_the_field));
                     loginEditText.requestFocus();
-                } else if (passwordEditText.getText().toString().equals("")){
-                    passwordEditText.setError("Заполниет поле");
+                } else if (passwordEditText.getText().toString().isEmpty()){
+                    passwordEditText.setError(getResources().getString(R.string.fill_in_the_field));
                     passwordEditText.requestFocus();
                 } else {//---------------------------------------------------------------------------------код отправки изменеий на сервер
                     MainActivity activity = (MainActivity) getActivity();
@@ -110,14 +113,24 @@ public class AuthorizationController extends Fragment implements AuthorizationVi
     }
 
     @Override
-    public void error(String title, String description) {
+    public void error(Throwable t) {
+        String title = null;
+        String description  = null;
+        if (t instanceof SocketTimeoutException) {
+            title = getResources().getString(R.string.error_connecting_to_server);
+            description = getResources()
+                    .getString(R.string.check_the_connection_to_the_internet);
+        }else if (t instanceof NullPointerException) {
+            title = getResources().getString(R.string.object_not_found);
+            description = "";
+        }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
         progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void showNotFound() {
-        Toast.makeText(activity, "Пользователь не зарегестрирован", Toast.LENGTH_LONG).show();
+        Toast.makeText(activity, getResources().getText(R.string.user_not_registered), Toast.LENGTH_LONG).show();
         progressBar.setVisibility(View.GONE);
     }
 }

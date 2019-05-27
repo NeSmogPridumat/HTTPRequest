@@ -12,7 +12,7 @@ public interface ViewUserInterface {
 
     void ViewImage(Bitmap bitmap);
 
-    void  error (String title, String description);
+    void  error (Throwable t);
 
     void answerGetGroups(int groups);
 

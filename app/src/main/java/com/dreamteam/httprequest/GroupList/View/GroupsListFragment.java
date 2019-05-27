@@ -1,14 +1,12 @@
 package com.dreamteam.httprequest.GroupList.View;
 
 import android.annotation.SuppressLint;
-import android.app.SearchManager;
-import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -30,6 +28,8 @@ import com.dreamteam.httprequest.GroupList.Protocols.GroupsViewInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 /**
@@ -115,7 +115,6 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
     }
 
     private void search(SearchView searchView) {
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -139,11 +138,10 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
         groupsRecyclerView.setAdapter(adapter);
         progressBarOverlay.setVisibility(View.GONE);
 
-        //TODO: внедрить измененное состояние для флажка и синхронизировать недавно обновленное состояние с флагом isChecked текущего объекта. Когда вы связываете свой держатель вида, проверьте, является ли флаг истинным или ложным, и обновите макет в соответствии с флагом.
         groupsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), groupsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if(adapter.mFilteredList.size() != 0) {
+                if(adapter.mFilteredList != null && adapter.mFilteredList.size() != 0) {
                     groupsPresenter.openGroup(adapter.mFilteredList.get(position).id, adapter.mFilteredList.get(position).rules);
                 }else{
                     groupsPresenter.openGroup(adapter.allGroup.get(position).id, adapter.allGroup.get(position).rules);
@@ -158,7 +156,16 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
     }
 
     @Override
-    public void error(String title, String description) {
+    public void error(Throwable t) {
+        String title = null;
+        String description = null;
+        if (t instanceof SocketTimeoutException || t instanceof ConnectException) {
+            title = getResources().getString(R.string.error_connecting_to_server);
+            description = getResources().getString(R.string.check_the_connection_to_the_internet);
+        }else if (t instanceof NullPointerException){
+            title = getResources().getString(R.string.object_not_found);
+            description = "";
+        }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
         progressBarOverlay.setVisibility(View.GONE);
     }

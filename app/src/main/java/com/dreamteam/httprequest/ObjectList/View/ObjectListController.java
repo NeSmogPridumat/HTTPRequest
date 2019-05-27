@@ -2,6 +2,7 @@ package com.dreamteam.httprequest.ObjectList.View;
 
 
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -21,6 +22,7 @@ import com.dreamteam.httprequest.ObjectList.Presenter.ObjectListPresenter;
 import com.dreamteam.httprequest.ObjectList.Protocols.ObjectListViewInterface;
 import com.dreamteam.httprequest.R;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 /**
@@ -101,7 +103,16 @@ public class ObjectListController extends Fragment implements ObjectListViewInte
     }
 
     @Override
-    public void error(String title, String description) {
+    public void error(Throwable t) {
+        String title = null;
+        String description  = null;
+        if (t instanceof SocketTimeoutException) {
+            title = getResources().getString(R.string.error_connecting_to_server);
+            description = getResources().getString(R.string.check_the_connection_to_the_internet);
+        }else if (t instanceof NullPointerException) {
+            title = Resources.getSystem().getString(R.string.object_not_found);
+            description = "";
+        }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
     }
 }

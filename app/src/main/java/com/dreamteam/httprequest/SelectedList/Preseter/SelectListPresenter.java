@@ -41,7 +41,7 @@ public class SelectListPresenter implements SelectListPresenterInterface {
     }
 
     @Override
-    public void error(String title, String description) {
-        delegate.error(title, description);
+    public void error(Throwable t) {
+        delegate.error(t);
     }
 }

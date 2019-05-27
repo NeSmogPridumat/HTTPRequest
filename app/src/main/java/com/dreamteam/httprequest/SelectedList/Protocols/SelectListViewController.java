@@ -6,5 +6,5 @@ public interface SelectListViewController {
 
     void redrawAdapter(String objectID, Bitmap bitmap);
 
-    void error (String title, String description);
+    void error (Throwable t);
 }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public interface EventListPresenterInterface {
 
-    void error (String title, String description);
+    void error (Throwable t);
 
     void answerGetEvents (ArrayList<EventType4> eventArrayList);
 }

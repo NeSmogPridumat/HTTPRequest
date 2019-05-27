@@ -10,6 +10,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
+import com.dreamteam.httprequest.MainActivity;
 
 import java.util.ArrayList;
 
@@ -17,15 +18,19 @@ import java.util.ArrayList;
 public class CustomDialogFragment extends DialogFragment{
 
     PresenterInterface delegate;
-    DialogConfig dialogConfig = new DialogConfig();
+    DialogConfig dialogConfig;
+    MainActivity activity;
 
-    public CustomDialogFragment(PresenterInterface delegate){
+    public CustomDialogFragment(PresenterInterface delegate, MainActivity activity){
+        this.activity = activity;
         this.delegate = delegate;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+
+        dialogConfig = new DialogConfig(activity);
         //получаем данные из Bundle
         Bundle args = getArguments();
         //Вытаскиваем заголовок из Bundle

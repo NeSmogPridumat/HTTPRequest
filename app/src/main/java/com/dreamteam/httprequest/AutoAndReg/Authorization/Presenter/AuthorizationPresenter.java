@@ -119,12 +119,12 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
             router.createUserToAuth(router.getAuthDataObject(), this);
         }
         if (responseCode == 404){
-            delegate.showNotFound();//TODO: возможно надо передать во View
+            delegate.showNotFound();
         }
     }
 
     @Override
-    public void error(String title, String description) {
-        delegate.error(title, description);
+    public void error(Throwable t) {
+        delegate.error(t);
     }
 }

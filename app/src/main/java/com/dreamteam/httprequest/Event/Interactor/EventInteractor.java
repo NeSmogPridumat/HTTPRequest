@@ -1,5 +1,6 @@
 package com.dreamteam.httprequest.Event.Interactor;
 
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -11,6 +12,7 @@ import com.dreamteam.httprequest.Event.Protocols.EventPresenterInterface;
 import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
+import com.dreamteam.httprequest.R;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -70,24 +72,13 @@ public class EventInteractor implements EventFromHTTPManagerInterface {
     }
 
     @Override
-    public void error(Throwable t) {
-        String title = null;
-        String description  = null;
-        if (t instanceof SocketTimeoutException) {
-            title = "Ошибка соединения с сервером";
-            description = "Проверте соединение с интернетом. Не удается подключится с серверу";
-        }
-        if (t instanceof NullPointerException) {
-            title = "Объект не найден";
-            description = "";
-        }
+    public void error(final Throwable t) {
+
         Handler mainHandler = new Handler(Looper.getMainLooper());
-        final String finalTitle = title;
-        final String finalDescription = description;
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                delegate.error(finalTitle, finalDescription);
+                delegate.error(t);
             }
         };
         mainHandler.post(myRunnable);

@@ -122,10 +122,10 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
             public void onClick(View v) {//-----------------------------------------------------слушатель на кнопку Save
                 if ((titleEditTextView.getText().toString().equals("")))//-----------------------------------проверка на заполнение поля
                 {
-                    titleEditTextView.setError("Заполните поле");
+                    titleEditTextView.setError(getResources().getString(R.string.fill_in_the_field));
                     titleEditTextView.requestFocus();
                 } else if (descriptionEditTextView.getText().toString().equals("")){
-                    descriptionEditTextView.setError("Заполниет поле");
+                    descriptionEditTextView.setError(getResources().getString(R.string.fill_in_the_field));
                     descriptionEditTextView.requestFocus();
                 } else {//---------------------------------------------------------------------------------код отправки изменеий на сервер
                     infoProfileData.title = titleEditTextView.getText().toString();
@@ -139,7 +139,6 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
                     }
                     //отправка данных на изменение
                     editProfilePresenter.editInfo(infoProfileData, requestInfo, type);
-//                    delegate.editInfo(infoProfileData, requestInfo, type);
                     progressBar.setVisibility(View.VISIBLE);
                 }
             }

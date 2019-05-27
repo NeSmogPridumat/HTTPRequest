@@ -2,6 +2,7 @@ package com.dreamteam.httprequest.Event.View;
 
 
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,6 +26,7 @@ import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 /**
@@ -122,7 +124,8 @@ public class EventType4Controller extends Fragment implements EventViewInterface
                 }
             }
             if (counter == 0) {
-                Toast.makeText(getContext(), "Благодарим за ответы", Toast.LENGTH_LONG);
+                Toast.makeText(getContext(), getResources().getText(R.string.thank_you_for_the_answers),
+                        Toast.LENGTH_LONG);
                 eventPresenter.openEventList();
             }
         }
@@ -148,7 +151,8 @@ public class EventType4Controller extends Fragment implements EventViewInterface
         }else {
             for (int i = 0; i < event.response.users.size(); i++) {
                 for (int j = 0; j < event.response.users.get(i).questions.size(); j++) {
-                    if (event.response.users.get(i).id.equals(userID) && event.response.users.get(i).questions.get(j).id == position) {
+                    if (event.response.users.get(i).id.equals(userID)
+                            && event.response.users.get(i).questions.get(j).id == position) {
                         event.response.users.get(i).questions.get(j).active = false;
                     }
                 }
@@ -159,7 +163,17 @@ public class EventType4Controller extends Fragment implements EventViewInterface
     }
 
     @Override
-    public void error(String title, String description) {
+    public void error(Throwable t) {
+        String title = null;
+        String description  = null;
+        if (t instanceof SocketTimeoutException) {
+            title = getResources().getString(R.string.error_connecting_to_server);
+            description = getResources()
+                    .getString(R.string.check_the_connection_to_the_internet);
+        }else if (t instanceof NullPointerException) {
+            title = getResources().getString(R.string.object_not_found);
+            description = "";
+        }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
     }
 }

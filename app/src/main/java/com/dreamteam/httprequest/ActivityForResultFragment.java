@@ -56,7 +56,7 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dialogConfig = new DialogConfig();
+        dialogConfig = new DialogConfig(getContext());
         CAMERA = dialogConfig.CAMERA_REQUEST_CODE;
         GALLERY = dialogConfig.GALLERY_REQUEST_CODE;
         DELETE = dialogConfig.DELETE_PHOTO_REQUEST_CODE;

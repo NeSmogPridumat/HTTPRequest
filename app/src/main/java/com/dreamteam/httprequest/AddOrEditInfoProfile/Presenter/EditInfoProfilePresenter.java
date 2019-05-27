@@ -1,5 +1,6 @@
 package com.dreamteam.httprequest.AddOrEditInfoProfile.Presenter;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Dialog.DialogConfig;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
+import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.SelectedList.SelectData;
 
 import java.util.ArrayList;
@@ -21,25 +23,29 @@ public class EditInfoProfilePresenter implements PresenterInterface {
 
     private EditInfoProfileRouter router;
 
-    private DialogConfig dialogConfig = new DialogConfig();
+    private DialogConfig dialogConfig;
+    private MainActivity activity;
 
     //создание списка вариантов для диалога
-    int[] photoActionArray = {dialogConfig.CAMERA_REQUEST_CODE, dialogConfig.GALLERY_REQUEST_CODE}; //, dialogConfig.DELETE_PHOTO_REQUEST_CODE - для удаления фото
 
     public EditInfoProfilePresenter(MainActivity activity, EditInfoProfileViewInterface delegateView, PresenterInterface delegate){
         this.delegate = delegate;
         this.delegateView = delegateView;
         router = new EditInfoProfileRouter(activity);
+        dialogConfig = new DialogConfig(activity);
+        this.activity = activity;
     }
 
     //вызов диалогового окна
     @Override
     public void showDialog() {
+        int[] photoActionArray = {dialogConfig.CAMERA_REQUEST_CODE, dialogConfig.GALLERY_REQUEST_CODE}; //, dialogConfig.DELETE_PHOTO_REQUEST_CODE - для удаления фото
+
         //создается Bundle
         Bundle bundle = new Bundle();
 
         // в Bundle закидываем заголовок для списка
-        bundle.putString("title", "Выберите действие");
+        bundle.putString("title", activity.getResources().getString(R.string.select_an_action));
 
         // в Bundle закидываем список вариантов
         bundle.putIntArray("array", photoActionArray);

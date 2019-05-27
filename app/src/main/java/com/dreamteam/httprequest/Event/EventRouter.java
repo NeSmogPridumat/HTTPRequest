@@ -12,7 +12,7 @@ public class EventRouter {
     }
 
     public void backPress(){
-        activity.bottomNavigationView.setSelectedItemId(R.id.notification);//TODO
+        activity.bottomNavigationView.setSelectedItemId(R.id.notification);
     }
 
     public void openEventList(){

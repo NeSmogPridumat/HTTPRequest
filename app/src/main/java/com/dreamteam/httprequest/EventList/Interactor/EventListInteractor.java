@@ -1,5 +1,6 @@
 package com.dreamteam.httprequest.EventList.Interactor;
 
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -9,6 +10,7 @@ import com.dreamteam.httprequest.EventList.Protocols.EventListFromHTTPManagerInt
 import com.dreamteam.httprequest.EventList.Protocols.EventListPresenterInterface;
 import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
+import com.dreamteam.httprequest.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -32,13 +34,15 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
     //======================================REQUESTS====================================//
 
     public void getEvents(String userID){
-        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.EVENT + httpConfig.USER + httpConfig.USER_ID_PARAM + userID;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.EVENT
+                + httpConfig.USER + httpConfig.USER_ID_PARAM + userID;
         //TODO путь для получения списка эвентов
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                httpManager.getRequest(path, constantConfig.GET_EVENT_TYPE,  EventListInteractor.this);
+                httpManager.getRequest(path, constantConfig.GET_EVENT_TYPE,
+                        EventListInteractor.this);
             }
         }).start();
     }
@@ -53,24 +57,12 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
     }
 
     @Override
-    public void error(Throwable t) {
-        String title = null;
-        String description  = null;
-        if (t instanceof SocketTimeoutException) {
-            title = "Ошибка соединения с сервером";
-            description = "Проверте соединение с интернетом. Не удается подключится с серверу";
-        }
-        if (t instanceof NullPointerException) {
-            title = "Объект не найден";
-            description = "";
-        }
+    public void error(final Throwable t) {
         Handler mainHandler = new Handler(Looper.getMainLooper());
-        final String finalTitle = title;
-        final String finalDescription = description;
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                delegate.error(finalTitle, finalDescription);
+                delegate.error(t);
             }
         };
         mainHandler.post(myRunnable);
@@ -78,12 +70,11 @@ public class EventListInteractor implements EventListFromHTTPManagerInterface {
 
     private void prepareGetEventsResponse (byte[] byteArray){
         if (byteArray != null){
-            final ArrayList<EventType4> eventArrayList;//TODO занимает много времени на Samsung
+            final ArrayList<EventType4> eventArrayList;
             try {
                 eventArrayList = createEventsOfBytes(byteArray);
                 if (eventArrayList == null){
-                    String error = " ";
-                    delegate.error(error, null);
+                    delegate.error(new NullPointerException());
                 } else {
                     Handler mainHandler = new Handler(Looper.getMainLooper());
                     Runnable myRunnable = new Runnable() {

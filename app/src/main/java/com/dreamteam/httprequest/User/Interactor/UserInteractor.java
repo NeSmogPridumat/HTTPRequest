@@ -1,5 +1,6 @@
 package com.dreamteam.httprequest.User.Interactor;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
 import com.dreamteam.httprequest.Interfaces.UserFromHTTPManagerInterface;
+import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.User.Protocols.PresenterUserInterface;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.google.gson.Gson;
@@ -44,7 +46,8 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 //----------------------------------ОТПРАВКА В HTTPMANAGER---------------------------------------//
 
     public void getUser(String id) {//----------------------------------отправка запроса на получение User по id
-        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqUser + httpConfig.ID_PARAM + id;
+        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqUser
+                + httpConfig.ID_PARAM + id;
 
         startGetRequest(path, constantConfig.USER_TYPE, UserInteractor.this);
     }
@@ -58,7 +61,8 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
             @Override
             public void run() {
                 try {
-                    httpManager.postRequest(path, jsonObject, constantConfig.POST_USER, UserInteractor.this);
+                    httpManager.postRequest(path, jsonObject, constantConfig.POST_USER,
+                            UserInteractor.this);
                 } catch (Exception error) {
                     error(error);
                 }
@@ -104,7 +108,8 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
                         requestInfo.addData.content.mediaData.image = decodeBitmapInBase64(bitmap);
                     }
                     final String jsonObject = gson.toJson(requestInfo);
-                    httpManager.putRequest(urlPath, jsonObject, constantConfig.PUT_USER, UserInteractor.this);
+                    httpManager.putRequest(urlPath, jsonObject, constantConfig.PUT_USER,
+                            UserInteractor.this);
                 } catch (Exception error) {
                     error(error);
                 }
@@ -113,8 +118,8 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     }
 
     public void getRating(String userID){
-        String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.RATING + httpConfig.USER + httpConfig.USER_ID_PARAM + userID;
-//        String path = "http://192.168.1.77:8100/rating/user?userID=e43019b7-ea58-4df6-b33b-57e35a71b218";
+        String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.RATING
+                + httpConfig.USER + httpConfig.USER_ID_PARAM + userID;
 
 
         startGetRequest(path, constantConfig.GET_RATING_TYPE, UserInteractor.this);
@@ -144,15 +149,19 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 
     private void getRatingResponse(byte[] byteArray){
         if (byteArray != null) {
-            final ArrayList<QuestionRating> questionRatings = createQuestionRatingOfBytes(byteArray);
-            Handler mainHandler = new Handler(Looper.getMainLooper());
-            Runnable myRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    delegate.answerGetRating(questionRatings);
-                }
-            };
-            mainHandler.post(myRunnable);
+            try {
+                final ArrayList<QuestionRating> questionRatings = createQuestionRatingOfBytes(byteArray);
+                Handler mainHandler = new Handler(Looper.getMainLooper());
+                Runnable myRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        delegate.answerGetRating(questionRatings);
+                    }
+                };
+                mainHandler.post(myRunnable);
+            }catch (Exception e){
+
+            }
         }
     }
 
@@ -162,23 +171,13 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     }
 
     @Override
-    public void error(Throwable t) {//--------------------------------------------------------------Обработка ошибки
-        String title = null;
-        String description  = null;
-        if (t instanceof SocketTimeoutException|| t instanceof ConnectException) {
-            title = "Ошибка соединения с сервером";
-            description = "Проверте соединение с интернетом. Не удается подключится с серверу";
-        }else if (t instanceof NullPointerException) {
-            title = "Объект не найден";
-            description = "";
-        }
-        final String finalTitle = title;
-        final String finalDescription = description;
+    public void error(final Throwable t) {//--------------------------------------------------------------Обработка ошибки
+
         Handler mainHandler = new Handler(Looper.getMainLooper());
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                delegate.error(finalTitle, finalDescription);
+                delegate.error(t);
             }
         };
         mainHandler.post(myRunnable);
@@ -194,8 +193,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         try {
             final User user = createUserOfBytes(byteArray);
             if (user.equals(null)) {
-                String error = "Объект не существует";
-                delegate.error(error, "");
+                delegate.error(new NullPointerException());
             }
 
             Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -216,7 +214,6 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     }
 
     private void prepareGetGroupsResponse(byte[] byteArray){
-        //TODO: узнать что делает final
         final ArrayList<Group> groupCollection = createGroupsOfBytes(byteArray);
         int size = 0;
         if (groupCollection != null){
@@ -298,7 +295,8 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     }
 
     //get-запросы на сервер
-    private void startGetRequest(final String path, final String type, final OutputHTTPManagerInterface delegate){
+    private void startGetRequest(final String path, final String type,
+                                 final OutputHTTPManagerInterface delegate){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -328,8 +326,8 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         Gson gson = new Gson();
         String jsonString = new String(byteArray);
         return gson.fromJson(jsonString, new TypeToken<ArrayList<QuestionRating>>() {}.getType());
-
     }
+
 }
 
 

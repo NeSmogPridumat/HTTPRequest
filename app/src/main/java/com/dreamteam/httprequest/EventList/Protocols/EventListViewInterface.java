@@ -8,5 +8,5 @@ public interface EventListViewInterface {
 
     void answerGetEvents (ArrayList<EventType4> eventArrayList);
 
-    void error (String title, String description);
+    void error (Throwable t);
 }

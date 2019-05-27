@@ -16,5 +16,5 @@ public interface AuthorizationPresenterInterface extends PresenterInterface {
 
     void errorHanding(int responseCode);
 
-    void error (String title, String description);
+    void error (Throwable t);
 }

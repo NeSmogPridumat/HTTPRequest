@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Router {
 
-    MainActivity activity;
+    private MainActivity activity;
 
     public Router (MainActivity activity){
         this.activity = activity;
@@ -30,9 +30,4 @@ public class Router {
     public void openGroupList(ArrayList<ObjectData> objectDataArrayList, PresenterInterface delegate, String type){
         activity.openObjectList(objectDataArrayList, delegate, type);
     }
-
-//    public void  changeFragment(Fragment fragment){
-//        activity.openGroup(data);
-////        activity.changeFragment(fragment, null);
-//    }
 }

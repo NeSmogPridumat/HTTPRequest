@@ -2,6 +2,7 @@ package com.dreamteam.httprequest.Group.View;
 
 
 import android.annotation.SuppressLint;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 /**
@@ -113,14 +115,33 @@ public class GroupController extends Fragment implements GroupViewInterface {
         this.group = group;
         titleTextView.setText(group.content.simpleData.title);
         descriptionTextView.setText(group.content.simpleData.description);
-        subgroupRadioButton.setText(group.nodeData.childList.size() + " subgroups");
+        if (getContext() != null) {
+            subgroupRadioButton.setText(group.nodeData.childList.size() +
+                    getResources().getString(R.string.subgroups));
+        }
         activity.setActionBarTitle(group.content.simpleData.title);
         rules = group.rules;
         progressBar.setVisibility(View.GONE);
     }
 
     @Override
-    public void error(String title, String description) {
+    public void error(Throwable t) {
+        String title = null;
+        String description  = null;
+        if (t instanceof SocketTimeoutException) {
+            title = getResources().getString(R.string.error_connecting_to_server);
+            description = getResources()
+                    .getString(R.string.check_the_connection_to_the_internet);
+        }else if (t instanceof NullPointerException) {
+            title = getResources().getString(R.string.object_not_found);
+            description = "";
+        }
+        Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void errorHanding(String title, String description) {
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
         progressBar.setVisibility(View.GONE);
     }
@@ -132,8 +153,10 @@ public class GroupController extends Fragment implements GroupViewInterface {
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void outputMembersView(ArrayList<User> members) {//TODO возможно стоит передавать не список а int значение
-        membersRadioButton.setText(Integer.toString(members.size()) + " members");
+    public void outputMembersView(ArrayList<User> members) {
+        if (getContext() != null) {
+            membersRadioButton.setText((members.size()) + getResources().getString(R.string.members));
+        }
         int count = 0;
         for (int i = 0; i < members.size(); i++){
             if (!(activity.userID.equals(members.get(i).id))){
@@ -149,7 +172,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
 
     @Override
     public void answerStartVoited() {
-        Toast.makeText(getContext(), "Голосование запущено", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), getResources().getText(R.string.voting_started), Toast.LENGTH_LONG).show();
     }
 
     @Override

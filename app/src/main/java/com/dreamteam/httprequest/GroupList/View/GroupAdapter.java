@@ -16,10 +16,10 @@ import com.dreamteam.httprequest.R;
 import java.util.ArrayList;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupHolder> implements Filterable {
-    ArrayList<Group> groupCollection = new ArrayList<>();
+    ArrayList<Group> groupCollection;
     private ArrayList<GroupHolder> groupHolders = new ArrayList<>();
 
-    ArrayList<Group> mFilteredList = new ArrayList<>();
+    ArrayList<Group> mFilteredList;
     ArrayList<Group> allGroup;
 
     GroupAdapter(ArrayList<Group> groupCollection){
@@ -64,6 +64,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder> implements F
         return size;
     }
 
+    //реализация поиска по группам: адаптер должен быть implements Filterable
     @Override
     public Filter getFilter() {
         return new Filter() {

@@ -7,7 +7,7 @@ import com.dreamteam.httprequest.MainActivity;
 
 public class EditInfoProfileRouter {
 
-    MainActivity activity;
+    private MainActivity activity;
 
     public EditInfoProfileRouter(MainActivity activity){
         this.activity = activity;

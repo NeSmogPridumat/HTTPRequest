@@ -6,5 +6,5 @@ public interface ObjectListPresenterInterface {
 
   void answerGetImageGroups (String id, Bitmap bitmap);
 
-  void error (String title, String description);
+  void error (Throwable t);
 }

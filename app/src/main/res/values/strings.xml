@@ -1,11 +1,9 @@
 <resources>
-    <string name="app_name">Dream Team</string>
+    <string name="app_name" translatable="false">Dream Team</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="add_photo">Сделать фото</string>
-    <string name="get_from_gallery">Получить из галереи</string>
-    <string name="delete_photo">Удалить фото</string>
+    <string name="add_photo">Add photo</string>
+    <string name="delete_photo">Delete photo</string>
     <string name="title">Title:</string>
     <string name="enter_new_title">Enter new title</string>
     <string name="description">Description:</string>
@@ -13,7 +11,6 @@
     <string name="create">Create</string>
     <string name="add_group">Add Group</string>
     <string name="delete_group">Delete Group</string>
-    <string name="title_activity_login">Sign in</string>
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
@@ -23,9 +20,6 @@
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
     <string name="name">Name:</string>
     <string name="enter_new_name">Enter new name</string>
     <string name="surname">Surname:</string>
@@ -42,16 +36,35 @@
     <string name="enter_key">Enter Key</string>
     <string name="enter">Enter</string>
     <string name="exit">Exit</string>
-    <string name="ok">OK</string>
+    <string name="ok" translatable="false">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="voiting_group">Voiting group</string>
+    <string name="voiting_group">Start voting</string>
     <string name="edit_group">Edit Group</string>
     <string name="inactive">Inactive</string>
     <string name="active">Active</string>
     <string name="edit_profile">Edit profile</string>
     <string name="group_name">Group Name</string>
-    <string name="members">members</string>
-    <string name="subgroups">subgroups</string>
+    <string name="members">" members"</string>
+    <string name="subgroups">  subgroups</string>
     <string name="user">User</string>
     <string name="rating">Rating</string>
+    <string name="fill_in_the_field">Fill in the field.</string>
+    <string name="user_not_registered">User not registered.</string>
+    <string name="voting_started">Voting started.</string>
+    <string name="overall_rating">Overall rating: </string>
+    <string name="groups">"  groups"</string>
+    <string name="error_connecting_to_server">Error connecting to server.</string>
+    <string name="check_the_connection_to_the_internet">Check the connection to the Internet.</string>
+    <string name="can_not_connect_to_the_server">Can not connect to the server.</string>
+    <string name="object_not_found">Object not found</string>
+    <string name="to_make_a_photo">To make a photo</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+    <string name="delete">Delete</string>
+    <string name="add_error">Add error.</string>
+    <string name="user_invited_to_group">User invited to group.</string>
+    <string name="delete_error">Delete error.</string>
+    <string name="deletion_will_be_available_after_the_event_is_completed">Deletion will be available after the event is completed.</string>
+    <string name="object_does_not_exist">Object does not exist</string>
+    <string name="select_an_action">Select an action</string>
+    <string name="thank_you_for_the_answers">Thank you for the answers.</string>
 </resources>

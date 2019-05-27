@@ -1,5 +1,6 @@
 package com.dreamteam.httprequest.Group.Interactor;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.GroupHTTPMangerInterface;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
 import com.dreamteam.httprequest.ObjectList.ObjectData;
+import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.SelectedList.SelectData;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.google.gson.Gson;
@@ -131,7 +133,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     public void deleteGroup (RequestInfo requestInfo){
         //собираем путь запроса
         final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.reqGroup
-                + httpConfig.DEL;//TODO
+                + httpConfig.DEL;
         startPostRequest(path, requestInfo,  constantConfig.DELETE_GROUP, GroupInteractor.this);
     }
 
@@ -159,7 +161,8 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             public void run() {
                 try {
                     final String jsonObject = createJsonObject(bitmap, requestInfo);
-                    httpManager.postRequest(path, jsonObject, constantConfig.POST_GROUP, GroupInteractor.this);
+                    httpManager.postRequest(path, jsonObject, constantConfig.POST_GROUP,
+                            GroupInteractor.this);
                 } catch (Exception error) {
                     error(error);
                 }
@@ -170,14 +173,16 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     public void getUserForList (String id){
         final String membersPath = httpConfig.serverURL + httpConfig.SERVER_GETTER
                 + httpConfig.reqUser + httpConfig.reqGroup + httpConfig.GROUP_ID_PARAM + id;
-        startGetRequest(membersPath, constantConfig.MEMBERS_FOR_LIST_TYPE, GroupInteractor.this);
+        startGetRequest(membersPath, constantConfig.MEMBERS_FOR_LIST_TYPE,
+                GroupInteractor.this);
     }
 
     public void exitGroup(RequestInfo requestInfo){
         final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.GROUP
                         + httpConfig.USER + httpConfig.DEL;
 
-        startPostRequest(path, requestInfo, constantConfig.EXIT_USER_IN_GROUP_TYPE, GroupInteractor.this);
+        startPostRequest(path, requestInfo, constantConfig.EXIT_USER_IN_GROUP_TYPE,
+                GroupInteractor.this);
     }
 
     public void startVoited(final RequestInfo requestInfo){
@@ -246,69 +251,35 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     }
 
     @Override
-    public void error(Throwable t) {
-        String title = null;
-        String description  = null;
-        if (t instanceof SocketTimeoutException) {
-            title = "Ошибка соединения с сервером";
-            description = "Проверте соединение с интернетом. Не удается подключится с серверу";
-        }
-        if (t instanceof NullPointerException) {
-            title = "Объект не найден";
-            description = "";
-        }
-
-        final String finalTitle = title;
-        final String finalDescription = description;
+    public void error(final Throwable t) {
         Handler mainHandler = new Handler(Looper.getMainLooper());
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                delegate.error(finalTitle, finalDescription);
+                delegate.error(t);
             }
         };
         mainHandler.post(myRunnable);
     }
 
     @Override
-    public void errorHanding(int resposeCode, String type) {
-        String title = null;
-        String description = null;
-        if(resposeCode == 403 && type.equals(constantConfig.SET_USER_IN_GROUP_TYPE)){
-            title = "Ошибка добавления";
-            description = "Пользователь приглашен в группу";
-            Handler mainHandler = new Handler(Looper.getMainLooper());
-            final String finalTitle1 = title;
-            final String finalDescription1 = description;
-            Runnable myRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    delegate.error(finalTitle1, finalDescription1);
-                }
-            };
-            mainHandler.post(myRunnable);
-        }else if(resposeCode == 403 && type.equals(constantConfig.SET_DELETE_USER_IN_GROUP_TYPE)){
-            title = "Ошибка удаления";
-            description = "Удаление будет доступно после завершения события";
-            Handler mainHandler = new Handler(Looper.getMainLooper());
-            final String finalTitle1 = title;
-            final String finalDescription1 = description;
-            Runnable myRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    delegate.error(finalTitle1, finalDescription1);
-                }
-            };
-            mainHandler.post(myRunnable);
-        }
+    public void errorHanding(final int resposeCode, final String type) {
+
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                delegate.errorHading(resposeCode, type);
+            }
+        };
+        mainHandler.post(myRunnable);
     }
 
     private void prepareGetGroupAfterEditResponse(byte[] byteArray) {//-----------------------------------------------получение json ответа, преобразование его в User и вывод в основной поток
         try {
             final Group group = createGroupOfBytes(byteArray);
             if (group == null) {
-                String error = "Объект не существует";
-                delegate.error(error, null);
+                delegate.error(new NullPointerException());
             }
             new Thread(new Runnable() {
                 @Override
@@ -343,8 +314,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             group.nodeData = new NodeData();
             group = createGroupOfBytes(byteArray);
             if (group == null) {
-                String error = "Объект не существует";
-                delegate.error(error, null);
+                delegate.error(new NullPointerException());
             }
 
             final Group finalGroup = group;
@@ -463,8 +433,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         try {
             final EventType4 event = createEventOfBytes(byteArray);
             if (event == null) {
-                String error = "Объект не существует";
-                delegate.error(error, null);
+                delegate.error(new NullPointerException());
             }
 
             Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -541,8 +510,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         group.nodeData = new NodeData();
         group = createGroupOfBytes(byteArray);
         if (group == null) {
-            String error = "Объект не существует";
-            delegate.error(error, null);
+            delegate.error(new NullPointerException());
         }
         getSubgroups.add(group);
         if(getSubgroups.size() == countSubgroup){
@@ -614,7 +582,8 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     }
 
     //get-запросы на сервер
-    private void startGetRequest(final String path, final String type, final OutputHTTPManagerInterface delegate){
+    private void startGetRequest(final String path, final String type,
+                                 final OutputHTTPManagerInterface delegate){
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -629,7 +598,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
 
     private String decodeBitmapInBase64 (Bitmap bitmap){//------------------------------------------декодирование Bitmap в Base64
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);//TODO: поставил 50, потому что долго грузит большие картинки
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);//поставил 50, потому что долго грузит большие картинки
         // Получаем изображение из потока в виде байтов
         byte[] bytes = byteArrayOutputStream.toByteArray();
         return constantConfig.PREFIX + Base64.encodeToString(bytes, Base64.DEFAULT);

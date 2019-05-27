@@ -11,7 +11,9 @@ import com.dreamteam.httprequest.User.Entity.UserData.User;
 import java.util.ArrayList;
 
 public interface GroupPresenterInterface extends PresenterInterface {
-    void error(String title, String description);
+    void error(Throwable t);
+
+    void errorHading (int responseCode, String type);
 
     void answerGetGroup(Group group);
 

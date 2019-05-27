@@ -1,5 +1,6 @@
 package com.dreamteam.httprequest.ObjectList.Interactor;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.ObjectListFromHTTPManagerInterface;
 import com.dreamteam.httprequest.ObjectList.Protocols.ObjectListPresenterInterface;
+import com.dreamteam.httprequest.R;
 
 import java.net.SocketTimeoutException;
 
@@ -31,7 +33,8 @@ public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface 
       @Override
       public void run() {
         String pathImage = httpConfig.serverURL + httpConfig.SERVER_GETTER + imageURL;
-        httpManager.getRequest(pathImage,constantConfig.IMAGE_TYPE + ":" + id, ObjectListInteractor.this);
+        httpManager.getRequest(pathImage,constantConfig.IMAGE_TYPE + ":" + id,
+                ObjectListInteractor.this);
       }
     }).start();
   }
@@ -61,24 +64,12 @@ public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface 
     }
   }
 
-  @Override public void error(Throwable t) {
-      String title = null;
-      String description  = null;
-      if (t instanceof SocketTimeoutException) {
-        title = "Ошибка соединения с сервером";
-        description = "Проверте соединение с интернетом. Не удается подключится с серверу";
-      }
-      if (t instanceof NullPointerException) {
-        title = "Объект не найден";
-          description = "";
-      }
+  @Override public void error(final Throwable t) {
       Handler mainHandler = new Handler(Looper.getMainLooper());
-      final String finalTitle = title;
-      final String finalDescription = description;
       Runnable myRunnable = new Runnable() {
         @Override
         public void run() {
-          delegate.error(finalTitle, finalDescription);
+          delegate.error(t);
         }
       };
       mainHandler.post(myRunnable);

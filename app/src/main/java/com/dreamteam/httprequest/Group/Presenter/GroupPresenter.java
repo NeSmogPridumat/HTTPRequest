@@ -1,6 +1,7 @@
 package com.dreamteam.httprequest.Group.Presenter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.util.Log;
 
@@ -18,6 +19,7 @@ import com.dreamteam.httprequest.Group.Protocols.GroupViewInterface;
 import com.dreamteam.httprequest.GroupList.Protocols.Router;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.ObjectList.ObjectData;
+import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.SelectedList.SelectData;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 
@@ -32,12 +34,13 @@ public class GroupPresenter implements GroupPresenterInterface {
     private ConstantConfig constantConfig = new ConstantConfig();
     private MainActivity activity;
 
-    private DialogConfig dialogConfig = new DialogConfig();
+    private DialogConfig dialogConfig;
 
     public GroupPresenter(GroupViewInterface delegate, MainActivity activity){
         this.delegate = delegate;
         this.activity = activity;
         router = new GroupRouter(activity);
+        dialogConfig = new DialogConfig(activity);
     }
 
     //============================ОТПРАВКА В INTERACTOR==========================================//
@@ -45,13 +48,12 @@ public class GroupPresenter implements GroupPresenterInterface {
     public void getGroup(String id){
         userID = activity.userID;
         groupInteractor.getGroup(id, userID);
-        Log.i("GROUP_PRESENTER", id);
         groupID = id;
     }
 
     @Override
-    public void error(String title, String description) {
-        delegate.error(title, description);
+    public void error(Throwable t) {
+        delegate.error(t);
     }
 
     @Override
@@ -75,7 +77,7 @@ public class GroupPresenter implements GroupPresenterInterface {
     }
 
     @Override
-    public void answerGetUsersForSelectAdd(ArrayList<User> users) {//TODO Сделать
+    public void answerGetUsersForSelectAdd(ArrayList<User> users) {
         ArrayList<SelectData> selectData = new ArrayList<>();
         for (int i = 0; i < users.size(); i++){
             selectData.add(new SelectData().initFromUser(users.get(i)));
@@ -84,7 +86,7 @@ public class GroupPresenter implements GroupPresenterInterface {
     }
 
     @Override
-    public void answerGetUsersForSelectAdmin(ArrayList<User> users) {//TODO Сделать
+    public void answerGetUsersForSelectAdmin(ArrayList<User> users) {
         ArrayList<SelectData> selectData = new ArrayList<>();
         for (int i = 0; i < users.size(); i++){
             selectData.add(new SelectData().initFromUser(users.get(i)));
@@ -93,7 +95,7 @@ public class GroupPresenter implements GroupPresenterInterface {
     }
 
     @Override
-    public void answerGetUsersForSelectDelete(ArrayList<User> users) {//TODO Сделать
+    public void answerGetUsersForSelectDelete(ArrayList<User> users) {
         ArrayList<SelectData> selectData = new ArrayList<>();
         for (int i = 0; i < users.size(); i++){
             selectData.add(new SelectData().initFromUser(users.get(i)));
@@ -148,9 +150,11 @@ public class GroupPresenter implements GroupPresenterInterface {
 
     @Override
     public void backPressAfterSelectAdmin() {
-        backPress();
+
         int[] photoActionArray = {dialogConfig.OK_CODE};
-        router.showDialog("Ваша заявка отправлена на подтверждение", photoActionArray, this);
+        router.showDialog("Ваша заявка отправлена на подтверждение", photoActionArray, this);//TODO
+        activity.deleteBackStack();
+        getGroup(groupID);
     }
 
     public void openGroup(Group group, Router myRouter, Context context) {
@@ -257,4 +261,18 @@ public class GroupPresenter implements GroupPresenterInterface {
     public void getSubgroup(ArrayList<String> subgroups){
         groupInteractor.getSubgroup(subgroups, userID);
     }
+
+    @Override
+    public void errorHading(int resposeCode, String type) {
+        if (resposeCode == 403 && type.equals(constantConfig.SET_USER_IN_GROUP_TYPE)) {
+            String title = activity.getResources().getString(R.string.add_error);
+            String description = activity.getResources().getString(R.string.user_invited_to_group);
+            delegate.errorHanding(title, description);
+        }else if(resposeCode == 403 && type.equals(constantConfig.SET_DELETE_USER_IN_GROUP_TYPE)) {
+            String title = activity.getResources().getString(R.string.delete_error);
+            String description = activity.getResources().getString(R.string.deletion_will_be_available_after_the_event_is_completed);
+            delegate.errorHanding(title, description);
+        }
+    }
+
 }

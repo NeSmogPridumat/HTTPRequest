@@ -12,5 +12,5 @@ public interface GroupsViewInterface {
 
     void outputGroupsView (ArrayList<Group> groupCollection);
 
-    void  error (String title, String description);
+    void  error (Throwable t);
 }
