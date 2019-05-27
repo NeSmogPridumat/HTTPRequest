@@ -58,7 +58,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder> implements F
     @Override
     public int getItemCount() {
         int size = 0;
-        if (groupCollection.size()!=0){
+        if (groupCollection != null && groupCollection.size()!=0){
             size = groupCollection.size();
         }
         return size;
