@@ -45,7 +45,7 @@
     <string name="edit_profile">Edit profile</string>
     <string name="group_name">Group Name</string>
     <string name="members">" members"</string>
-    <string name="subgroups">  subgroups</string>
+    <string name="subgroups">" subgroups"</string>
     <string name="user">User</string>
     <string name="rating">Rating</string>
     <string name="fill_in_the_field">Fill in the field.</string>

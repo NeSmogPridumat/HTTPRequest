@@ -1,8 +1,6 @@
 package com.dreamteam.httprequest.User.View;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -41,7 +38,6 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-@SuppressLint("ValidFragment")
 public class UserFragment extends Fragment implements ViewUserInterface {
 
     private ImageView userImage;
@@ -51,7 +47,6 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     private RadioButton groupsRadioButton;
     private MainActivity activity;
     private LinearLayout userLinear;
-    private ExpandableListView expandableListView;
 
     public PresenterUser presenterUser;
 
@@ -59,8 +54,15 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     private Bitmap bitmapU;
     private String userID;
 
-    public UserFragment(String userID) {
-        this.userID = userID;
+    public UserFragment() {
+    }
+
+    public static UserFragment newInstance(String userID){
+        Bundle args = new Bundle();
+        args.putString("userID", userID);
+        UserFragment fragment = new UserFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -77,20 +79,19 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         progressBarOverlay = view.findViewById(R.id.progressBarOverlay);
         progressBar = view.findViewById(R.id.progressBar);
         userLinear = view.findViewById(R.id.user_fragment);
-        expandableListView = view.findViewById(R.id.expListView);
         return view;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+        userID = getArguments().getString("userID");
         activity = (MainActivity) getActivity();
         if (userID.equals(activity.userID)) {
             setHasOptionsMenu(true);
         }
         presenterUser = new PresenterUser(this, activity);
         presenterUser.getRating(userID);
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -151,7 +152,8 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     @Override
     public void answerGetGroups(int groupsint) {
         if(isAdded()) {
-            groupsRadioButton.setText(String.valueOf(groupsint) + getResources().getString(R.string.groups));
+            String groupsText = (groupsint) + getResources().getString(R.string.groups);
+            groupsRadioButton.setText(groupsText);
         }
     }
 
@@ -167,16 +169,19 @@ public class UserFragment extends Fragment implements ViewUserInterface {
             j = j + questionRatings.get(0).question.get(i).middleValue;
         }
         TextView textView = new TextView(getContext());
-        textView.setText(getResources().getText(R.string.overall_rating) + df.format(j/questionRatings.get(0).question.size()));
+        String text = getResources().getText(R.string.overall_rating) + df.format(j/questionRatings.get(0).question.size());
+        textView.setText(text);
         textView.setTextSize(36f);
-        textView.setTextColor( getResources().getColor(android.R.color.white));
+        textView.setTextColor(getResources().getColor(android.R.color.white));
         textView.setLayoutParams(layoutParams);
         userLinear.addView(textView);
         for (int i = 0; i < questionRatings.get(0).question.size(); i++) {
             TextView textView1 = new TextView(getContext());
-            textView1.setTextColor( getResources().getColor(android.R.color.white));
+            textView1.setTextColor(getResources().getColor(android.R.color.white));
             textView.setTextSize(18f);
-            textView1.setText(questionRatings.get(0).question.get(i).title + ": " + df.format(questionRatings.get(0).question.get(i).middleValue));
+            text = questionRatings.get(0).question.get(i).title + ": "
+                    + df.format(questionRatings.get(0).question.get(i).middleValue);
+            textView1.setText(text);
             textView1.setLayoutParams(layoutParams1);
             userLinear.addView(textView1);
         }

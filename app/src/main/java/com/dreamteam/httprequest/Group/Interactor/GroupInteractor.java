@@ -383,6 +383,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             objectData.title = members.get(i).content.simpleData.name;
             objectData.description = members.get(i).content.simpleData.surname;
             objectData.image = members.get(i).content.mediaData.image;
+            objectData.rules = members.get(i).rules;
             objectDataArrayList.add(objectData);
         }
         final ArrayList<ObjectData> objectDataArrayListFinal = objectDataArrayList;

@@ -1,7 +1,5 @@
 package com.dreamteam.httprequest.EventList.View;
 
-import android.annotation.SuppressLint;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,7 +31,6 @@ import java.util.Collections;
 /**
  * A simple {@link Fragment} subclass.
  */
-@SuppressLint("ValidFragment")
 public class EventListController extends Fragment implements EventListViewInterface {
 
     private RecyclerView eventsRecyclerView, noteventsRecyclerView;
@@ -49,9 +46,16 @@ public class EventListController extends Fragment implements EventListViewInterf
     private ArrayList<EventType4> activeEvent;
     private ArrayList<EventType4> notActiveEvent;
 
-    public EventListController(String userID) {
+    public EventListController() {
         // Required empty public constructor
-        this.userID = userID;
+    }
+
+    public static EventListController newInstance(String userID){
+        Bundle args = new Bundle();
+        args.putString("userID", userID);
+        EventListController fragment = new EventListController();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -73,7 +77,7 @@ public class EventListController extends Fragment implements EventListViewInterf
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+        userID = getArguments().getString("userID");
         activity = (MainActivity) getActivity();
         eventListPresenter = new EventListPresenter(this, activity);
         super.onCreate(savedInstanceState);

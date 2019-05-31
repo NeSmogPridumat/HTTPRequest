@@ -1,8 +1,5 @@
 package com.dreamteam.httprequest.Group.View;
 
-
-import android.annotation.SuppressLint;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -35,7 +32,6 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-@SuppressLint("ValidFragment")
 public class GroupController extends Fragment implements GroupViewInterface {
 
     private TextView titleTextView, descriptionTextView;
@@ -51,10 +47,16 @@ public class GroupController extends Fragment implements GroupViewInterface {
 
     MainActivity activity;
 
-    @SuppressLint("ValidFragment")
-    public GroupController(String id, int rules) {
-        this.rules = rules;
-        groupID = id;
+    public GroupController() {
+    }
+
+    public static GroupController newInstance(String groupID, int rules){
+        Bundle args = new Bundle();
+        args.putString("groupID", groupID);
+        args.putInt("rules", rules);
+        GroupController fragment = new GroupController();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -73,8 +75,11 @@ public class GroupController extends Fragment implements GroupViewInterface {
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        groupID = getArguments().getString("groupID");
+        rules = getArguments().getInt("rules");
         activity = (MainActivity) getActivity();
         groupPresenter = new GroupPresenter(this, activity);
+
         super.onCreate(savedInstanceState);
     }
 
@@ -95,11 +100,13 @@ public class GroupController extends Fragment implements GroupViewInterface {
         subgroupRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                subgroupRadioButton.setChecked(false);
-                if (group.nodeData.childList.size() != 0) {
+                if(group.nodeData.childList.size() == 0){
+                    subgroupRadioButton.setClickable(false);
+                } else {
                     progressBar.setVisibility(View.VISIBLE);
                     groupPresenter.getSubgroup(group.nodeData.childList);
                 }
+                subgroupRadioButton.setChecked(false);
             }
         });
     }
@@ -116,8 +123,8 @@ public class GroupController extends Fragment implements GroupViewInterface {
         titleTextView.setText(group.content.simpleData.title);
         descriptionTextView.setText(group.content.simpleData.description);
         if (getContext() != null) {
-            subgroupRadioButton.setText(group.nodeData.childList.size() +
-                    getResources().getString(R.string.subgroups));
+            String text = group.nodeData.childList.size() + getResources().getString(R.string.subgroups);
+            subgroupRadioButton.setText(text);
         }
         activity.setActionBarTitle(group.content.simpleData.title);
         rules = group.rules;
@@ -151,19 +158,19 @@ public class GroupController extends Fragment implements GroupViewInterface {
         super.onPrepareOptionsMenu(menu);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void outputMembersView(ArrayList<User> members) {
         if (getContext() != null) {
-            membersRadioButton.setText((members.size()) + getResources().getString(R.string.members));
+            String text = (members.size()) + getResources().getString(R.string.members);
+            membersRadioButton.setText(text);
         }
         int count = 0;
         for (int i = 0; i < members.size(); i++){
-            if (!(activity.userID.equals(members.get(i).id))){
-                count = count++;
+            if (activity.userID.equals(members.get(i).id)){
+                count = count + 1;
             }
         }
-        if (count!=0){
+        if (count == 0){
             setHasOptionsMenu(false);
         } else {
             setHasOptionsMenu(true);

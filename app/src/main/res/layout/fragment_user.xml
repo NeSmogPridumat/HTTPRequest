@@ -128,13 +128,6 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </android.support.constraint.ConstraintLayout>
 
-            <ExpandableListView
-                android:id="@+id/expListView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-            </ExpandableListView>
-
-
         </LinearLayout>
 
     </ScrollView>

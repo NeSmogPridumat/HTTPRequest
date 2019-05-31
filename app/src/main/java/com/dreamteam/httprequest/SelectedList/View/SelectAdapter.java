@@ -62,7 +62,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectHolder> implements
             if (selectData.id.equals(id)){
                 selectData.image = bitmap;
             }
-            notifyItemChanged(i);
+            notifyDataSetChanged();
         }
     }
 

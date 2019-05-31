@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.AddOrEditInfoProfile.View;
 
-
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -47,7 +46,8 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
     private RequestInfo requestInfo;
     private ConstantConfig constantConfig = new ConstantConfig();
 
-    public EditInfoProfileController(InfoProfileData infoProfileData, RequestInfo requestInfo, PresenterInterface delegate, String type) {
+    public EditInfoProfileController(InfoProfileData infoProfileData, RequestInfo requestInfo,
+                                     PresenterInterface delegate, String type) {
         // Required empty public constructor
         this.delegate = delegate;
         this.infoProfileData = infoProfileData;
@@ -59,7 +59,8 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_edit_info_profile_controller, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit_info_profile_controller, container,
+                false);
         titleTextView = view.findViewById(R.id.title_edit_info_profile_text_view);
         titleEditTextView = view.findViewById(R.id.title_edit_info_profile_edit_text);
         descriptionTextView = view.findViewById(R.id.description_edit_info_profile_text_view);
@@ -88,7 +89,9 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
         //если идет изменение чего-то и мы данные изменяем, выставляем их
         if(infoProfileData != null) {
             titleEditTextView.setText(infoProfileData.title);
+            titleEditTextView.setSelection(titleEditTextView.getText().length());
             descriptionEditTextView.setText(infoProfileData.description);
+            descriptionEditTextView.setSelection(descriptionEditTextView.getText().length());
             editImageView.setImageBitmap(infoProfileData.imageData);
         }else {
             infoProfileData = new InfoProfileData();

@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.GroupList.Interactor;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -18,15 +17,12 @@ import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.GroupsHTTPManagerInterface;
 
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
-import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.SelectedList.SelectData;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 public class GroupsInteractor implements GroupsHTTPManagerInterface {
@@ -58,6 +54,60 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
                 GroupsInteractor.this);
     }
 
+    private void getImageRequest (ArrayList<Group> groupCollection){//-------------------------------отправка запросов на получение картинок для списка групп
+        if (groupCollection != null){
+            for (int i = 0 ; i<groupCollection.size(); i++){
+                Group group = groupCollection.get(i);
+                String pathImage = httpConfig.serverURL + httpConfig.SERVER_GETTER
+                        + group.content.mediaData.image;
+                uploadImage(group.id, pathImage);
+            }
+        }
+    }
+
+    private void deleteGroups (final ArrayList<SelectData> arrayList, String type){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < arrayList.size(); i++){
+                    setNullSelectData(arrayList.get(i));
+
+                    //собираем путь запроса
+                    String path = httpConfig.serverURL + httpConfig.SERVER_SETTER
+                            + httpConfig.reqGroup + httpConfig.DEL;//TODO
+                    Gson gson = new Gson();
+                    String jsonObject = gson.toJson(arrayList.get(i));
+                    try {
+                        httpManager.postRequest(path, jsonObject, constantConfig.DELETE_GROUP,
+                                GroupsInteractor.this);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+
+    public void addGroup(final Group group, final Bitmap bitmap, final RequestInfo requestInfo){
+        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.reqGroup;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    requestInfo.addData = new AddData();
+                    requestInfo.addData.content = group.content;
+                    final String jsonObject = createJsonObject(bitmap, requestInfo);
+                    httpManager.postRequest(path, jsonObject, constantConfig.POST_GROUP,
+                            GroupsInteractor.this);
+                } catch (Exception error) {
+                    error(error);
+                }
+            }
+        }).start();
+    }
+
+
     //--------------------------Получение данных из HTTP MANAGER и вызов функций обработки---------//
 
     @Override
@@ -85,7 +135,6 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
         };
         mainHandler.post(myRunnable);
     }
-
 
     @Override
     public void errorHanding(int resposeCode, String type) {
@@ -131,18 +180,7 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
         }
     }
 
-    //-----------------------------------------------------------------------------------------//
-
-    private void getImageRequest (ArrayList<Group> groupCollection){//-------------------------------отправка запросов на получение картинок для списка групп
-        if (groupCollection != null){
-            for (int i = 0 ; i<groupCollection.size(); i++){
-                Group group = groupCollection.get(i);
-                String pathImage = httpConfig.serverURL + httpConfig.SERVER_GETTER
-                        + group.content.mediaData.image;
-                uploadImage(group.id, pathImage);
-            }
-        }
-    }
+    //================================SUPPORT METHODS======================================//
 
     private String[] parsingStringType(String string){//--------------------------------------------разбор строки (getImageGroupType + ":" + groupID)
         String delimiter = ":";
@@ -161,50 +199,6 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
             deleteGroups(arrayList, type);
         }
     }
-
-    private void deleteGroups (final ArrayList<SelectData> arrayList, String type){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-            for (int i = 0; i < arrayList.size(); i++){
-                setNullSelectData(arrayList.get(i));
-
-                //собираем путь запроса
-                String path = httpConfig.serverURL + httpConfig.SERVER_SETTER
-                        + httpConfig.reqGroup + httpConfig.DEL;//TODO
-                Gson gson = new Gson();
-                String jsonObject = gson.toJson(arrayList.get(i));
-                try {
-                    httpManager.postRequest(path, jsonObject, constantConfig.DELETE_GROUP,
-                            GroupsInteractor.this);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            }
-        }).start();
-    }
-
-    public void addGroup(final Group group, final Bitmap bitmap, final RequestInfo requestInfo){
-        final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.reqGroup;
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    requestInfo.addData = new AddData();
-                    requestInfo.addData.content = group.content;
-                    final String jsonObject = createJsonObject(bitmap, requestInfo);
-                    httpManager.postRequest(path, jsonObject, constantConfig.POST_GROUP,
-                            GroupsInteractor.this);
-                } catch (Exception error) {
-                    error(error);
-                }
-            }
-        }).start();
-    }
-
-    //================================SUPPORT METHODS======================================//
 
     //get-запросы на сервер
     private void startGetRequest(final String path, final String type,

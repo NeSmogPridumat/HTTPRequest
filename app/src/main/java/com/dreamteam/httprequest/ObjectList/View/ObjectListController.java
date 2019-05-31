@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.ObjectList.View;
 
-
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -45,7 +44,6 @@ public class ObjectListController extends Fragment implements ObjectListViewInte
         this.arrayList = arrayList;
         this.type = type;
     }
-
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

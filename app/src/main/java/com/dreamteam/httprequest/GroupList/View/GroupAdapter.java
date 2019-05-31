@@ -95,6 +95,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder> implements F
             }
         };
     }
+
     //анимация сдвига holder'ов вправо
     public void animationOn(){
         for (int i = 0; i < groupHolders.size(); i++) {

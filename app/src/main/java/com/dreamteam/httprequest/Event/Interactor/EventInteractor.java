@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.Event.Interactor;
 
-import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -12,11 +11,9 @@ import com.dreamteam.httprequest.Event.Protocols.EventPresenterInterface;
 import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
-import com.dreamteam.httprequest.R;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 
 import static android.support.constraint.Constraints.TAG;
 

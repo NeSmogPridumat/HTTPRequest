@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.EventList.Interactor;
 
-import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -10,13 +9,11 @@ import com.dreamteam.httprequest.EventList.Protocols.EventListFromHTTPManagerInt
 import com.dreamteam.httprequest.EventList.Protocols.EventListPresenterInterface;
 import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
-import com.dreamteam.httprequest.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 public class EventListInteractor implements EventListFromHTTPManagerInterface {

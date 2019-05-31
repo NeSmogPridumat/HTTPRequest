@@ -1,8 +1,15 @@
 package com.dreamteam.httprequest;
 
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.os.Binder;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.internal.BottomNavigationItemView;
@@ -45,14 +52,16 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements ActivityAction {
 
-    SharedPreferences sharedPreferences;
+    public BottomNavigationView bottomNavigationView;
     public TextView bottomNavigationTextView;
 
     public String userID;
 
-    public BottomNavigationView bottomNavigationView;
-
     public AuthDataObject authDataObject;
+
+    public final String BROADCAST_ACTION = "com.dreamteam.httprequest";
+
+    BroadcastReceiver br;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,68 +81,85 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
                     case R.id.groups:
                         clearMainActivity();
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new GroupsListFragment(userID))
+                                .replace(R.id.fragment_container, GroupsListFragment.newInstance(userID))
                                 .commit();
                         break;
 
                     case R.id.profile:
                         clearMainActivity();
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new UserFragment(userID))
+                                .replace(R.id.fragment_container, UserFragment.newInstance(userID))
                                 .commit();
                         break;
 
                     case R.id.notification:
                         clearMainActivity();
                         getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new EventListController(userID))
+                                .replace(R.id.fragment_container, EventListController.newInstance(userID))
                                 .commit();
                         break;
+
+                    case R.id.contacts:
+                        clearMainActivity();
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new BlankTest() )
+                                .commit();
                 }
                 return true;
                 }
             });
-
-        sharedPreferences = getPreferences(MODE_PRIVATE);
-        userID = sharedPreferences.getString("userID", null);
-        if (!(sharedPreferences.getString("userID", "").equals(""))) {
-            sharedPreferences.getString("userID", null);
-            userID = sharedPreferences.getString("userID", null);
+        userID = QueryPreferences.getUserIdPreferences(getBaseContext());
+        if (!(userID.equals(""))) {
             bottomNavigationView.setSelectedItemId(R.id.profile);
 
         } else {
-            SharedPreferences.Editor e = sharedPreferences.edit();
-            e.putBoolean("isStart", true);
-            e.apply();
             bottomNavigationView.setVisibility(View.GONE);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                     new AuthorizationController(this)).commit();
         }
+
+        EventService.setServiceAlarm(getBaseContext());
     }
 
     @Override
     protected void onStart() {
 
-        // Создаем PendingIntent для Task1
-        Intent intent = new Intent(this, EventService.class);
-        PendingIntent pi = createPendingResult(1, intent, 0);
-        // Создаем Intent для вызова сервиса, кладем туда параметр времени
-        // и созданный PendingIntent
-        intent.putExtra("userID", userID)
-                .putExtra("Pending", pi);
-        // стартуем сервис
-        startService(intent);
-
+//        // Создаем PendingIntent для Task1
+//        Intent intent = new Intent(this, EventService.class);
+//        PendingIntent pi = createPendingResult(1, intent, 0);
+//        // Создаем Intent для вызова сервиса, кладем туда параметр времени
+//        // и созданный PendingIntent
+//        intent.putExtra("userID", userID)
+//                .putExtra("Pending", pi);
+//        // стартуем сервис
+////        startService(intent);
+//
         BottomNavigationMenuView bottomNavigationMenuView =
                 (BottomNavigationMenuView) bottomNavigationView.getChildAt(0);
         View v = bottomNavigationMenuView.getChildAt(1);
         BottomNavigationItemView itemView = (BottomNavigationItemView) v;
-
+//
         View badge = LayoutInflater.from(this)
                 .inflate(R.layout.bottomnavigation_event_notification, itemView, true);
         bottomNavigationTextView = badge.findViewById(R.id.notification_badge);
+//
+//        bottomNavigationTextView.setVisibility(View.INVISIBLE);
 
-        bottomNavigationTextView.setVisibility(View.INVISIBLE);
+        // создаем BroadcastReceiver, для прослушки отправляемых сервисом Intent'ов
+        br = new BroadcastReceiver() {
+            // действия при получении сообщений
+            public void onReceive(Context context, Intent intent) {
+                int activeEvent = intent.getIntExtra("event", 0);
+                if(activeEvent != 0){
+                    bottomNavigationTextView.setText(String.valueOf(activeEvent));
+                }
+            }
+        };
+
+        // создаем фильтр для BroadcastReceiver
+        IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION);
+        // регистрируем (включаем) BroadcastReceiver
+        registerReceiver(br, intFilt);
 
         super.onStart();
     }
@@ -160,8 +186,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     }
 
     public void openGroup(String id, int rules) {
-        GroupController controller = new GroupController(id, rules);
-        changeFragmentWitchBackstack(controller, "");
+        changeFragmentWitchBackstack(GroupController.newInstance(id, rules), "");
     }
 
     public void openGroupAfterSelect(String id, int rules) {
@@ -170,11 +195,11 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         for (int i = 0; i < 20; ++i) {
             fm.popBackStack();
         }
-        changeFragmentWitchBackstack(new GroupController(id, rules), null);
+        changeFragmentWitchBackstack(GroupController.newInstance(id, rules), null);
     }
 
     public void getGroup(String id, int rules) {
-        changeFragmentWitchBackstack(new GroupController(id, rules), null);
+        changeFragmentWitchBackstack(GroupController.newInstance(id, rules), null);
     }
 
     @Override
@@ -197,11 +222,11 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     }
 
     public void showUser(User user) {
-        changeFragment(new UserFragment(user.id), null);
+        changeFragment(UserFragment.newInstance(userID), null);
     }
 
     public void openGroupList() {
-        changeFragment(new GroupsListFragment(userID), null);
+        changeFragment(GroupsListFragment.newInstance(userID), null);
     }
 
     //открыть список с полученными даннами и checkBox
@@ -216,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
                 delegate, type), null);
     }
 
+    //переопределили метод, чтобы можно было обрабатывать нажатие кнопки Back во фрагментах
     @Override
     public void onBackPressed() {
         FragmentManager fm = getSupportFragmentManager();
@@ -247,11 +273,11 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     }
 
     public void openProfile() {
-        changeFragment(new UserFragment(userID), null);
+        changeFragment(UserFragment.newInstance(userID), null);
     }
 
     public void openUser(String userID) {
-        changeFragmentWitchBackstack(new UserFragment(userID), null);
+        changeFragmentWitchBackstack(UserFragment.newInstance(userID), null);
     }
 
     public void openObjectList(ArrayList<ObjectData> objectDataArrayList, PresenterInterface delegate,
@@ -274,22 +300,25 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         getSupportActionBar().setTitle(title);
     }
 
-    public void saveSharedPreferences(String userID) {
+    public void saveSharedPreferences(String userID) {//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //с помощью метода getPreferences получаем объект sPref класса SharedPreferences, который позволяет работать с данными (читать и писать).Константа MODE_PRIVATE используется для настройки доступа и означает, что после сохранения, данные будут видны только этому приложению
-        sharedPreferences = getPreferences(MODE_PRIVATE);
+//        sharedPreferences = getPreferences(MODE_PRIVATE);
+//
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//
+//        editor.putString("userID", userID);
+//        editor.apply();
 
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        editor.putString("userID", userID);
-        editor.apply();
+        QueryPreferences.saveSharedPreferences(userID, this);
     }
 
     public void exitLogin() {
-        sharedPreferences = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
+        QueryPreferences.exitLoginPreferences(this);
+//        sharedPreferences = getPreferences(MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.clear();
+//        editor.apply();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new AuthorizationController(this)).commit();
     }
@@ -299,21 +328,21 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     }
 
     public void openEventList() {
-        changeFragment(new EventListController(userID), null);
+        changeFragment(EventListController.newInstance(userID), null);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            String event = data.getStringExtra("Events");
-            if (event.equals("0")) {
-                bottomNavigationTextView.setVisibility(View.GONE);
-            } else {
-                bottomNavigationTextView.setText(event);
-                bottomNavigationTextView.setVisibility(View.VISIBLE);
-            }
-        }
+//        if (requestCode == 1) {
+//            String event = data.getStringExtra("Events");
+//            if (event.equals("0")) {
+//                bottomNavigationTextView.setVisibility(View.GONE);
+//            } else {
+//                bottomNavigationTextView.setText(event);
+//                bottomNavigationTextView.setVisibility(View.VISIBLE);
+//            }
+//        }
     }
 
     public void deleteBackStack() {
@@ -325,8 +354,16 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
     @Override
     protected void onStop() {
-        Intent intent = new Intent(this, EventService.class);
-        stopService(intent);
+
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // дерегистрируем (выключаем) BroadcastReceiver
+        unregisterReceiver(br);
+
+//        unbindService(serviceConnection);
     }
 }

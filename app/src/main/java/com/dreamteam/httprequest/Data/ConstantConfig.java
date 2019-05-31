@@ -36,4 +36,9 @@ public class ConstantConfig {
     public final String GET_USERS_FOR_ADD_STEP_2_TYPE =     "Get user";
 
     public final String GET_RATING_TYPE =                   "Get rating";
+
+    public final String CREATE_LOGIN =                     "create login";
+    public final String ENABLE_USER_AUTH =                 "enable user auth";
+    public final String GET_USER_TOKEN =                   "get user token";
+    public final String ADD_USER_AUTH =                    "add user auth";
 }

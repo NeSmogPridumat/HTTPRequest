@@ -41,7 +41,7 @@ public class QuestionsAdapter extends RecyclerView.Adapter<QuestionsHolder> {
 
     @SuppressLint("ResourceAsColor")
     @Override
-    public void onBindViewHolder(@NonNull final QuestionsHolder questionsHolder, final int i) {
+    public void onBindViewHolder(@NonNull final QuestionsHolder questionsHolder, final int i) {//TODO возможно стоит сделать метод меньше
         final Questions question = questions.get(i);
         questionsHolder.bindGroup(question);
 

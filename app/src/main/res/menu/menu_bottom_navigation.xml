@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/contacts"
+        android:icon="@drawable/ic_action_info"
+        tools:ignore="MenuTitle"/>
+
     <item
         android:id="@+id/groups"
         android:icon="@drawable/ic_action_groups"
@@ -16,4 +22,5 @@
         android:id="@+id/profile"
         android:icon="@drawable/ic_action_profile"
         tools:ignore="MenuTitle"/>
+
 </menu>

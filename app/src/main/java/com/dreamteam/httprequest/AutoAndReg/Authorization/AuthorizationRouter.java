@@ -59,7 +59,7 @@ public class AuthorizationRouter {
         intent.putExtra("userID", userID)
                 .putExtra("Pending", pi);
         // стартуем сервис
-        activity.startService(intent);
+//        activity.startService(intent);
 
         activity.openProfile();
     }

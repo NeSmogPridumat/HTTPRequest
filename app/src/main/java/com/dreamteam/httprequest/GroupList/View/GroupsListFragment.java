@@ -35,7 +35,6 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-@SuppressLint("ValidFragment")
 public class GroupsListFragment extends Fragment implements GroupsViewInterface {
 
     //TODO: не забудь перенести обработчик клика в проект (class RecyclerItemClickListener и обработка outputGroupsView)
@@ -53,8 +52,16 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
     private boolean deleteOn;
     private ArrayList<Group> groups = new ArrayList<>();
 
-    public GroupsListFragment(String userID) {
-        this.userID = userID;
+    public GroupsListFragment() {
+
+    }
+
+    public static GroupsListFragment newInstance(String userID){
+        Bundle args = new Bundle();
+        args.putString("userID", userID);
+        GroupsListFragment fragment = new GroupsListFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
@@ -77,6 +84,7 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
         groupsPresenter = new GroupsPresenter(this, activity);
         deleteOn = false;
         adapter = new GroupAdapter(groups);
+        userID = getArguments().getString("userID");
     }
 
     @Override
