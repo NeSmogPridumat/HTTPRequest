@@ -30,12 +30,14 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder> implements F
 
     //приходящие позже картинки сравниваются по id группы и присваиваются
     void changeItem(String groupID, Bitmap bitmap){
-        for (int i = 0; i < groupCollection.size(); i ++){
-            Group group = groupCollection.get(i);
-            if (group.id.equals(groupID)){
-                group.content.mediaData.imageData = bitmap;
+        if (groupCollection != null){
+            for (int i = 0; i < groupCollection.size(); i ++) {
+                Group group = groupCollection.get(i);
+                if (group.id.equals(groupID)) {
+                    group.content.mediaData.imageData = bitmap;
+                }
+                notifyDataSetChanged();
             }
-            notifyItemChanged(i);
         }
     }
 

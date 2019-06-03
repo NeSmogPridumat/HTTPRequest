@@ -98,7 +98,9 @@ public class GroupPresenter implements GroupPresenterInterface {
     public void answerGetUsersForSelectDelete(ArrayList<User> users) {
         ArrayList<SelectData> selectData = new ArrayList<>();
         for (int i = 0; i < users.size(); i++){
-            selectData.add(new SelectData().initFromUser(users.get(i)));
+            if(!(userID.equals(users.get(i).id))) {
+                selectData.add(new SelectData().initFromUser(users.get(i)));
+            }
         }
         router.showSelectList(selectData, this, constantConfig.DELETE);
     }

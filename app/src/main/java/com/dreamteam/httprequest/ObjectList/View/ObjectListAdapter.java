@@ -49,7 +49,8 @@ public class ObjectListAdapter extends RecyclerView.Adapter<ObjectListHolder>  {
       if (objectData.id.equals(id)){
         objectData.imageData = bitmap;
       }
-      notifyItemChanged(i);
+//      notifyItemChanged(i);
+      notifyDataSetChanged();
     }
   }
 }
