@@ -61,6 +61,7 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
     //ответ создания логина, если true, открываем контроллер для ввода ключа
     @Override
     public void answerCreateLogin(boolean answer, AuthDataObject authDataObject) {
+
         if (answer) {
             router.getKeyLogin(authDataObject);
         }

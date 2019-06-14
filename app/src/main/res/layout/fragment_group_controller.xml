@@ -105,9 +105,19 @@
             </LinearLayout>
 
             <FrameLayout
-                android:id="@+id/group_event_list_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:layout_margin="6dp">
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/group_event_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:orientation="vertical"
+                    android:maxHeight="650dp"
+                    >
+                </android.support.v7.widget.RecyclerView>
+
             </FrameLayout>
 
         </LinearLayout>

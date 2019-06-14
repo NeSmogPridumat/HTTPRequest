@@ -25,6 +25,10 @@ import com.dreamteam.httprequest.Event.Protocols.EventViewInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -176,4 +180,6 @@ public class EventType4Controller extends Fragment implements EventViewInterface
         }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
     }
+
+
 }

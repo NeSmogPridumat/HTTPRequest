@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.AutoAndReg.Authorization.Interactor;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,14 +18,10 @@ import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
-import com.dreamteam.httprequest.R;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
-
-import static android.support.constraint.Constraints.TAG;
 
 public class AuthorizationInteractor implements AuthorizationHTTPManagerInterface {
 

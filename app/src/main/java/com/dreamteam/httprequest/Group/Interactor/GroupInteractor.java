@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.Group.Interactor;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -19,15 +18,15 @@ import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.GroupHTTPMangerInterface;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
 import com.dreamteam.httprequest.ObjectList.ObjectData;
-import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.SelectedList.SelectData;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 public class GroupInteractor implements GroupHTTPMangerInterface {
@@ -116,14 +115,10 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override
             public void run() {
-                for (int i = 0; i < selectData.size(); i++) {
-                    RequestInfo requestInfo = new RequestInfo();
-                    requestInfo.userID = selectData.get(i).id;
-                    requestInfo.groupID = groupId;
-                    requestInfo.groupCreatorID = groupId;
-                    requestInfo.creatorID = userID;
+                for (SelectData i : selectData) {
 
-                    startPostRequest(path, requestInfo, constantConfig.SET_DELETE_USER_IN_GROUP_TYPE,
+                    startPostRequest(path, getRequestInfoForSelectData(i, groupId, userID),
+                            constantConfig.SET_DELETE_USER_IN_GROUP_TYPE,
                             GroupInteractor.this);
                 }
             }
@@ -134,6 +129,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         //собираем путь запроса
         final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER + httpConfig.reqGroup
                 + httpConfig.DEL;
+
         startPostRequest(path, requestInfo,  constantConfig.DELETE_GROUP, GroupInteractor.this);
     }
 
@@ -173,6 +169,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     public void getUserForList (String id){
         final String membersPath = httpConfig.serverURL + httpConfig.SERVER_GETTER
                 + httpConfig.reqUser + httpConfig.reqGroup + httpConfig.GROUP_ID_PARAM + id;
+
         startGetRequest(membersPath, constantConfig.MEMBERS_FOR_LIST_TYPE,
                 GroupInteractor.this);
     }
@@ -201,13 +198,28 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
 
     public void getSubgroup(ArrayList<String> subgroups, String userID){
         countSubgroup = subgroups.size();
-        for (int i = 0; i < subgroups.size(); i++){
+        for (String i : subgroups){
             final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqGroup
-                    + httpConfig.GROUP_ID_PARAM + subgroups.get(i) + httpConfig.USER_ID_PARAM_2 + userID;
+                    + httpConfig.GROUP_ID_PARAM + i + httpConfig.USER_ID_PARAM_2 + userID;
 
             startGetRequest(path, constantConfig.GET_SUB_GROUP_TYPE, GroupInteractor.this);
         }
     }
+
+    public void getEventForGroup(String groupID){
+        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.EVENT
+                + httpConfig.GROUP + httpConfig.GROUP_ID_PARAM + groupID;
+        //TODO путь для получения списка эвентов
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                httpManager.getRequest(path, constantConfig.GET_EVENT_TYPE,
+                        GroupInteractor.this);
+            }
+        }).start();
+    }
+
 
     //----------------------------------------ПОЛУЧЕНИЕ ДАННЫХ ОТ HTTP MANAGER И ВЫЗОВ ФУНКЦИЙ ДЛЯ ОБРАБОТКИ-----------------------------//
     @Override
@@ -241,6 +253,8 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             prepareAddAdminResponse(byteArray);
         }else if (type.equals(constantConfig.GET_SUB_GROUP_TYPE)){
             prepareGetSubGroupResponse(byteArray);
+        } else if (type.equals(constantConfig.GET_EVENT_TYPE)){
+            prepareEventGorGroup(byteArray);
         }
         //====================Steppers=============================================//
         else if (type.equals(constantConfig.GET_USERS_FOR_ADD_STEP_1_TYPE)){
@@ -377,14 +391,9 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     private void prepareGetMembersForListResponse (byte[] byteArray){
         final ArrayList<User> members = createMembersOfBytes(byteArray);
         ArrayList<ObjectData> objectDataArrayList = new ArrayList<>();
-        for (int i = 0; i < members.size(); i++){
-            ObjectData objectData = new ObjectData();
-            objectData.id = members.get(i).id;
-            objectData.title = members.get(i).content.simpleData.name;
-            objectData.description = members.get(i).content.simpleData.surname;
-            objectData.image = members.get(i).content.mediaData.image;
-            objectData.rules = members.get(i).rules;
-            objectDataArrayList.add(objectData);
+        for (User user : members){
+            //добавляем в коллекцию созданный в методе getObjectDataForUser() ObjectData
+            objectDataArrayList.add(getObjectDataForUser(user));
         }
         final ArrayList<ObjectData> objectDataArrayListFinal = objectDataArrayList;
         Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -461,10 +470,10 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
 
     private void prepareGetUserForAddSelect (byte[] bytes){
         ArrayList<User> allUsers = createMembersOfBytes(bytes);
-        for (int i = 0; i < usersGroup.size(); i++){
-            for (int j = 0; j < allUsers.size(); j++){
-                if (usersGroup.get(i).id.equals(allUsers.get(j).id)){
-                    allUsers.remove(allUsers.get(j));
+        for (User user : usersGroup){
+            for (User user2 : allUsers){
+                if (user.id.equals(user2.id)){
+                    allUsers.remove(user2);
                 }
             }
         }
@@ -494,14 +503,8 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     public void addSelectUser(ArrayList<SelectData> arrayList, String groupId, String userID){
         final String path = httpConfig.serverURL + httpConfig.SERVER_SETTER
                 + httpConfig.GROUP + httpConfig.USER + httpConfig.ADD;
-        for (int i = 0; i< arrayList.size(); i++){
-            RequestInfo requestInfo = new RequestInfo();
-            requestInfo.userID = arrayList.get(i).id;
-            requestInfo.groupID = groupId;
-            requestInfo.groupCreatorID = groupId;
-            requestInfo.creatorID = userID;
-
-            startPostRequest(path, requestInfo, constantConfig.SET_USER_IN_GROUP_TYPE,
+        for (SelectData selectData : arrayList){
+            startPostRequest(path, getRequestInfoForSelectData(selectData, groupId, userID), constantConfig.SET_USER_IN_GROUP_TYPE,
                     GroupInteractor.this);
         }
     }
@@ -538,6 +541,27 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
             }
         };
         mainHandler.post(myRunnable);
+    }
+
+    private void prepareEventGorGroup(final byte[] byteArray){
+        if (byteArray != null){
+            final ArrayList<EventType4> eventArrayList;
+            try {
+                eventArrayList = createEventsOfBytes(byteArray);
+                if (eventArrayList != null){
+                    Handler mainHandler = new Handler(Looper.getMainLooper());
+                    Runnable myRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            delegate.answerEventForGroup(eventArrayList);
+                        }
+                    };
+                    mainHandler.post(myRunnable);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     //=============================SUPPORT METHODS=============================================//
@@ -618,5 +642,44 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         Gson gson = new Gson();
         String jsonString = new String(byteArray);
         return gson.fromJson(jsonString, new TypeToken<ArrayList<User>>(){}.getType());
+    }
+
+    private ArrayList<EventType4> createEventsOfBytes (byte[] byteArray)throws Exception{
+
+        Gson gson = new Gson();
+        String jsonString = new String(byteArray);
+        JSONArray jsonArray = new JSONArray(jsonString);
+        ArrayList<String> list = new ArrayList<>();
+        for (int i=0; i<jsonArray.length(); i++) {
+            list.add(jsonArray.getString(i));
+        }
+
+        ArrayList<EventType4> events = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); i++){
+            if(!(jsonArray.get(i).equals("null"))) {
+                EventType4 event = gson.fromJson((list.get(i)), new TypeToken<EventType4>() {}.getType());
+                events.add(event);
+            }
+        }
+        return events;
+    }
+
+    private RequestInfo getRequestInfoForSelectData (SelectData selectData, String groupId, String userID){
+        RequestInfo requestInfo = new RequestInfo();
+        requestInfo.userID = selectData.id;
+        requestInfo.groupID = groupId;
+        requestInfo.groupCreatorID = groupId;
+        requestInfo.creatorID = userID;
+        return  requestInfo;
+    }
+
+    private ObjectData getObjectDataForUser (User user){
+        ObjectData objectData = new ObjectData();
+        objectData.id = user.id;
+        objectData.title = user.content.simpleData.name;
+        objectData.description = user.content.simpleData.surname;
+        objectData.image = user.content.mediaData.image;
+        objectData.rules = user.rules;
+        return objectData;
     }
 }

@@ -26,15 +26,25 @@
                             android:layout_height="wrap_content"
                             android:padding="4dp"
                             android:textColor="@android:color/white"
-                            android:textSize="20sp"
+                            android:textSize="18sp"
                             android:textStyle="normal"
                             android:background="@android:color/darker_gray"
                             tools:text="Object Title" />
 
                         <TextView
+                            android:id="@+id/event_list_date_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/darker_gray"
+                            android:textColor="@android:color/white"
+                            android:textSize="12sp"
+                            android:textStyle="normal" />
+
+                        <TextView
                             android:id="@+id/event_list_description_text_view"
                             android:layout_width="match_parent"
-                            android:layout_height="60dp"
+                            android:layout_height="wrap_content"
+                            android:minLines="2"
                             android:padding="4dp"
                             tools:text="Object Description"
                             />

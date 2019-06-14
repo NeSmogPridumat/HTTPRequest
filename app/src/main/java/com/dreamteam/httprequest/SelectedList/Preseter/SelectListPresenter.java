@@ -19,7 +19,6 @@ public class SelectListPresenter implements SelectListPresenterInterface {
     private SelectListRouter selectListRouter;
     private SelectListViewController delegate;
 
-
     public SelectListPresenter(SelectListViewController delegate, MainActivity activity){
         this.activity = activity;
         this.delegate = delegate;

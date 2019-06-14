@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.User.Interactor;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -17,15 +16,12 @@ import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
 import com.dreamteam.httprequest.Interfaces.UserFromHTTPManagerInterface;
-import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.User.Protocols.PresenterUserInterface;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.ByteArrayOutputStream;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 
@@ -121,7 +117,6 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.RATING
                 + httpConfig.USER + httpConfig.USER_ID_PARAM + userID;
 
-
         startGetRequest(path, constantConfig.GET_RATING_TYPE, UserInteractor.this);
     }
 
@@ -192,9 +187,6 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     private void getUserResponse(byte[] byteArray) {
         try {
             final User user = createUserOfBytes(byteArray);
-            if (user.equals(null)) {
-                delegate.error(new NullPointerException());
-            }
 
             Handler mainHandler = new Handler(Looper.getMainLooper());
             Runnable myRunnable = new Runnable() {
@@ -289,7 +281,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         if (byteArray != null) {
             Gson gson = new Gson();
             String jsonString = new String(byteArray);
-            return gson.fromJson(jsonString, new TypeToken<ArrayList<Group>>() {}.getType());
+            groups = gson.fromJson(jsonString, new TypeToken<ArrayList<Group>>() {}.getType());
         }
         return groups;
     }

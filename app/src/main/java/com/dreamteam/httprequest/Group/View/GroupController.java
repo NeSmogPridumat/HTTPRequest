@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 
 import com.dreamteam.httprequest.Data.AddData;
 import com.dreamteam.httprequest.Data.RequestInfo;
+import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.Group.Presenter.GroupPresenter;
 import com.dreamteam.httprequest.Group.Protocols.GroupViewInterface;
@@ -28,6 +31,7 @@ import com.dreamteam.httprequest.User.Entity.UserData.User;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,6 +44,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
     private int rules;
     private Bitmap bitmap;
     private RelativeLayout progressBar;
+    private RecyclerView groupEventRecycler;
 
     private GroupPresenter groupPresenter;
     Group group;
@@ -70,6 +75,9 @@ public class GroupController extends Fragment implements GroupViewInterface {
         progressBar = view.findViewById(R.id.progressBarOverlay);
         membersRadioButton = view.findViewById(R.id.radio_button_members_group);
         subgroupRadioButton = view.findViewById(R.id.radio_button_subgroup);
+        groupEventRecycler = view.findViewById(R.id.group_event_list);
+        groupEventRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+
         return view;
     }
 
@@ -87,6 +95,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
     public void onStart() {
         progressBar.setVisibility(View.VISIBLE);
         groupPresenter.getGroup(groupID);
+        groupPresenter.getEventForGroup(groupID);
         super.onStart();
 
         membersRadioButton.setOnClickListener(new View.OnClickListener() {
@@ -107,6 +116,16 @@ public class GroupController extends Fragment implements GroupViewInterface {
                     groupPresenter.getSubgroup(group.nodeData.childList);
                 }
                 subgroupRadioButton.setChecked(false);
+            }
+        });
+
+        groupImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(groupImageView.getDrawable() != null){
+                    //TODO сделать через презентер, либо другой способ отображения!!!
+                    activity.showImage(groupImageView.getDrawable());
+                }
             }
         });
     }
@@ -151,6 +170,14 @@ public class GroupController extends Fragment implements GroupViewInterface {
     public void errorHanding(String title, String description) {
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void answerEventForGroup(ArrayList<EventType4> eventList) {
+        Collections.reverse(eventList);
+        EventForGroupAdapter adapter = new EventForGroupAdapter(eventList);
+        groupEventRecycler.setAdapter(adapter);
+        groupEventRecycler.getAdapter().notifyDataSetChanged();
     }
 
     @Override

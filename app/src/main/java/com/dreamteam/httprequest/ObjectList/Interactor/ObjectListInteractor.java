@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.ObjectList.Interactor;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -11,9 +10,6 @@ import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.ObjectListFromHTTPManagerInterface;
 import com.dreamteam.httprequest.ObjectList.Protocols.ObjectListPresenterInterface;
-import com.dreamteam.httprequest.R;
-
-import java.net.SocketTimeoutException;
 
 public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface {
 
@@ -78,12 +74,10 @@ public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface 
   @Override
   public void errorHanding(int resposeCode, String type) {
 
-
   }
 
   private String[] parsingStringType(String string){//--------------------------------------------разбор строки (getImageGroupType + ":" + groupID)
         String delimiter = ":";
         return string.split(delimiter);
     }
-
 }

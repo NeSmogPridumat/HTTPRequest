@@ -1,7 +1,9 @@
-package com.dreamteam.httprequest.User.View;
+package com.dreamteam.httprequest;
+
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,34 +23,34 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
-import com.dreamteam.httprequest.Data.QuestionRating.Question;
 import com.dreamteam.httprequest.Data.QuestionRating.QuestionRating;
-import com.dreamteam.httprequest.MainActivity;
-import com.dreamteam.httprequest.QueryPreferences;
-import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.Service.EventService;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.dreamteam.httprequest.User.Presenter.PresenterUser;
 import com.dreamteam.httprequest.User.Protocols.ViewUserInterface;
+import com.dreamteam.httprequest.User.View.UserFragment;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class UserFragment extends Fragment implements ViewUserInterface {
+public class ChuvakEtoRepchik extends Fragment implements ViewUserInterface {
 
-    private ImageView userImage;
-    private TextView userName, userSurName, mail, call;
-    private RelativeLayout progressBarOverlay;
-    private ProgressBar progressBar;
-    private RadioButton groupsRadioButton;
+    private ImageView app_bar_image;
+//    private TextView userName, userSurName, mail, call;
+//    private RelativeLayout progressBarOverlay;
+//    private ProgressBar progressBar;
+//    private RadioButton groupsRadioButton;
     private MainActivity activity;
     private LinearLayout userLinear;
+    android.support.v7.widget.Toolbar toolbar;
 
     public PresenterUser presenterUser;
 
@@ -57,13 +59,13 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     private String userID;
     private boolean count = false;
 
-    public UserFragment() {
+    public ChuvakEtoRepchik() {
     }
 
-    public static UserFragment newInstance(String userID){
+    public static ChuvakEtoRepchik newInstance(String userID){
         Bundle args = new Bundle();
         args.putString("userID", userID);
-        UserFragment fragment = new UserFragment();
+        ChuvakEtoRepchik fragment = new ChuvakEtoRepchik();
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,20 +74,20 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_user, container, false);
-        userName = view.findViewById(R.id.user_name_text_view);
-        userSurName = view.findViewById(R.id.user_surname_text_view);
-        mail = view.findViewById(R.id.mail_text_view);
-        call = view.findViewById(R.id.call_number_text_view);
-        userImage = view.findViewById(R.id.user_image);
-        groupsRadioButton = view.findViewById(R.id.radio_button_groups);
-        progressBarOverlay = view.findViewById(R.id.progressBarOverlay);
-        progressBar = view.findViewById(R.id.progressBar);
+        View view = inflater.inflate(R.layout.fragment_chuvak_eto_repchik, container, false);
+//        userSurName = view.findViewById(R.id.user_surname_text_view);
+//        mail = view.findViewById(R.id.mail_text_view);
+//        call = view.findViewById(R.id.call_number_text_view);
+        app_bar_image = view.findViewById(R.id.app_bar_image);
+//        groupsRadioButton = view.findViewById(R.id.radio_button_groups);
+//        progressBarOverlay = view.findViewById(R.id.progressBarOverlay);
+//        progressBar = view.findViewById(R.id.progressBar);
         userLinear = view.findViewById(R.id.user_fragment);
-        if(!count){
-            count = true;
-            progressBarOverlay.setVisibility(View.VISIBLE);
-        }
+        toolbar = view.findViewById(R.id.toolbar);
+//        if(!count){
+//            count = true;
+//            progressBarOverlay.setVisibility(View.VISIBLE);
+//        }
 
         return view;
     }
@@ -100,34 +102,35 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         presenterUser = new PresenterUser(this, activity);
         presenterUser.getRating(userID);
 
+
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onStart() {
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.progress_rotate);
-        progressBar.startAnimation(animation);
+//        progressBar.startAnimation(animation);
         presenterUser.getUser(userID);
         super.onStart();
-        groupsRadioButton.setOnClickListener(new View.OnClickListener() {
+//        groupsRadioButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (QueryPreferences.getUserIdPreferences(getContext()).equals(userID)) {
+//                    activity.bottomNavigationView.setSelectedItemId(R.id.groups);
+//                } else {
+//                    presenterUser.getGroups(userID);
+//                }
+//                groupsRadioButton.setChecked(false);
+//            }
+//        });
+
+        app_bar_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (QueryPreferences.getUserIdPreferences(getContext()).equals(userID)) {
-                    activity.bottomNavigationView.setSelectedItemId(R.id.groups);
-                } else {
-                    presenterUser.getGroups(userID);
+                if(app_bar_image.getDrawable() != null){
+                    //TODO сделать через презентер, либо другой способ отображения!!!
+                    activity.showImage(app_bar_image.getDrawable());
                 }
-                groupsRadioButton.setChecked(false);
-            }
-        });
-
-        userImage.setOnClickListener(new View.OnClickListener() {
-                                         @Override
-                                         public void onClick(View v) {
-            if(userImage.getDrawable() != null){
-                //TODO сделать через презентер, либо другой способ отображения!!!
-                activity.showImage(userImage.getDrawable());
-            }
             }
         });
     }
@@ -141,17 +144,20 @@ public class UserFragment extends Fragment implements ViewUserInterface {
 
     @Override
     public void View(User user) {
-        userName.setText(user.content.simpleData.name);
-        userSurName.setText(user.content.simpleData.surname);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.setTitle(user.content.simpleData.name + " " + user.content.simpleData.surname);
+        }
+//        userSurName.setText(user.content.simpleData.surname);
         this.user = user;
-//        activity.setActionBarTitle(user.content.simpleData.name);
-        progressBarOverlay.setVisibility(View.GONE);
+        activity.setActionBarTitle(user.content.simpleData.name + " " + user.content.simpleData.surname);
+//        activity.getActionBar().hide();
+//        progressBarOverlay.setVisibility(View.GONE);
     }
 
     @Override
     public void ViewImage(Bitmap bitmap) {
         bitmapU = bitmap;
-        userImage.setImageBitmap(bitmapU);
+        app_bar_image.setImageBitmap(bitmapU);
     }
 
     @Override
@@ -166,14 +172,14 @@ public class UserFragment extends Fragment implements ViewUserInterface {
             description = "";
         }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
-        progressBarOverlay.setVisibility(View.GONE);
+//        progressBarOverlay.setVisibility(View.GONE);
     }
 
     @Override
     public void answerGetGroups(int groupsint) {
         if(isAdded()) {
             String groupsText = (groupsint) + getResources().getString(R.string.groups);
-            groupsRadioButton.setText(groupsText);
+//            groupsRadioButton.setText(groupsText);
         }
     }
 
@@ -182,36 +188,29 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
         layoutParams.setMargins(24,30,0,0);
         LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
-        DecimalFormat df = new DecimalFormat("#.##");
+        DecimalFormat df= new DecimalFormat("#.##");
         layoutParams1.setMarginStart(48);
         float j = 0;
-        for (Question i : questionRatings.get(0).question){//TODO: вроде понятный ForEach
-            j = j + i.middleValue;
+        for (int i = 0; i < questionRatings.get(0).question.size(); i++){
+            j = j + questionRatings.get(0).question.get(i).middleValue;
         }
-
-        //TODO: возможно надо убрать в метод
         TextView textView = new TextView(getContext());
-        String text = getResources().getText(R.string.overall_rating) + " "
-                + df.format(j/questionRatings.get(0).question.size());
+        String text = getResources().getText(R.string.overall_rating) + df.format(j/questionRatings.get(0).question.size());
         textView.setText(text);
-        textView.setTextSize(18f);
+        textView.setTextSize(36f);
         textView.setTextColor(getResources().getColor(android.R.color.white));
         textView.setLayoutParams(layoutParams);
         userLinear.addView(textView);
-        for (Question i : questionRatings.get(0).question) {
-            userLinear.addView(createTextView(i, df, layoutParams1));
+        for (int i = 0; i < questionRatings.get(0).question.size(); i++) {
+            TextView textView1 = new TextView(getContext());
+            textView1.setTextColor(getResources().getColor(android.R.color.white));
+            textView.setTextSize(18f);
+            text = questionRatings.get(0).question.get(i).title + ": "
+                    + df.format(questionRatings.get(0).question.get(i).middleValue);
+            textView1.setText(text);
+            textView1.setLayoutParams(layoutParams1);
+            userLinear.addView(textView1);
         }
-    }
-
-    private TextView createTextView(Question question, DecimalFormat df, LinearLayout.LayoutParams layoutParams){
-        TextView textView = new TextView(getContext());
-        textView.setTextColor(getResources().getColor(android.R.color.white));
-        textView.setTextSize(18f);
-        String text = question.title + ": "
-                + df.format(question.middleValue);
-        textView.setText(text);
-        textView.setLayoutParams(layoutParams);
-        return textView;
     }
 
     @Override
@@ -228,8 +227,3 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         return super.onOptionsItemSelected(item);
     }
 }
-
-
-
-
-

@@ -1,15 +1,10 @@
 package com.dreamteam.httprequest;
 
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.os.Binder;
-import android.os.IBinder;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.internal.BottomNavigationItemView;
@@ -104,6 +99,14 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.fragment_container, new BlankTest() )
                                 .commit();
+                        break;
+
+                    case R.id.profile2:
+                        clearMainActivity();
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, ChuvakEtoRepchik.newInstance(userID))
+                                .commit();
+                        break;
                 }
                 return true;
                 }
@@ -118,8 +121,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
                     new AuthorizationController(this)).commit();
         }
 
-        EventService.setServiceAlarm(getBaseContext());
-    }
+        EventService.setServiceAlarm(getBaseContext()); }
 
     @Override
     protected void onStart() {
@@ -251,6 +253,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
                 backPressedListener = (OnBackPressedListener) fragment;
                 break;
             }
+            int z = 0;
+            int x = (z==0)?100:200;//TODO: интересная функция, которую можно использовать (можно ли использовать для вызова методов?)
         }
 
         if (backPressedListener != null) {
@@ -343,6 +347,12 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 //                bottomNavigationTextView.setVisibility(View.VISIBLE);
 //            }
 //        }
+    }
+
+    public void showImage (Drawable drawable){
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new BlankFragment(drawable, this), null)
+                .addToBackStack(null).commit();
+//        changeFragmentWitchBackstack(new BlankFragment(drawable, this), null);
     }
 
     public void deleteBackStack() {

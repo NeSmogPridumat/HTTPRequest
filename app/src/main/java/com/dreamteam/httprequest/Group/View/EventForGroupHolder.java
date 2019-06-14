@@ -1,7 +1,8 @@
-package com.dreamteam.httprequest.EventList.View;
+package com.dreamteam.httprequest.Group.View;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.widget.TextView;
 
@@ -9,12 +10,14 @@ import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.R;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
-public class EventHolder extends RecyclerView.ViewHolder {
+public class EventForGroupHolder extends RecyclerView.ViewHolder {
 
     private TextView titleTextView, dateTextView, descriptionTextView;
 
-    EventHolder(@NonNull View item) {
+    EventForGroupHolder(@NonNull View item) {
         super(item);
         titleTextView = item.findViewById(R.id.event_list_title_text_view);
         dateTextView = item.findViewById(R.id.event_list_date_text_view);

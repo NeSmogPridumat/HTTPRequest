@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.User.Presenter;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
@@ -10,7 +9,6 @@ import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.ObjectList.ObjectData;
-import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.User.Protocols.PresenterUserInterface;
 import com.dreamteam.httprequest.User.Router;
 import com.dreamteam.httprequest.SelectedList.SelectData;
@@ -18,8 +16,6 @@ import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.dreamteam.httprequest.User.Interactor.UserInteractor;
 import com.dreamteam.httprequest.User.Protocols.ViewUserInterface;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 public class PresenterUser implements PresenterUserInterface {
@@ -70,16 +66,19 @@ public class PresenterUser implements PresenterUserInterface {
 
     @Override public void answerGetGroupsForList(ArrayList<Group> groups) {
         ArrayList<ObjectData> objectDataArrayList = new ArrayList<>();
-        for (int i = 0; i < groups.size(); i++){
-            ObjectData objectData = new ObjectData();
-            objectData.id = groups.get(i).id;
-            objectData.title = groups.get(i).content.simpleData.title;
-            objectData.description = groups.get(i).content.simpleData.description;
-            objectData.image = groups.get(i).content.mediaData.image;
-            objectDataArrayList.add(objectData);
+        for (Group group : groups){
+            objectDataArrayList.add(setObjectOfGroup(group));
         }
         router.openGroupList(objectDataArrayList, this,constantConfig.GROUP_TYPE);
+    }
 
+    private ObjectData setObjectOfGroup(Group group){
+        ObjectData objectData = new ObjectData();
+        objectData.id = group.id;
+        objectData.title = group.content.simpleData.title;
+        objectData.description = group.content.simpleData.description;
+        objectData.image = group.content.mediaData.image;
+        return objectData;
     }
 
     @Override

@@ -98,22 +98,18 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
                                            String permissions[], int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         //
-        switch (requestCode) {
-            case REQUEST_ID_READ_WRITE_PERMISSION: {
+        // Note: If request is cancelled, the result arrays are empty.
+        // Permissions granted (read/write).
+        if (requestCode == REQUEST_ID_READ_WRITE_PERMISSION) {
+            if (grantResults.length > 1
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
 
-                // Note: If request is cancelled, the result arrays are empty.
-                // Permissions granted (read/write).
-                if (grantResults.length > 1
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-
-                    Toast.makeText(getContext(), "Permission granted!", Toast.LENGTH_LONG).show();
-                }
-                // Cancelled or denied.
-                else {
-                    Toast.makeText(getContext(), "Permission denied!", Toast.LENGTH_LONG).show();
-                }
-                break;
+                Toast.makeText(getContext(), "Permission granted!", Toast.LENGTH_LONG).show();
+            }
+            // Cancelled or denied.
+            else {
+                Toast.makeText(getContext(), "Permission denied!", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -130,7 +126,8 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
             int rotate = 0;
             ExifInterface exif = null;
             try {
-                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), Uri.fromFile(photoFile));
+                bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(),
+                        Uri.fromFile(photoFile));
                 exif = new ExifInterface(photoFile.getAbsolutePath());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -151,7 +148,8 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
 
             Matrix matrix = new Matrix();
             matrix.postRotate(rotate);
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
+                    matrix, true);
 
             int nh = (int) ( bitmap.getHeight() * (512.0 / bitmap.getWidth()) );
             Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 512, nh, true);
@@ -194,7 +192,7 @@ public class ActivityForResultFragment extends Fragment {//TODO: возможн�
         }
         cursor.moveToFirst();
         int orientation = 0;
-        if( cursor != null && cursor.moveToFirst() ) {
+        if(cursor.moveToFirst()) {
             orientation = cursor.getInt(0);
         }
         cursor.close();

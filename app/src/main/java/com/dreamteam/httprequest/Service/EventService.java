@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.provider.Settings;
@@ -59,8 +58,8 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        httpManager.getRequest(path, constantConfig.GET_EVENT_TYPE,
-                                EventService.this);
+//                        httpManager.getRequest(path, constantConfig.GET_EVENT_TYPE,
+//                                EventService.this);
                     }
                 }).start();
             }

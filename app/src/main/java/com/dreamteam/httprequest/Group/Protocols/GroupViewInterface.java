@@ -2,6 +2,7 @@ package com.dreamteam.httprequest.Group.Protocols;
 
 import android.graphics.Bitmap;
 
+import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 
@@ -19,4 +20,6 @@ public interface GroupViewInterface {
     void answerStartVoited();
 
     void errorHanding(String title, String descripton);
+
+    void answerEventForGroup(ArrayList<EventType4> eventList);
 }

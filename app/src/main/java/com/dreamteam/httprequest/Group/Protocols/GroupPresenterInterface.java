@@ -44,4 +44,6 @@ public interface GroupPresenterInterface extends PresenterInterface {
     void answerGetSubgroup (ArrayList<Group> subgroups);
 
     void backPressAfterSelectAdmin();
+
+    void answerEventForGroup(ArrayList<EventType4> answerEventForGroup);
 }

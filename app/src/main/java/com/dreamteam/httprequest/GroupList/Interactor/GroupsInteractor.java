@@ -69,14 +69,14 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < arrayList.size(); i++){
-                    setNullSelectData(arrayList.get(i));
+                for (SelectData selectData : arrayList){
+                    setNullSelectData(selectData);
 
                     //собираем путь запроса
                     String path = httpConfig.serverURL + httpConfig.SERVER_SETTER
                             + httpConfig.reqGroup + httpConfig.DEL;//TODO
                     Gson gson = new Gson();
-                    String jsonObject = gson.toJson(arrayList.get(i));
+                    String jsonObject = gson.toJson(selectData);
                     try {
                         httpManager.postRequest(path, jsonObject, constantConfig.DELETE_GROUP,
                                 GroupsInteractor.this);

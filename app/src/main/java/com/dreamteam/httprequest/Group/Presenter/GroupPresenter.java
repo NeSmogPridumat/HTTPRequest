@@ -138,13 +138,13 @@ public class GroupPresenter implements GroupPresenterInterface {
     @Override
     public void answerGetSubgroup(ArrayList<Group> subgroups) {
         ArrayList<ObjectData> objectDataList = new ArrayList<>();
-        for (int i = 0; i < subgroups.size(); i++){
+        for (Group subgroup : subgroups){
             ObjectData objectData = new ObjectData();
-            objectData.id = subgroups.get(i).id;
-            objectData.title = subgroups.get(i).content.simpleData.title;
-            objectData.description = subgroups.get(i).content.simpleData.description;
-            objectData.image = subgroups.get(i).content.mediaData.image;
-            objectData.rules = subgroups.get(i).rules;
+            objectData.id = subgroup.id;
+            objectData.title = subgroup.content.simpleData.title;
+            objectData.description = subgroup.content.simpleData.description;
+            objectData.image = subgroup.content.mediaData.image;
+            objectData.rules = subgroup.rules;
             objectDataList.add(objectData);
         }
         router.openObjectList(objectDataList, this);
@@ -157,6 +157,11 @@ public class GroupPresenter implements GroupPresenterInterface {
         router.showDialog("Ваша заявка отправлена на подтверждение", photoActionArray, this);//TODO
         activity.deleteBackStack();
         getGroup(groupID);
+    }
+
+    @Override
+    public void answerEventForGroup(ArrayList<EventType4> answerEventForGroup) {
+        delegate.answerEventForGroup(answerEventForGroup);
     }
 
     public void openGroup(Group group, Router myRouter, Context context) {
@@ -277,4 +282,7 @@ public class GroupPresenter implements GroupPresenterInterface {
         }
     }
 
+    public void getEventForGroup(String groupID){
+        groupInteractor.getEventForGroup(groupID);
+    }
 }

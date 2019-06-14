@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.SelectedList.Interactor;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -10,10 +9,7 @@ import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.SelectListHTTPManagerInterface;
-import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.SelectedList.Protocols.SelectListPresenterInterface;
-
-import java.net.SocketTimeoutException;
 
 public class SelectListInteractor implements SelectListHTTPManagerInterface {
 
