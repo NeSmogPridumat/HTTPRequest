@@ -72,7 +72,7 @@ public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface 
   }
 
   @Override
-  public void errorHanding(int resposeCode, String type) {
+  public void errorHanding(int responseCode, String type) {
 
   }
 

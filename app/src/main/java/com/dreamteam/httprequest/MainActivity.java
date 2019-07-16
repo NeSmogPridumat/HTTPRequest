@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.internal.BottomNavigationItemView;
@@ -14,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
     public BottomNavigationView bottomNavigationView;
     public TextView bottomNavigationTextView;
+    public Toolbar toolbar;
 
     public String userID;
 
@@ -64,8 +67,9 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         setContentView(R.layout.activity_main);
         authDataObject = new AuthDataObject();
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        toolbar = findViewById(R.id.toolbar);
 
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -301,7 +305,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
     //метод для получения к заголовку ActionBar'a
     public void setActionBarTitle(String title) {
-        getSupportActionBar().setTitle(title);
+        toolbar.setTitle(title);
+
     }
 
     public void saveSharedPreferences(String userID) {//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

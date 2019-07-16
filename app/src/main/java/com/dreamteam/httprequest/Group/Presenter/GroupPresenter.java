@@ -279,6 +279,10 @@ public class GroupPresenter implements GroupPresenterInterface {
             String title = activity.getResources().getString(R.string.delete_error);
             String description = activity.getResources().getString(R.string.deletion_will_be_available_after_the_event_is_completed);
             delegate.errorHanding(title, description);
+        } else if(resposeCode == 403 && type.equals((constantConfig.ADD_ADMIN))){
+            String title = ("Ошибка");
+            String description = ("Убрать себя из админов");
+            delegate.errorHanding(title, description);
         }
     }
 

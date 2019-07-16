@@ -18,6 +18,10 @@ import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
 import com.dreamteam.httprequest.Interfaces.UserFromHTTPManagerInterface;
 import com.dreamteam.httprequest.User.Protocols.PresenterUserInterface;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
+import com.dreamteam.httprequest.database.App;
+import com.dreamteam.httprequest.database.Data.UserDB;
+import com.dreamteam.httprequest.database.UserDao;
+import com.dreamteam.httprequest.database.UserDataBase;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -33,6 +37,9 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 
     private HTTPConfig httpConfig = new HTTPConfig();
 
+    UserDataBase dataBase = App.getInstance().getUserDataBase();
+    UserDao userDao = dataBase.userDao();
+
     private PresenterUserInterface delegate;
 
     public UserInteractor(PresenterUserInterface delegate) {
@@ -41,11 +48,41 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
 
 //----------------------------------ОТПРАВКА В HTTPMANAGER---------------------------------------//
 
-    public void getUser(String id) {//----------------------------------отправка запроса на получение User по id
-        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqUser
-                + httpConfig.ID_PARAM + id;
+    public void getUser(final String id) {//----------------------------------отправка запроса на получение User по id
 
-        startGetRequest(path, constantConfig.USER_TYPE, UserInteractor.this);
+        //смотрим в БД, если там нет, делаем запрос
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    //UserDB userDB = userDao.getById(id);
+                    //if(userDB == null) {
+                        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqUser
+                                + httpConfig.ID_PARAM + id;
+
+                        startGetRequest(path, constantConfig.USER_TYPE, UserInteractor.this);
+//                    } else {
+//                        final User user = new User();
+//                        user.id = userDB.id;
+//                        user.content.simpleData.name = userDB.name;
+//                        user.content.simpleData.surname = userDB.surname;
+//                        user.content.mediaData.image = userDB.image;
+//
+//                        Handler mainHandler = new Handler(Looper.getMainLooper());
+//                        Runnable myRunnable = new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                delegate.answerGetUser(user);
+//                            }
+//                        };
+//                        mainHandler.post(myRunnable);
+//
+//                    }
+                } catch (Exception error) {
+                    error(error);
+                }
+            }
+        }).start();
     }
 
     public void postUser(String name, String surname) {//--------------отправка post-запроса на сервер
@@ -72,13 +109,6 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         startGetRequest(path, constantConfig.USER_TYPE, UserInteractor.this);
     }
 
-    private void getGroups(String userId){
-        final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqGroup +
-                httpConfig.reqUser + httpConfig.USER_ID_PARAM + userId;
-
-        startGetRequest(path, constantConfig.GET_GROUP_TYPE, UserInteractor.this);
-    }
-
     public void getGroupForList (String userID){
         final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqGroup +
                 httpConfig.reqUser + httpConfig.USER_ID_PARAM + userID;
@@ -99,6 +129,12 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
             @Override
             public void run() {
                 try {
+
+                    //База данных, которая могёт!!!
+                    UserDB userDB = user.initUserDB();
+                    userDao.update(userDB);
+
+
                     Gson gson = new Gson();
                     if(bitmap != null){
                         requestInfo.addData.content.mediaData.image = decodeBitmapInBase64(bitmap);
@@ -132,7 +168,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
         } else if (type.equals(constantConfig.IMAGE_TYPE)) {
             getImage(byteArray);
         } else if (type.equals(constantConfig.GET_GROUP_TYPE)) {
-            prepareGetGroupsResponse(byteArray);
+            //здесь было получение групп юзера
         }else if (type.equals(constantConfig.PUT_USER)){
             getUserEditResponse();
         } else if (type.equals(constantConfig.GET_GROUP_FOR_LIST_TYPE)){
@@ -179,7 +215,7 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     }
 
     @Override
-    public void errorHanding(int resposeCode, String type) {
+    public void errorHanding(int responseCode, String type) {
 
     }
 
@@ -187,6 +223,14 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
     private void getUserResponse(byte[] byteArray) {
         try {
             final User user = createUserOfBytes(byteArray);
+
+            UserDB userDB = new UserDB();
+            userDB.id = user.id;
+            userDB.name = user.content.simpleData.name;
+            userDB.surname = user.content.simpleData.surname;
+            userDB.image = user.content.mediaData.image;
+
+            //userDao.insert(userDB);
 
             Handler mainHandler = new Handler(Looper.getMainLooper());
             Runnable myRunnable = new Runnable() {
@@ -198,29 +242,10 @@ public class UserInteractor implements UserFromHTTPManagerInterface {
             mainHandler.post(myRunnable);
 
             getImageResponse(user);
-            getGroups(user.id);
             Thread.currentThread().interrupted();
         } catch (Exception error) {
             error(error);
         }
-    }
-
-    private void prepareGetGroupsResponse(byte[] byteArray){
-        final ArrayList<Group> groupCollection = createGroupsOfBytes(byteArray);
-        int size = 0;
-        if (groupCollection != null){
-            size = groupCollection.size();
-        }
-
-        Handler mainHandler = new Handler(Looper.getMainLooper());
-        final int finalSize = size;
-        Runnable myRunnable = new Runnable() {
-            @Override
-            public void run() {
-                delegate.answerGetGroups(finalSize);
-            }
-        };
-        mainHandler.post(myRunnable);
     }
 
     private void prepareGetGroupsForListResponse (byte[] byteArray){

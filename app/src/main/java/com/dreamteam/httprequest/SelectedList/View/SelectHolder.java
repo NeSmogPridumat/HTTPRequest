@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dreamteam.httprequest.R;
@@ -33,5 +34,7 @@ public class SelectHolder extends RecyclerView.ViewHolder {
 
         Bitmap imageData = selectData.image;
         imageView.setImageBitmap(imageData);
+
+
     }
 }

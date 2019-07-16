@@ -183,6 +183,13 @@ public class HTTPManager {
         httpURLConnection.setRequestProperty("Content-Type", "application/json");
     }
 
+    private void settingResponseDel (HttpURLConnection httpURLConnection) throws ProtocolException {
+        httpURLConnection.setDoOutput(true);
+        httpURLConnection.setRequestMethod("DELETE");
+        httpURLConnection.setChunkedStreamingMode(0);
+        httpURLConnection.setRequestProperty("Content-Type", "application/json");
+    }
+
     private void setBodyRequest(String object, HttpURLConnection httpURLConnection) throws IOException {
         DataOutputStream out = new DataOutputStream(httpURLConnection.getOutputStream());
         byte[] utf8JsonString = object.getBytes(StandardCharsets.UTF_8);

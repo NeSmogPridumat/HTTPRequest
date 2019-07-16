@@ -83,7 +83,7 @@ public class EventInteractor implements EventFromHTTPManagerInterface {
     }
 
     @Override
-    public void errorHanding(int resposeCode, String type) {
+    public void errorHanding(int responseCode, String type) {
 
     }
 

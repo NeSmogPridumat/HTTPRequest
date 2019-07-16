@@ -49,11 +49,6 @@ public class PresenterUser implements PresenterUserInterface {
     }
 
     @Override
-    public void answerGetGroups(int groups) {
-        delegate.answerGetGroups(groups);
-    }
-
-    @Override
     public void openUser() {
         router.openProfile();
     }

@@ -14,7 +14,5 @@ public interface ViewUserInterface {
 
     void  error (Throwable t);
 
-    void answerGetGroups(int groups);
-
     void answerGetRating(ArrayList<QuestionRating> questionRatings);
 }

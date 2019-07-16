@@ -91,6 +91,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectHolder> implements
             @Override
             protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
                 selectCollection = (ArrayList<SelectData>) filterResults.values;
+
                 notifyDataSetChanged();
             }
         };

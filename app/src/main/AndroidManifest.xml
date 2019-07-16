@@ -25,8 +25,9 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
-        android:usesCleartextTraffic="true">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        android:name=".database.App">
 
         <provider
             android:name="android.support.v4.content.FileProvider"

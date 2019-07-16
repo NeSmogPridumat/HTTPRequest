@@ -176,14 +176,6 @@ public class ChuvakEtoRepchik extends Fragment implements ViewUserInterface {
     }
 
     @Override
-    public void answerGetGroups(int groupsint) {
-        if(isAdded()) {
-            String groupsText = (groupsint) + getResources().getString(R.string.groups);
-//            groupsRadioButton.setText(groupsText);
-        }
-    }
-
-    @Override
     public void answerGetRating(ArrayList<QuestionRating> questionRatings) {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
         layoutParams.setMargins(24,30,0,0);

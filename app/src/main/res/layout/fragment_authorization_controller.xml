@@ -14,7 +14,7 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingBottom="@dimen/activity_vertical_margin"
-        android:background="@android:color/black">
+        android:background="@android:color/white">
 
         <!-- Login progress -->
         <ProgressBar
@@ -36,52 +36,55 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                <ImageView
+                    android:src="@drawable/logo_app_png"
+                    android:layout_width="wrap_content"
+                    android:layout_height="200dp" />
+
 
                     <EditText
-                    android:id="@+id/login"
-                    android:background="@android:color/white"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Login"
-                    android:imeActionId="6"
-                    android:imeActionLabel="@string/action_sign_in_short"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="textPersonName"
-                    android:maxLines="1"
-                    android:singleLine="true" />
-
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                        android:id="@+id/login"
+                        android:background="@drawable/edit_text_style"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:hint="Login"
+                        android:imeActionId="6"
+                        android:imeActionLabel="@string/action_sign_in_short"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:imeOptions="actionUnspecified"
+                        android:inputType="text|textVisiblePassword"
+                        android:textColor="@android:color/black"
+                        android:gravity="center"
+                        android:textColorHint="@color/colorGray"/>
 
                     <EditText
                         android:id="@+id/password"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@android:color/white"
+                        android:layout_height="60dp"
+                        android:background="@drawable/edit_text_style"
                         android:hint="@string/prompt_password"
                         android:imeActionId="6"
                         android:imeActionLabel="@string/action_sign_in_short"
                         android:imeOptions="actionUnspecified"
                         android:inputType="textPassword"
                         android:maxLines="1"
-                        android:singleLine="true" />
-
-                </android.support.design.widget.TextInputLayout>
+                        android:singleLine="true"
+                        android:textColor="@android:color/black"
+                        android:gravity="center"
+                        android:textColorHint="@color/colorGray"
+                        android:layout_marginTop="17dp" />
 
                 <Button
+                    android:layout_gravity="center"
                     android:id="@+id/authorization_button"
                     style="?android:textAppearanceSmall"
-                    android:layout_width="match_parent"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="36dp"
                     android:text="@string/sign_in"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:background="@drawable/gradient_main"/>
 
                 <TextView
                     android:layout_marginTop="60sp"

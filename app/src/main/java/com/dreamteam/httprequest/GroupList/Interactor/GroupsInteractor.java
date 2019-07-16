@@ -137,7 +137,7 @@ public class GroupsInteractor implements GroupsHTTPManagerInterface {
     }
 
     @Override
-    public void errorHanding(int resposeCode, String type) {
+    public void errorHanding(int responseCode, String type) {
 
     }
 

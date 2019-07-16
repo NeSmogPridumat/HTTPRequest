@@ -15,7 +15,7 @@ public interface PresenterUserInterface extends PresenterInterface {
 
     void error (Throwable t);
 
-    void  answerGetGroups(int groups);
+
 
     void openUser();
 

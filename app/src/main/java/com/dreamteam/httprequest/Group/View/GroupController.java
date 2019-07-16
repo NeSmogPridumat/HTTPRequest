@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
@@ -40,11 +41,12 @@ public class GroupController extends Fragment implements GroupViewInterface {
 
     private TextView titleTextView, descriptionTextView;
     private ImageView groupImageView;
-    private RadioButton membersRadioButton, subgroupRadioButton;
     private int rules;
+    private Button usersButton, subgroupButton;
     private Bitmap bitmap;
     private RelativeLayout progressBar;
     private RecyclerView groupEventRecycler;
+    private View view;
 
     private GroupPresenter groupPresenter;
     Group group;
@@ -68,13 +70,13 @@ public class GroupController extends Fragment implements GroupViewInterface {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_group_controller, container, false);
+        view = inflater.inflate(R.layout.fragment_group_controller, container, false);
         titleTextView = view.findViewById(R.id.group_title_text_view);
         descriptionTextView = view.findViewById(R.id.group_description_text_view);
         groupImageView = view.findViewById(R.id.group_image_view);
         progressBar = view.findViewById(R.id.progressBarOverlay);
-        membersRadioButton = view.findViewById(R.id.radio_button_members_group);
-        subgroupRadioButton = view.findViewById(R.id.radio_button_subgroup);
+        usersButton = view.findViewById(R.id.button_users_group);
+        subgroupButton = view.findViewById(R.id.button_subgroup);
         groupEventRecycler = view.findViewById(R.id.group_event_list);
         groupEventRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -98,24 +100,22 @@ public class GroupController extends Fragment implements GroupViewInterface {
         groupPresenter.getEventForGroup(groupID);
         super.onStart();
 
-        membersRadioButton.setOnClickListener(new View.OnClickListener() {
+        usersButton.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
-                membersRadioButton.setChecked(false);
                 groupPresenter.getMembers(groupID);
 
             }
         });
 
-        subgroupRadioButton.setOnClickListener(new View.OnClickListener() {
+        subgroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(group.nodeData.childList.size() == 0){
-                    subgroupRadioButton.setClickable(false);
+                    subgroupButton.setClickable(false);
                 } else {
                     progressBar.setVisibility(View.VISIBLE);
                     groupPresenter.getSubgroup(group.nodeData.childList);
                 }
-                subgroupRadioButton.setChecked(false);
             }
         });
 
@@ -128,6 +128,9 @@ public class GroupController extends Fragment implements GroupViewInterface {
                 }
             }
         });
+
+        activity.setSupportActionBar(activity.toolbar);
+
     }
 
     @Override
@@ -142,8 +145,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
         titleTextView.setText(group.content.simpleData.title);
         descriptionTextView.setText(group.content.simpleData.description);
         if (getContext() != null) {
-            String text = group.nodeData.childList.size() + getResources().getString(R.string.subgroups);
-            subgroupRadioButton.setText(text);
+            subgroupButton.setText(Integer.toString(group.nodeData.childList.size()));
         }
         activity.setActionBarTitle(group.content.simpleData.title);
         rules = group.rules;
@@ -155,11 +157,11 @@ public class GroupController extends Fragment implements GroupViewInterface {
         String title = null;
         String description  = null;
         if (t instanceof SocketTimeoutException) {
-            title = getResources().getString(R.string.error_connecting_to_server);
-            description = getResources()
+            title = view.getResources().getString(R.string.error_connecting_to_server);
+            description = view.getResources()
                     .getString(R.string.check_the_connection_to_the_internet);
         }else if (t instanceof NullPointerException) {
-            title = getResources().getString(R.string.object_not_found);
+            title = view.getResources().getString(R.string.object_not_found);
             description = "";
         }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
@@ -188,8 +190,7 @@ public class GroupController extends Fragment implements GroupViewInterface {
     @Override
     public void outputMembersView(ArrayList<User> members) {
         if (getContext() != null) {
-            String text = (members.size()) + getResources().getString(R.string.members);
-            membersRadioButton.setText(text);
+            usersButton.setText(Integer.toString(members.size()));
         }
         int count = 0;
         for (int i = 0; i < members.size(); i++){

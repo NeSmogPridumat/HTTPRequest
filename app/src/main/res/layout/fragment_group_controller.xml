@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:background="@android:color/white">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,35 +13,37 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/group_linear"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/group_info"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                     <FrameLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
 
                         <android.support.v7.widget.CardView
                             android:id="@+id/view2"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:layout_gravity="center"
                             android:layout_marginTop="12dp"
                             android:layout_marginBottom="12dp"
-                            android:layout_width="240dp"
-                            android:layout_height="240dp"
+                            android:background="@color/colorGray"
                             android:innerRadius="0dp"
                             android:shape="ring"
-                            android:background="@color/colorGray"
-                            app:cardCornerRadius="120dp"
-                            android:layout_gravity="center">
+                            app:cardCornerRadius="60dp">
 
                             <ImageView
                                 android:id="@+id/group_image_view"
@@ -49,57 +51,67 @@
                                 android:layout_height="match_parent"
                                 android:layout_alignParentTop="true"
                                 android:layout_centerHorizontal="true"
-                                android:scaleType="centerCrop"
-                                android:background="@drawable/noimage">
-                            </ImageView>
+                                android:background="@drawable/noimage"
+                                android:scaleType="centerCrop"></ImageView>
 
                         </android.support.v7.widget.CardView>
 
                     </FrameLayout>
 
-                    <TextView
-                        android:id="@+id/group_title_text_view"
-                        android:text="@string/group_name"
-                        android:textSize="42sp"
-                        android:textColor="@android:color/white"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/group_description_text_view"
-                        android:text="@string/description"
-                        android:textColor="@color/colorGray"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
                     <LinearLayout
-                        android:id="@+id/group_additional_description_text_view"
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-                        <RadioButton
-                            android:id="@+id/radio_button_members_group"
-                            android:text="@string/members"
-                            android:checked="false"
-                            android:clickable="false"
-                            android:textColor="@android:color/white"
-                            android:duplicateParentState="false"
+                        <TextView
+                            android:id="@+id/group_title_text_view"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_margin="8dp"
+                            android:text="@string/group_name"
+                            android:textColor="@android:color/black"
+                            android:textSize="42sp" />
 
-                        <RadioButton
-                            android:id="@+id/radio_button_subgroup"
-                            android:text="@string/subgroups"
-                            android:checked="false"
-                            android:clickable="false"
-                            android:textColor="@android:color/white"
-                            android:duplicateParentState="false"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-
+                        <TextView
+                            android:id="@+id/group_description_text_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:lines="4"
+                            android:text="@string/description"
+                            android:textColor="@color/colorGray" />
                     </LinearLayout>
 
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/button_users_group"
+                        android:layout_width="110dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/button_background"
+                        android:drawableStart="@drawable/ic_users_blue"
+                        android:elevation="15dp"
+                        android:paddingStart="16dp"
+                        android:textColor="@color/colorDarkBlue"
+                        android:textSize="21dp" />
+
+                    <Button
+                        android:id="@+id/button_subgroup"
+                        android:layout_width="110dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="8dp"
+                        android:background="@drawable/button_background"
+                        android:drawableStart="@drawable/ic_subgroup_blue"
+                        android:elevation="30dp"
+                        android:paddingStart="16dp"
+                        android:textColor="@color/colorDarkBlue"
+                        android:textSize="21dp" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -112,11 +124,9 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/group_event_list"
                     android:layout_width="match_parent"
-                    android:layout_height="240dp"
-                    android:orientation="vertical"
+                    android:layout_height="match_parent"
                     android:maxHeight="650dp"
-                    >
-                </android.support.v7.widget.RecyclerView>
+                    android:orientation="vertical"></android.support.v7.widget.RecyclerView>
 
             </FrameLayout>
 
@@ -134,13 +144,12 @@
 
         <ProgressBar
             android:id="@+id/progressBar"
-            android:indeterminateDrawable="@mipmap/ic_launcher"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerInParent="true"
-            android:visibility="visible"
+            android:indeterminateDrawable="@mipmap/ic_launcher"
             android:theme="@android:style/Widget.ProgressBar.Large.Inverse"
-            />
+            android:visibility="visible" />
     </RelativeLayout>
 
 </FrameLayout>

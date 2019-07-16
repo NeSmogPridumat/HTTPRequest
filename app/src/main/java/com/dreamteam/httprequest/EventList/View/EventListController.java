@@ -16,6 +16,8 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.dreamteam.httprequest.Event.Entity.AnswerQuestion.AnswerQuestion;
+import com.dreamteam.httprequest.Event.Entity.AnswerQuestion.AnswerQuestionResult;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.EventList.Presenter.EventListPresenter;
 import com.dreamteam.httprequest.EventList.Protocols.EventListViewInterface;
@@ -27,6 +29,7 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -122,16 +125,16 @@ public class EventListController extends Fragment implements EventListViewInterf
             }
         }
 
-        adapter = new EventAdapter(activeEvent);
-        nAdapter = new EventAdapter(notActiveEvent);
+        adapter = new EventAdapter(activeEvent, userID, this);
+        //nAdapter = new EventAdapter(notActiveEvent);
 
         adapter.eventArrayList = activeEvent;
         eventsRecyclerView.setAdapter(adapter);
         eventsRecyclerView.getAdapter().notifyDataSetChanged();
 
-        nAdapter.eventArrayList = notActiveEvent;
-        noteventsRecyclerView.setAdapter(nAdapter);
-        noteventsRecyclerView.getAdapter().notifyDataSetChanged();
+//        nAdapter.eventArrayList = notActiveEvent;
+  //      noteventsRecyclerView.setAdapter(nAdapter);
+//        noteventsRecyclerView.getAdapter().notifyDataSetChanged();
         progressBarOverlay.setVisibility(View.GONE);
 
         activeEventRadio.setOnClickListener(new View.OnClickListener() {
@@ -156,14 +159,26 @@ public class EventListController extends Fragment implements EventListViewInterf
         String title = null;
         String description  = null;
         if (t instanceof SocketTimeoutException || t instanceof ConnectException) {
-            title = getResources().getString(R.string.error_connecting_to_server);
-            description = getResources()
+            title = getContext().getResources().getString(R.string.error_connecting_to_server);
+            description = getActivity().getResources()
                     .getString(R.string.check_the_connection_to_the_internet);
         }else if (t instanceof NullPointerException) {
-            title = getResources().getString(R.string.object_not_found);
+            title = getActivity().getResources().getString(R.string.object_not_found);
             description = "";
         }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
         progressBarOverlay.setVisibility(View.GONE);
+    }
+
+    public void resultToQuestions(String questionID, int questionValue, String userID){
+//        AnswerQuestion answerQuestion = new AnswerQuestion();
+//        AnswerQuestionResult answerQuestionResult = new AnswerQuestionResult();
+//        answerQuestion.eventID = event.id;
+//        answerQuestionResult.id = questionID;
+//        answerQuestionResult.userID = userID;
+//        answerQuestionResult.value = questionValue;
+//        answerQuestion.result.add(answerQuestionResult);
+//        answerQuestion.userID = activity.userID;
+//        eventPresenter.resultToQuestion(answerQuestion);
     }
 }

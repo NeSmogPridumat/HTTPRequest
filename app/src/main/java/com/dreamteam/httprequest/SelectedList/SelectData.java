@@ -12,6 +12,7 @@ public class SelectData {
     public String imageURL;
     public String id;
     public Boolean check = false;
+    public int rules;
 
     public SelectData initFromUser(User user){
         this.id = user.id;
@@ -19,6 +20,7 @@ public class SelectData {
         this.description = user.content.simpleData.surname;
         this.image = user.content.mediaData.bitmap;
         this.imageURL = user.content.mediaData.image;
+        //this.rules = user.rules;
         return this;
     }
 

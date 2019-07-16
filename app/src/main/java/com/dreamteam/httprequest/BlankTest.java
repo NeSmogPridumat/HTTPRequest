@@ -1,8 +1,11 @@
 package com.dreamteam.httprequest;
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,7 +25,6 @@ import android.widget.ListView;
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
-import com.dreamteam.httprequest.EventList.Interactor.EventListInteractor;
 import com.dreamteam.httprequest.EventList.Protocols.EventListFromHTTPManagerInterface;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.google.gson.Gson;
@@ -59,10 +61,10 @@ public class BlankTest extends Fragment implements EventListFromHTTPManagerInter
         return view;
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -136,7 +138,7 @@ public class BlankTest extends Fragment implements EventListFromHTTPManagerInter
                     Runnable myRunnable = new Runnable() {
                         @Override
                         public void run() {
-                            Log.i("ЫЫЫЫЫЫ", eventArrayList.get(0).id + "     " + eventArrayList.get(1).id + "     " + eventArrayList.get(2).id + "     ");
+                           // Log.i("ЫЫЫЫЫЫ", eventArrayList.get(0).id + "     " + eventArrayList.get(1).id + "     " + eventArrayList.get(2).id + "     ");
                         }
                     };
                     mainHandler.post(myRunnable);

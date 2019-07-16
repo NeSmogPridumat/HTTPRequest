@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:orientation="vertical"
+    android:background="@android:color/white">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/groups_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"/>
+        android:orientation="vertical"
+        android:layout_margin="8dp"/>
 
     <RelativeLayout
         android:id="@+id/progressBarOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/transparent_black"
+        android:background="@android:color/white"
         android:clickable="true"
         android:visibility="gone">
 
@@ -32,7 +34,8 @@
             />
     </RelativeLayout>
 
-</FrameLayout>
+
+</LinearLayout>
 
 
 

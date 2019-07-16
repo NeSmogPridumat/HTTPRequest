@@ -4,6 +4,7 @@ package com.dreamteam.httprequest.AutoAndReg.Authorization.View;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -69,6 +70,7 @@ public class AuthorizationController extends Fragment implements AuthorizationVi
     private void stopService(){
         Intent intent = new Intent(activity, EventService.class);
         activity.stopService(intent);
+
     }
 
     @Override

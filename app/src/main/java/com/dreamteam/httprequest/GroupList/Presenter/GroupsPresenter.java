@@ -91,7 +91,6 @@ public class GroupsPresenter implements GroupsPresenterInterface {
     @Override
     public void inputSelect(ArrayList<SelectData> arrayList, String type) {
         groupsInteractor.inputSelect(arrayList, type);
-
     }
 
     @Override

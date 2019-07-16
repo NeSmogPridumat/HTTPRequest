@@ -25,7 +25,11 @@ import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.lang.reflect.Type;
+import java.net.Socket;
 import java.util.ArrayList;
 
 public class EventService extends Service implements OutputHTTPManagerInterface {
@@ -33,6 +37,8 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
     private HTTPManager httpManager = HTTPManager.get();
     private HTTPConfig httpConfig = new HTTPConfig();
     private ConstantConfig constantConfig = new ConstantConfig();
+
+    Socket socket;
 
     //Ключ, по кторому приложение будет ловить широковещательный интент передаваемый сервисом
     public final String BROADCAST_ACTION = "com.dreamteam.httprequest";
@@ -49,6 +55,7 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
 
     @Override
     public int onStartCommand(final Intent intent, int flags, int startId) {
+
         if (intent != null) {
             if (!(QueryPreferences.getUserIdPreferences(this).equals(""))) {
                 final String path = httpConfig.serverURL + httpConfig.SERVER_GETTER
@@ -58,6 +65,10 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+//                        searchNetwork();
+//                        boolean check = socket.isConnected();
+
+//                        Log.i("Connection", String.valueOf(check));
 //                        httpManager.getRequest(path, constantConfig.GET_EVENT_TYPE,
 //                                EventService.this);
                     }
@@ -154,7 +165,7 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
     }
 
     @Override
-    public void errorHanding(int resposeCode, String type) {
+    public void errorHanding(int responseCode, String type) {
     }
 
     @Override
@@ -177,6 +188,34 @@ public class EventService extends Service implements OutputHTTPManagerInterface 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
         //TODO книга
-        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), 6000, pi);
+        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), 10000, pi);
+    }
+
+    private String DeviceName = "Device";
+
+    private boolean searchNetwork() {
+        Log.i("Connecting", "EEEEEEEEEEEEEEEEEEEEE");
+        String range = "192.168.1.113";
+        for (int i = 1; i <= 255; i++) {
+            String ip = range + i;
+            try {
+                socket = new Socket(range, 80);
+//                socket.connect(new InetSocketAddress(range, 8100), 50);
+//                DataOutputStream outputStream = new DataOutputStream(socket.getOutputStream());
+//                BufferedReader inputStream = new BufferedReader(new InputStreamReader(
+//                        socket.getInputStream()));
+                PrintWriter out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())), true);
+                out.println("jhjhggjkh");
+                out.flush();
+                String bufer = "jhjhggjkh";                DeviceName += "1";
+                Log.i("Server", DeviceName);
+                Log.i("Connected", "TRATATA");
+                return true;
+            } catch (Exception e) {
+                Log.i("Error", e.toString());
+            }
+        }
+        return false;
+
     }
 }

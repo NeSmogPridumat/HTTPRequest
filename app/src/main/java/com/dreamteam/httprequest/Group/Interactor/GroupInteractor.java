@@ -277,13 +277,13 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     }
 
     @Override
-    public void errorHanding(final int resposeCode, final String type) {
+    public void errorHanding(final int responseCode, final String type) {
 
         Handler mainHandler = new Handler(Looper.getMainLooper());
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                delegate.errorHading(resposeCode, type);
+                delegate.errorHading(responseCode, type);
             }
         };
         mainHandler.post(myRunnable);
@@ -471,9 +471,9 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
     private void prepareGetUserForAddSelect (byte[] bytes){
         ArrayList<User> allUsers = createMembersOfBytes(bytes);
         for (User user : usersGroup){
-            for (User user2 : allUsers){
-                if (user.id.equals(user2.id)){
-                    allUsers.remove(user2);
+            for (int i = 0; i< allUsers.size(); i++){
+                if (user.id.equals(allUsers.get(i).id)){
+                    allUsers.remove(i);
                 }
             }
         }
@@ -679,7 +679,7 @@ public class GroupInteractor implements GroupHTTPMangerInterface {
         objectData.title = user.content.simpleData.name;
         objectData.description = user.content.simpleData.surname;
         objectData.image = user.content.mediaData.image;
-        objectData.rules = user.rules;
+        //objectData.rules = user.rules;
         return objectData;
     }
 }

@@ -1,10 +1,10 @@
 package com.dreamteam.httprequest.Data;
 
 public class HTTPConfig {
-    public final String serverURL = "http://192.168.1.113:";//"http://89.189.159.160:" - j,obq cthdth
-    public final String SERVER_GETTER = "8100";
-    public final String SERVER_SETTER = "8000";
-    public final String SERVER_AUTH = "9000";
+    public final String serverURL = "http://89.189.159.160:";//"http://89.189.159.160:" - j,obq cthdth
+    public final String SERVER_GETTER = "9001";
+    public final String SERVER_SETTER = "9001";
+    public final String SERVER_AUTH = "9001";
 
     // REQUEST TYPE PATH
     public final String reqUser = "/user";

@@ -1,7 +1,5 @@
 package com.dreamteam.httprequest.GroupList.View;
 
-import android.annotation.SuppressLint;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -45,6 +43,7 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
     public GroupsPresenter groupsPresenter;
     private RelativeLayout progressBarOverlay;
     private ProgressBar progressBar;
+    private View view;
     MenuInflater inflater;
     Menu menu;
 
@@ -67,10 +66,10 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_groups_list, container, false);
+        view = inflater.inflate(R.layout.fragment_groups_list, container, false);
         groupsRecyclerView = view.findViewById(R.id.groups_recycler_view);
         groupsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        groupsRecyclerView.setAdapter(adapter);
+        //groupsRecyclerView.setAdapter(adapter);
         progressBarOverlay = view.findViewById(R.id.progressBarOverlay);
         progressBar = view.findViewById(R.id.progressBar);
         return view;
@@ -90,6 +89,7 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
     @Override
     public void onStart() {
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.progress_rotate);
+        activity.setSupportActionBar(activity.toolbar);
         progressBar.startAnimation(animation);
         progressBarOverlay.setVisibility(View.VISIBLE);
         groupsPresenter.getGroups(userID);//здесь ID User'а
@@ -144,6 +144,7 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
         adapter.allGroup = groupCollection;
         adapter.groupCollection = groupCollection;
         groupsRecyclerView.setAdapter(adapter);
+
         progressBarOverlay.setVisibility(View.GONE);
 
         groupsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), groupsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
@@ -168,10 +169,10 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
         String title = null;
         String description = null;
         if (t instanceof SocketTimeoutException || t instanceof ConnectException) {
-            title = getResources().getString(R.string.error_connecting_to_server);
-            description = getResources().getString(R.string.check_the_connection_to_the_internet);
+            title = view.getResources().getString(R.string.error_connecting_to_server);
+            description = view.getResources().getString(R.string.check_the_connection_to_the_internet);
         }else if (t instanceof NullPointerException){
-            title = getResources().getString(R.string.object_not_found);
+            title = view.getResources().getString(R.string.object_not_found);
             description = "";
         }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();

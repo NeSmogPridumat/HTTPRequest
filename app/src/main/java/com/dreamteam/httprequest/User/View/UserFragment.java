@@ -2,6 +2,7 @@ package com.dreamteam.httprequest.User.View;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -43,12 +44,12 @@ import java.util.ArrayList;
 public class UserFragment extends Fragment implements ViewUserInterface {
 
     private ImageView userImage;
-    private TextView userName, userSurName, mail, call;
+    private TextView userName, userSurName, mail, call, rating;
     private RelativeLayout progressBarOverlay;
-    private ProgressBar progressBar;
-    private RadioButton groupsRadioButton;
+    private ProgressBar progressBar, ratingBar;
     private MainActivity activity;
     private LinearLayout userLinear;
+    private View view;
 
     public PresenterUser presenterUser;
 
@@ -72,16 +73,17 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_user, container, false);
+        view = inflater.inflate(R.layout.fragment_user, container, false);
         userName = view.findViewById(R.id.user_name_text_view);
         userSurName = view.findViewById(R.id.user_surname_text_view);
-        mail = view.findViewById(R.id.mail_text_view);
+        mail = view.findViewById(R.id.description_profile_text_view);
         call = view.findViewById(R.id.call_number_text_view);
         userImage = view.findViewById(R.id.user_image);
-        groupsRadioButton = view.findViewById(R.id.radio_button_groups);
         progressBarOverlay = view.findViewById(R.id.progressBarOverlay);
         progressBar = view.findViewById(R.id.progressBar);
         userLinear = view.findViewById(R.id.user_fragment);
+        ratingBar = view.findViewById(R.id.progressBar2);
+        rating = view.findViewById(R.id.textView2);
         if(!count){
             count = true;
             progressBarOverlay.setVisibility(View.VISIBLE);
@@ -98,7 +100,6 @@ public class UserFragment extends Fragment implements ViewUserInterface {
             setHasOptionsMenu(true);
         }
         presenterUser = new PresenterUser(this, activity);
-        presenterUser.getRating(userID);
 
         super.onCreate(savedInstanceState);
     }
@@ -109,17 +110,8 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         progressBar.startAnimation(animation);
         presenterUser.getUser(userID);
         super.onStart();
-        groupsRadioButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (QueryPreferences.getUserIdPreferences(getContext()).equals(userID)) {
-                    activity.bottomNavigationView.setSelectedItemId(R.id.groups);
-                } else {
-                    presenterUser.getGroups(userID);
-                }
-                groupsRadioButton.setChecked(false);
-            }
-        });
+
+        presenterUser.getRating(userID);
 
         userImage.setOnClickListener(new View.OnClickListener() {
                                          @Override
@@ -130,6 +122,9 @@ public class UserFragment extends Fragment implements ViewUserInterface {
             }
             }
         });
+
+        activity.setSupportActionBar(activity.toolbar);
+        rating.setText("N");
     }
 
 
@@ -144,7 +139,7 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         userName.setText(user.content.simpleData.name);
         userSurName.setText(user.content.simpleData.surname);
         this.user = user;
-//        activity.setActionBarTitle(user.content.simpleData.name);
+        activity.setActionBarTitle("Профиль");
         progressBarOverlay.setVisibility(View.GONE);
     }
 
@@ -159,22 +154,14 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         String title = null;
         String description = null;
         if (t instanceof SocketTimeoutException || t instanceof ConnectException) {
-            title = getResources().getString(R.string.error_connecting_to_server);
-            description = getResources().getString(R.string.check_the_connection_to_the_internet);
+            title = view.getResources().getString(R.string.error_connecting_to_server);
+            description = view.getResources().getString(R.string.check_the_connection_to_the_internet);
         }else if (t instanceof NullPointerException) {
-            title = getResources().getString(R.string.object_not_found);
+            title = view.getResources().getString(R.string.object_not_found);
             description = "";
         }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
         progressBarOverlay.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void answerGetGroups(int groupsint) {
-        if(isAdded()) {
-            String groupsText = (groupsint) + getResources().getString(R.string.groups);
-            groupsRadioButton.setText(groupsText);
-        }
     }
 
     @Override
@@ -190,12 +177,18 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         }
 
         //TODO: возможно надо убрать в метод
-        TextView textView = new TextView(getContext());
-        String text = getResources().getText(R.string.overall_rating) + " "
+        TextView textView = new TextView(view.getContext());
+        String text =view.getResources().getText(R.string.overall_rating) + " "
                 + df.format(j/questionRatings.get(0).question.size());
+        int overRating = (int)((j/questionRatings.get(0).question.size()/3)*100);
+        ratingBar.setProgress(overRating);
+        rating.setText(ratingChar(overRating));
+
         textView.setText(text);
         textView.setTextSize(18f);
-        textView.setTextColor(getResources().getColor(android.R.color.white));
+        if(getContext() != null) {
+            textView.setTextColor(getResources().getColor(android.R.color.black));
+        }//TODO: возможно надо обернуть в getContext() != null
         textView.setLayoutParams(layoutParams);
         userLinear.addView(textView);
         for (Question i : questionRatings.get(0).question) {
@@ -203,9 +196,30 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         }
     }
 
+    private String ratingChar (int overRating){
+        String rating;
+        if (overRating >= 90){
+            rating = "A+";
+        }else if (overRating >= 80){
+            rating = "A";
+        } else if (overRating >= 70) {
+            rating = "B+";
+        }else if (overRating >= 60){
+            rating = "B";
+        } else if (overRating >= 50){
+            rating = "C+";
+        }else if (overRating >= 40){
+            rating = "C";
+        } else if (overRating >= 30) {
+            rating = "E+";
+        } else rating = "E";
+
+        return rating;
+    }
+
     private TextView createTextView(Question question, DecimalFormat df, LinearLayout.LayoutParams layoutParams){
-        TextView textView = new TextView(getContext());
-        textView.setTextColor(getResources().getColor(android.R.color.white));
+        TextView textView = new TextView(view.getContext());
+        textView.setTextColor(view.getResources().getColor(android.R.color.black));
         textView.setTextSize(18f);
         String text = question.title + ": "
                 + df.format(question.middleValue);

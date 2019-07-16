@@ -64,7 +64,6 @@ public class AuthorizationRouter {
         activity.openProfile();
     }
 
-
     //метод для скрытия клавиатуры
     private void hideKeyboard(){
         InputMethodManager inputManager =
