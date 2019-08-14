@@ -4,16 +4,6 @@
     >
 
     <item
-        android:id="@+id/profile2"
-        android:icon="@drawable/ic_search_black_24dp"
-        tools:ignore="MenuTitle"/>
-
-    <item
-        android:id="@+id/contacts"
-        android:icon="@drawable/ic_action_info"
-        tools:ignore="MenuTitle"/>
-
-    <item
         android:id="@+id/groups"
         android:icon="@drawable/ic_action_groups"
         tools:ignore="MenuTitle"

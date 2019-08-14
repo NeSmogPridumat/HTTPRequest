@@ -1,18 +1,23 @@
 package com.dreamteam.httprequest.GroupList.Presenter;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
+import com.dreamteam.httprequest.Group.Entity.GroupData.Personal;
 import com.dreamteam.httprequest.GroupList.Interactor.GroupsInteractor;
 import com.dreamteam.httprequest.GroupList.Protocols.GroupsPresenterInterface;
 import com.dreamteam.httprequest.GroupList.Protocols.GroupsViewInterface;
 import com.dreamteam.httprequest.GroupList.RouterGroupList;
 import com.dreamteam.httprequest.MainActivity;
-import com.dreamteam.httprequest.SelectedList.SelectData;
+import com.dreamteam.httprequest.SelectedList.Data.SelectData;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class GroupsPresenter implements GroupsPresenterInterface {
@@ -50,8 +55,13 @@ public class GroupsPresenter implements GroupsPresenterInterface {
     }
 
     @Override
-    public void answerAddGroup() {
+    public void answerAddGroup(Group group) {
+        groupsInteractor.postSubscription(group.id);
+
+        //TODO: ВОзможно сделать сразу попадание в группу (проблема с BackStack
         routerGroupList.showGroupList();
+
+
     }
 
     public void getGroups(String id) {
@@ -59,8 +69,7 @@ public class GroupsPresenter implements GroupsPresenterInterface {
     }
 
     public void showAddGroup(){
-        InfoProfileData infoProfileData = null;
-        routerGroupList.showAddGroup(infoProfileData, this, constantConfig.ADD_GROUP_TYPE);
+        routerGroupList.showAddGroup(null, this, constantConfig.ADD_GROUP_TYPE);
     }
 
     //отправляем запрос на показ списка с checkBox
@@ -78,7 +87,7 @@ public class GroupsPresenter implements GroupsPresenterInterface {
     }
 
     @Override
-    public void answerDialog(int i) {
+    public void answerDialog(int i, String title, String message, String priority) {
         //получение ответа от диалога
     }
 
@@ -96,20 +105,48 @@ public class GroupsPresenter implements GroupsPresenterInterface {
     @Override
     public void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo, String type) {
         Group group = new Group();
-        group.content.simpleData.title = infoProfileData.title;
-        group.content.simpleData.description = infoProfileData.description;
+        group.personal = new Personal();
+        group.personal.descriptive.title = infoProfileData.title;
+        group.personal.descriptive.description = infoProfileData.description;
         if (requestInfo == null){
             requestInfo = new RequestInfo();
         }
         requestInfo.creatorID = activity.userID;
 
-        Bitmap bitmap = infoProfileData.imageData;
-        groupsInteractor.addGroup(group, bitmap, requestInfo);
+        File imageFile = null;
+        if(infoProfileData.imageData != null) {
+            Bitmap bitmap = infoProfileData.imageData;
+            imageFile = getFileinBitmap(bitmap);
+        }
+        groupsInteractor.addGroup(group, imageFile, requestInfo);
     }
 
-    public void openGroup(String id, int rules){
-        routerGroupList.openGroup(id, rules);
+    public void openGroup(String id){
+        routerGroupList.openGroup(id);
     }
+
+    private File getFileinBitmap (Bitmap bitmap){
+        OutputStream os;
+        File filesDir = activity.getFilesDir();
+        File imageFile = new File(filesDir, "file" + ".jpg");
+        try {
+            os = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), "Error writing bitmap", e);
+        }
+        return imageFile;
+    }
+
+    public void getImage(ArrayList<Group> groups){
+        for (int i = 0; i< groups.size(); i++) {
+            groupsInteractor.getImageRequest(groups.get(i).id);
+        }
+    }
+
+
 }
 
 

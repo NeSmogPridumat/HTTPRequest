@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,12 +20,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.dreamteam.httprequest.Data.QuestionRating.Question;
 import com.dreamteam.httprequest.Data.QuestionRating.QuestionRating;
+import com.dreamteam.httprequest.Event.Entity.Events.EventsKinds.Rating;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.QueryPreferences;
 import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.Service.EventService;
+import com.dreamteam.httprequest.User.Entity.UserData.RatingData.RatingData;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.dreamteam.httprequest.User.Presenter.PresenterUser;
 import com.dreamteam.httprequest.User.Protocols.ViewUserInterface;
@@ -44,9 +47,9 @@ import java.util.ArrayList;
 public class UserFragment extends Fragment implements ViewUserInterface {
 
     private ImageView userImage;
-    private TextView userName, userSurName, mail, call, rating;
+    private TextView userName, userSurName, mail, call, ratingTextView, efficiencyTextView, loyaltyTextView, professionalismTextView, disciplineTextView;
     private RelativeLayout progressBarOverlay;
-    private ProgressBar progressBar, ratingBar;
+    private ProgressBar progressBar, efficiencyProgressBar, loyaltyProgressBar,professionalismProgressBar, disciplineProgressBar;
     private MainActivity activity;
     private LinearLayout userLinear;
     private View view;
@@ -82,8 +85,16 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         progressBarOverlay = view.findViewById(R.id.progressBarOverlay);
         progressBar = view.findViewById(R.id.progressBar);
         userLinear = view.findViewById(R.id.user_fragment);
-        ratingBar = view.findViewById(R.id.progressBar2);
-        rating = view.findViewById(R.id.textView2);
+        ratingTextView = view.findViewById(R.id.textView2);
+        disciplineTextView = view.findViewById(R.id.disciplineTextView);
+        loyaltyTextView = view.findViewById(R.id.loyaltyTextView);
+        professionalismTextView = view.findViewById(R.id.professionalismTextView);
+        efficiencyTextView = view.findViewById(R.id.efficiencyTextView);
+        disciplineProgressBar = view.findViewById(R.id.disciplineProgressBar);
+        loyaltyProgressBar = view.findViewById(R.id.loyaltyProgressBar);
+        professionalismTextView = view.findViewById(R.id.professionalismTextView);
+        efficiencyProgressBar = view.findViewById(R.id.efficiencyProgressBar);
+        professionalismProgressBar = view.findViewById(R.id.professionalismProgressBar);
         if(!count){
             count = true;
             progressBarOverlay.setVisibility(View.VISIBLE);
@@ -124,7 +135,7 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         });
 
         activity.setSupportActionBar(activity.toolbar);
-        rating.setText("N");
+        ratingTextView.setText("N");
     }
 
 
@@ -136,8 +147,8 @@ public class UserFragment extends Fragment implements ViewUserInterface {
 
     @Override
     public void View(User user) {
-        userName.setText(user.content.simpleData.name);
-        userSurName.setText(user.content.simpleData.surname);
+        userName.setText(user.personal.descriptive.name);
+        userSurName.setText(user.personal.descriptive.surname);
         this.user = user;
         activity.setActionBarTitle("Профиль");
         progressBarOverlay.setVisibility(View.GONE);
@@ -165,35 +176,50 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     }
 
     @Override
-    public void answerGetRating(ArrayList<QuestionRating> questionRatings) {
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
-        layoutParams.setMargins(24,30,0,0);
-        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
-        DecimalFormat df = new DecimalFormat("#.##");
-        layoutParams1.setMarginStart(48);
-        float j = 0;
-        for (Question i : questionRatings.get(0).question){//TODO: вроде понятный ForEach
-            j = j + i.middleValue;
-        }
-
-        //TODO: возможно надо убрать в метод
-        TextView textView = new TextView(view.getContext());
-        String text =view.getResources().getText(R.string.overall_rating) + " "
-                + df.format(j/questionRatings.get(0).question.size());
-        int overRating = (int)((j/questionRatings.get(0).question.size()/3)*100);
-        ratingBar.setProgress(overRating);
-        rating.setText(ratingChar(overRating));
-
-        textView.setText(text);
-        textView.setTextSize(18f);
-        if(getContext() != null) {
-            textView.setTextColor(getResources().getColor(android.R.color.black));
-        }//TODO: возможно надо обернуть в getContext() != null
-        textView.setLayoutParams(layoutParams);
-        userLinear.addView(textView);
-        for (Question i : questionRatings.get(0).question) {
-            userLinear.addView(createTextView(i, df, layoutParams1));
-        }
+    public void answerGetRating(RatingData rating) {
+        int overallRating = (rating.discipline + rating.efficiency + rating.loyalty + rating.professionalism)/4;
+        String ratingChar = ratingChar(overallRating*10);
+        ratingTextView.setText(ratingChar);
+        String discipline = view.getResources().getString(R.string.discipline) + ": " + rating.discipline;
+        disciplineTextView.setText(discipline);
+        disciplineProgressBar.setProgress(rating.discipline * 10);
+        String professionalism = view.getResources().getString(R.string.professionalism) + ": " + rating.professionalism;
+        professionalismTextView.setText(professionalism);
+        professionalismProgressBar.setProgress(rating.professionalism * 10);
+        String efficiency = view.getResources().getString(R.string.efficiency) + ": " + rating.efficiency;
+        efficiencyTextView.setText(efficiency);
+        efficiencyProgressBar.setProgress(rating.efficiency * 10);
+        String loyalty = view.getResources().getString(R.string.loyalty) + ": " + rating.loyalty;
+        loyaltyTextView.setText(loyalty);
+        loyaltyProgressBar.setProgress(rating.loyalty * 10);
+//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
+//        layoutParams.setMargins(24,30,0,0);
+//        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
+//        DecimalFormat df = new DecimalFormat("#.##");
+//        layoutParams1.setMarginStart(48);
+//        float j = 0;
+//        for (Question i : questionRatings.get(0).question){//TODO: вроде понятный ForEach
+//            j = j + i.middleValue;
+//        }
+//
+//        //TODO: возможно надо убрать в метод
+//        TextView textView = new TextView(view.getContext());
+//        String text =view.getResources().getText(R.string.overall_rating) + " "
+//                + df.format(j/questionRatings.get(0).question.size());
+//        int overRating = (int)((j/questionRatings.get(0).question.size()/3)*100);
+//        ratingBar.setProgress(overRating);
+//        rating.setText(ratingChar(overRating));
+//
+//        textView.setText(text);
+//        textView.setTextSize(18f);
+//        if(getContext() != null) {
+//            textView.setTextColor(getResources().getColor(android.R.color.black));
+//        }//TODO: возможно надо обернуть в getContext() != null
+//        textView.setLayoutParams(layoutParams);
+//        userLinear.addView(textView);
+//        for (Question i : questionRatings.get(0).question) {
+//            userLinear.addView(createTextView(i, df, layoutParams1));
+//        }
     }
 
     private String ratingChar (int overRating){
@@ -213,7 +239,6 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         } else if (overRating >= 30) {
             rating = "E+";
         } else rating = "E";
-
         return rating;
     }
 

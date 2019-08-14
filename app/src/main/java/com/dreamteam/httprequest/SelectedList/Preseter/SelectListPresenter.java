@@ -7,7 +7,7 @@ import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.SelectedList.Interactor.SelectListInteractor;
 import com.dreamteam.httprequest.SelectedList.Protocols.SelectListPresenterInterface;
 import com.dreamteam.httprequest.SelectedList.Protocols.SelectListViewController;
-import com.dreamteam.httprequest.SelectedList.SelectData;
+import com.dreamteam.httprequest.SelectedList.Data.SelectData;
 import com.dreamteam.httprequest.SelectedList.SelectListRouter;
 
 import java.util.ArrayList;

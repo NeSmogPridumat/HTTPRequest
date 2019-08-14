@@ -42,4 +42,11 @@
         app:showAsAction="never"
         />
 
+    <item
+        android:id="@+id/discussion"
+        android:title="@string/create_discussion"
+        app:showAsAction="never"
+        />
+
+
 </menu>

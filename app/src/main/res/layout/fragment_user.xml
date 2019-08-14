@@ -27,7 +27,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
-                    <android.support.v7.widget.CardView
+                    <androidx.cardview.widget.CardView
                         android:id="@+id/view2"
                         android:layout_width="120dp"
                         android:layout_height="120dp"
@@ -43,10 +43,9 @@
                             android:layout_height="match_parent"
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
-                            android:background="@drawable/noimage"
                             android:scaleType="centerCrop"/>
 
-                    </android.support.v7.widget.CardView>
+                    </androidx.cardview.widget.CardView>
 
                 </FrameLayout>
 
@@ -142,16 +141,89 @@
                         app:layout_constraintTop_toTopOf="parent" />
                 </LinearLayout>
 
-
+                <TextView
+                    android:textSize="18sp"
+                    android:id="@+id/disciplineTextView"
+                    android:text="@string/discipline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    />
 
                 <ProgressBar
-                    android:id="@+id/progressBar2"
+                    android:id="@+id/disciplineProgressBar"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_marginStart="12dp"
-                    android:layout_marginEnd="18dp"
+                    android:layout_marginEnd="12dp"
                     android:layout_width="match_parent"
                     android:progressDrawable="@drawable/rating_progress_bar"
-                    android:layout_height="15dp"/>
+                    android:layout_height="15dp"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView
+                    android:textSize="18sp"
+                    android:id="@+id/professionalismTextView"
+                    android:text="@string/professionalism"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    />
+
+                <ProgressBar
+                    android:id="@+id/professionalismProgressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_width="match_parent"
+                    android:progressDrawable="@drawable/rating_progress_bar"
+                    android:layout_height="15dp"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView
+                    android:textSize="18sp"
+                    android:id="@+id/loyaltyTextView"
+                    android:text="@string/loyalty"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    />
+
+                <ProgressBar
+                    android:id="@+id/loyaltyProgressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_width="match_parent"
+                    android:progressDrawable="@drawable/rating_progress_bar"
+                    android:layout_height="15dp"
+                    android:layout_marginBottom="16dp"/>
+
+                <TextView
+                    android:textSize="18sp"
+                    android:id="@+id/efficiencyTextView"
+                    android:text="@string/efficiency"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    />
+
+                <ProgressBar
+                    android:id="@+id/efficiencyProgressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_width="match_parent"
+                    android:progressDrawable="@drawable/rating_progress_bar"
+                    android:layout_height="15dp"
+                    android:layout_marginBottom="16dp"/>
 
             </LinearLayout>
 

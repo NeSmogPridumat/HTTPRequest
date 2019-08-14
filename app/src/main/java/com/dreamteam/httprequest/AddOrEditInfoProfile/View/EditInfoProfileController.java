@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +13,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Presenter.EditInfoProfilePresenter;
@@ -135,7 +136,7 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
                     infoProfileData.description = descriptionEditTextView.getText().toString();
                     if (checkImage) {
                         if (((BitmapDrawable)editImageView.getDrawable()).getBitmap() == null) {
-                            //TODO: поставить какую-нибудь зашлушку, а-ля картинка по дэфолту
+                            //TODO: поставить какую-нибудь заглушку, а-ля картинка по дэфолту
                         }else{
                             infoProfileData.imageData = ((BitmapDrawable)editImageView.getDrawable()).getBitmap();
                         }
@@ -153,5 +154,10 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
     @Override
     public void forResult(Bitmap bitmap) {
         editImageView.setImageBitmap(bitmap);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

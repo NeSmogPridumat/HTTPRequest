@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 
-import static android.support.constraint.Constraints.TAG;
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class EventInteractor implements EventFromHTTPManagerInterface {
 

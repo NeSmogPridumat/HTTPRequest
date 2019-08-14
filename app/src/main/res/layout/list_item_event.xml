@@ -7,9 +7,10 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp"
     android:orientation="vertical"
+    android:background="@android:color/white"
     >
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/cv"
@@ -19,7 +20,8 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_margin="0dp">
+                    android:layout_margin="0dp"
+                    android:background="@drawable/button_background">
 
                         <TextView
                             android:id="@+id/event_list_title_text_view"
@@ -31,11 +33,6 @@
                             android:textStyle="normal"
                             android:background="@drawable/gradient_main"
                             tools:text="Object Title" />
-
-                        <TextView
-                            android:id="@+id/event_list_date_text_view"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
 
                         <TextView
                             android:id="@+id/event_list_description_text_view"
@@ -50,13 +47,34 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
-                        </LinearLayout>
 
+                            <Button
+                                android:id="@+id/confirmedButtom"
+                                android:text="@string/ok"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:background="@drawable/gradient_main"
+                                android:layout_marginStart="32dp"
+                                android:layout_marginEnd="32dp"
+                                android:layout_marginBottom="8dp"/>
+
+                            <Button
+                                android:id="@+id/deniedButtom"
+                                android:text="@string/cancel"
+                                android:layout_gravity="end"
+                                android:layout_weight="1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/button_background"
+                                android:layout_marginStart="32dp"
+                                android:layout_marginEnd="32dp"/>
+                        </LinearLayout>
 
 
 
                 </LinearLayout>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
 </LinearLayout>

@@ -1,8 +1,9 @@
 package com.dreamteam.httprequest.Group.Presenter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
@@ -11,7 +12,13 @@ import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.Dialog.DialogConfig;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
+import com.dreamteam.httprequest.Event.Entity.Events.EventsKinds.DataEvents.Event;
+import com.dreamteam.httprequest.Event.Entity.Events.EventsObject;
+import com.dreamteam.httprequest.Event.Entity.InfoStartEvent.InfoStartEvent;
+import com.dreamteam.httprequest.Event.Interactor.GetterEvents;
+import com.dreamteam.httprequest.Group.Entity.GroupData.EditGroupData.EditGroupData;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
+import com.dreamteam.httprequest.Group.Entity.GroupData.Personal;
 import com.dreamteam.httprequest.Group.GroupRouter;
 import com.dreamteam.httprequest.Group.Interactor.GroupInteractor;
 import com.dreamteam.httprequest.Group.Protocols.GroupPresenterInterface;
@@ -20,10 +27,14 @@ import com.dreamteam.httprequest.GroupList.Protocols.Router;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.ObjectList.ObjectData;
 import com.dreamteam.httprequest.R;
-import com.dreamteam.httprequest.SelectedList.SelectData;
+import com.dreamteam.httprequest.SelectedList.Data.SelectData;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.EventObject;
 
 public class GroupPresenter implements GroupPresenterInterface {
     private GroupViewInterface delegate;
@@ -33,6 +44,8 @@ public class GroupPresenter implements GroupPresenterInterface {
     private String userID;
     private ConstantConfig constantConfig = new ConstantConfig();
     private MainActivity activity;
+    private EventsObject eventObject;
+    private int countRating, countDiscussion, countPoll;
 
     private DialogConfig dialogConfig;
 
@@ -66,18 +79,29 @@ public class GroupPresenter implements GroupPresenterInterface {
         delegate.outputImageView(bitmap);
     }
 
-    @Override
-    public void answerGetMembers(ArrayList<User> members, String type) {
-        delegate.outputMembersView(members);
-    }
+//    @Override
+//    public void answerGetMembers(ArrayList<User> members, String type) {
+//        delegate.outputMembersView(members);
+//    }
 
     @Override
-    public void answerGetMembersForList(ArrayList<ObjectData> arrayList) {
-        router.showMembersList(arrayList, this, constantConfig.USER_TYPE);
+    public void answerGetMembersForList(ArrayList<User> arrayList) {
+        ArrayList<ObjectData> objectDataArrayList = new ArrayList<>();
+        for(User user : arrayList){
+            ObjectData objectData = new ObjectData();
+            objectData.id = user.id;
+            objectData.title = user.personal.descriptive.name + " " + user.personal.descriptive.surname;
+            objectDataArrayList.add(objectData);
+        }
+        router.showMembersList(objectDataArrayList, this, constantConfig.USER_TYPE);
     }
 
     @Override
     public void answerGetUsersForSelectAdd(ArrayList<User> users) {
+       delegate.answerGetUsersForSelectAdd(users);
+    }
+
+    public void setUserSelect(ArrayList<User> users){
         ArrayList<SelectData> selectData = new ArrayList<>();
         for (int i = 0; i < users.size(); i++){
             selectData.add(new SelectData().initFromUser(users.get(i)));
@@ -111,9 +135,10 @@ public class GroupPresenter implements GroupPresenterInterface {
     }
 
     @Override
-    public void answerAddGroup(EventType4 event) {
+    public void answerAddGroup(String groupId) {
         activity.deleteBackStack();
-        groupInteractor.getGroupAfterEdit(event.data.groupCreatorID, userID);
+        router.openGroup(groupId);
+//        groupInteractor.getGroupAfterEdit(event.data.groupCreatorID, userID);
     }
 
     @Override
@@ -132,7 +157,7 @@ public class GroupPresenter implements GroupPresenterInterface {
 
     @Override
     public void answerGetGroupAfterEdit(Group group) {
-        router.openGroup(group.id, group.rules);
+        router.openGroup(group.id);
     }
 
     @Override
@@ -141,10 +166,8 @@ public class GroupPresenter implements GroupPresenterInterface {
         for (Group subgroup : subgroups){
             ObjectData objectData = new ObjectData();
             objectData.id = subgroup.id;
-            objectData.title = subgroup.content.simpleData.title;
-            objectData.description = subgroup.content.simpleData.description;
-            objectData.image = subgroup.content.mediaData.image;
-            objectData.rules = subgroup.rules;
+            objectData.title = subgroup.personal.descriptive.title;
+            objectData.admin = subgroup.admin;
             objectDataList.add(objectData);
         }
         router.openObjectList(objectDataList, this);
@@ -152,7 +175,6 @@ public class GroupPresenter implements GroupPresenterInterface {
 
     @Override
     public void backPressAfterSelectAdmin() {
-
         int[] photoActionArray = {dialogConfig.OK_CODE};
         router.showDialog("Ваша заявка отправлена на подтверждение", photoActionArray, this);//TODO
         activity.deleteBackStack();
@@ -160,8 +182,51 @@ public class GroupPresenter implements GroupPresenterInterface {
     }
 
     @Override
-    public void answerEventForGroup(ArrayList<EventType4> answerEventForGroup) {
-        delegate.answerEventForGroup(answerEventForGroup);
+    public void answerGetEvents(EventsObject eventsObject) {
+        countRating = eventsObject.events.ratings.size();
+        countDiscussion = eventsObject.events.discussions.size();
+        countPoll = eventsObject.events.polls.size();
+        for (int i = 0; i < eventsObject.events.ratings.size(); i++){
+            GetterEvents getterEvents = new GetterEvents(this);
+            getterEvents.setEvent(eventsObject.events.ratings.get(i), constantConfig.EVENT_TYPE_RATING);
+        }
+        for (int i = 0; i < eventsObject.events.discussions.size(); i++){
+            GetterEvents getterEvents = new GetterEvents(this);
+            getterEvents.setEvent(eventsObject.events.discussions.get(i), constantConfig.EVENT_TYPE_DISCUSSION);
+        }
+        for (int i = 0; i < eventsObject.events.polls.size(); i++){
+            GetterEvents getterEvents = new GetterEvents(this);
+            getterEvents.setEvent(eventsObject.events.polls.get(i), constantConfig.EVENT_TYPE_POLL);
+        }
+
+    }
+
+    @Override
+    public void answerGetterEvent(Event event, String type) {
+        if (type.equals(constantConfig.EVENT_TYPE_RATING)){
+            eventObject.events.ratings.add(event);
+        } else if (type.equals(constantConfig.EVENT_TYPE_DISCUSSION)){
+            eventObject.events.discussions.add(event);
+        } else if (type.equals(constantConfig.EVENT_TYPE_POLL)){
+            eventObject.events.polls.add(event);
+        }
+
+        if (eventObject.events.ratings.size() == countRating && eventObject.events.polls.size() == countPoll && eventObject.events.discussions.size() == countDiscussion){
+            Handler mainHandler = new Handler(Looper.getMainLooper());
+            Runnable myRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    delegate.answerGetEvents(eventObject);
+                }
+            };
+            mainHandler.post(myRunnable);
+
+        }
+    }
+
+    @Override
+    public void answerStartDiscussion() {
+        delegate.answerStartDiscussion();
     }
 
     public void openGroup(Group group, Router myRouter, Context context) {
@@ -169,11 +234,12 @@ public class GroupPresenter implements GroupPresenterInterface {
     }
 
     public void checkListAddUser(){
+//        router.showSelectList(this);
         groupInteractor.checkListAddUser(groupID);
     }
 
-    public void checkListDeleteUser(){
-        groupInteractor.checkListDeleteUser(groupID);
+    public void checkListDeleteUser(ArrayList<String> members){
+        groupInteractor.checkListDeleteUser(members);
     }
 
     @Override
@@ -183,17 +249,20 @@ public class GroupPresenter implements GroupPresenterInterface {
         } else if (type.equals(constantConfig.DELETE)){
             groupInteractor.deleteSelectUser(arrayList, groupID, userID);
         } else if (type.equals(constantConfig.ADMIN)){
-            RequestInfo requestInfo = new RequestInfo();
-            requestInfo.groupID = groupID;
-            requestInfo.groupCreatorID = groupID;
-            requestInfo.creatorID = userID;
-            requestInfo.userID = arrayList.get(0).id;
-            groupInteractor.addAdmin(requestInfo);
+//            RequestInfo requestInfo = new RequestInfo();
+//            requestInfo.groupID = groupID;
+//            requestInfo.groupCreatorID = groupID;
+//            requestInfo.creatorID = userID;
+//            requestInfo.userID = arrayList.get(0).id;
+
+            EditGroupData editGroupData = new EditGroupData();
+            editGroupData.admin = arrayList.get(0).id;
+            groupInteractor.addAdmin(editGroupData, groupID);
         }
     }
 
-    public void startVoited(RequestInfo requestInfo){
-        groupInteractor.startVoited(requestInfo);
+    public void startVoited(String groupId){
+        groupInteractor.startVoited(groupId);
     }
 
     public void showAddGroup(){
@@ -213,12 +282,12 @@ public class GroupPresenter implements GroupPresenterInterface {
 
     }
 
-    public void addAdmin(){
-        groupInteractor.checkListAddAdmin();
+    public void addAdmin(ArrayList<String> members){
+        groupInteractor.checkListAddAdmin(members);
     }
 
-    public void deleteGroup(RequestInfo requestInfo){
-        groupInteractor.deleteGroup(requestInfo);
+    public void deleteGroup(String groupId){
+        groupInteractor.deleteGroup(groupId);
     }
 
     @Override
@@ -227,8 +296,11 @@ public class GroupPresenter implements GroupPresenterInterface {
     }
 
     @Override
-    public void answerDialog(int i) {
-
+    public void answerDialog(int i, String title, String message, String priority) {
+        if (i == -1){
+            Log.i("ЫЫЫЫЫЫЫЫЫЫЫЫЫЫ", message);
+            groupInteractor.startDiscussion(groupID, title, message, priority);
+        }
     }
 
     @Override
@@ -240,33 +312,79 @@ public class GroupPresenter implements GroupPresenterInterface {
     public void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo, String type) {
         if (type.equals(constantConfig.EDIT_GROUP_TYPE)) {
             Bitmap bitmap = infoProfileData.imageData;
-            requestInfo.addData = new AddData();
-            requestInfo.addData.content.simpleData.title = infoProfileData.title;
-            requestInfo.addData.content.simpleData.description = infoProfileData.description;
-            requestInfo.addData.id = groupID;
-            requestInfo.groupCreatorID = groupID;
-            groupInteractor.editGroupPut(bitmap, requestInfo);
+//            requestInfo.addData = new AddData();
+//            requestInfo.addData.content.simpleData.title = infoProfileData.title;
+//            requestInfo.addData.content.simpleData.description = infoProfileData.description;
+//            requestInfo.addData.id = groupID;
+//            requestInfo.groupCreatorID = groupID;
+
+//            Group group = new Group();
+//            group.personal = new Personal();
+//            group.personal.descriptive.title = infoProfileData.title;
+//            group.id = requestInfo.groupCreatorID;
+
+
+            EditGroupData editGroupData = new EditGroupData();
+            editGroupData.personal = new Personal();
+            editGroupData.personal.descriptive.title = infoProfileData.title;
+            editGroupData.personal.descriptive.description = infoProfileData.description;
+
+            File imageFile = getFileinBitmap(bitmap);
+
+            groupInteractor.editGroupPost(groupID, editGroupData, imageFile);
         }else if(type.equals(constantConfig.ADD_GROUP_TYPE)){
+
+
+            //создание подгруппы
+            Group group = new Group();
+            group.personal = new Personal();
+            group.personal.descriptive.title = infoProfileData.title;
+            group.personal.parent = requestInfo.groupCreatorID;
+            group.personal.descriptive.description = infoProfileData.description;
+            //group.content.simpleData.description = infoProfileData.description;
+//            if (requestInfo == null) {
+//                requestInfo = new RequestInfo();
+//            }
+//            requestInfo.creatorID = activity.userID;
+//
             Bitmap bitmap = infoProfileData.imageData;
-            requestInfo.addData = new AddData();
-            requestInfo.addData.content.simpleData.title = infoProfileData.title;
-            requestInfo.addData.content.simpleData.description = infoProfileData.description;
-            requestInfo.creatorID = userID;
-            requestInfo.groupCreatorID = groupID;
-            groupInteractor.addSubGroup(bitmap, requestInfo);
+            File imageFile = getFileinBitmap(bitmap);
+
+            groupInteractor.addSubGroup(group, imageFile);
+
+
+//            Bitmap bitmap = infoProfileData.imageData;
+//            requestInfo.addData = new AddData();
+//            requestInfo.addData.content.simpleData.title = infoProfileData.title;
+//            requestInfo.addData.content.simpleData.description = infoProfileData.description;
+//            requestInfo.creatorID = userID;
+//            requestInfo.groupCreatorID = groupID;
+//            groupInteractor.addSubGroup(bitmap, requestInfo);
+        } else {
+
+
         }
     }
 
-    public void exitGroup(RequestInfo requestInfo){
-        groupInteractor.exitGroup(requestInfo);
+    public void exitGroup(EditGroupData editGroupData){
+        groupInteractor.exitGroup(groupID, editGroupData);
     }
 
-    public void getMembers (String groupID){
-        groupInteractor.getUserForList(groupID);
+    public void getMembers (ArrayList<String> members){
+        groupInteractor.getUserForList(members);
     }
 
     public void getSubgroup(ArrayList<String> subgroups){
         groupInteractor.getSubgroup(subgroups, userID);
+    }
+
+    public void startCreateDiscussionFragment(String groupID){
+        router.openCreateDiscussionFragment(this);
+    }
+
+    public void getEvents(){
+        eventObject = new EventsObject();
+        groupInteractor.getEvents(groupID);
     }
 
     @Override
@@ -286,7 +404,22 @@ public class GroupPresenter implements GroupPresenterInterface {
         }
     }
 
-    public void getEventForGroup(String groupID){
-        groupInteractor.getEventForGroup(groupID);
+    private File getFileinBitmap (Bitmap bitmap){
+        OutputStream os;
+        File filesDir = activity.getFilesDir();
+        File imageFile = new File(filesDir, "file" + ".jpg");
+        try {
+            os = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), "Error writing bitmap", e);
+        }
+        return imageFile;
+    }
+
+    public void openVoting(String idRatingEvent){
+        router.openVoting(idRatingEvent);
     }
 }

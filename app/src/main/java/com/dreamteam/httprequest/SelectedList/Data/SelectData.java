@@ -1,4 +1,4 @@
-package com.dreamteam.httprequest.SelectedList;
+package com.dreamteam.httprequest.SelectedList.Data;
 
 import android.graphics.Bitmap;
 
@@ -16,20 +16,20 @@ public class SelectData {
 
     public SelectData initFromUser(User user){
         this.id = user.id;
-        this.title = user.content.simpleData.name;
-        this.description = user.content.simpleData.surname;
-        this.image = user.content.mediaData.bitmap;
-        this.imageURL = user.content.mediaData.image;
+        this.title = user.personal.descriptive.name;
+        this.description = user.personal.descriptive.surname;
+        //this.image = user.content.mediaData.bitmap;
+        //this.imageURL = user.content.mediaData.image;
         //this.rules = user.rules;
         return this;
     }
 
     public SelectData initFromGroup (Group group){
         this.id = group.id;
-        this.title = group.content.simpleData.title;
-        this.description = group.content.simpleData.description;
-        this.image = group.content.mediaData.imageData;
-        this.imageURL = group.content.mediaData.image;
+        this.title = group.personal.descriptive.title;
+        this.description = group.personal.descriptive.description;
+        //this.image = group.content.mediaData.imageData;
+        //this.imageURL = group.content.mediaData.image;
         return this;
     }
 }

@@ -4,11 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +11,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.dreamteam.httprequest.GroupList.View.RecyclerItemClickListener;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.ObjectList.ObjectData;
 import com.dreamteam.httprequest.ObjectList.Presenter.ObjectListPresenter;
 import com.dreamteam.httprequest.ObjectList.Protocols.ObjectListViewInterface;
+import com.dreamteam.httprequest.QueryPreferences;
 import com.dreamteam.httprequest.R;
 
 import java.net.SocketTimeoutException;
@@ -38,12 +40,12 @@ public class ObjectListController extends Fragment implements ObjectListViewInte
     private ObjectListAdapter adapter;
     private ObjectListPresenter objectListPresenter;
 
-
+    private View view;
     private TextView titleTextView, descriptionTextView;
     private ImageView imageView, adminImageView;
 
-    ArrayList<ObjectData> arrayList;
-    String type;
+    private ArrayList<ObjectData> arrayList;
+    private String type;
 
 
     public ObjectListController(ArrayList<ObjectData> arrayList, String type) {
@@ -64,6 +66,7 @@ public class ObjectListController extends Fragment implements ObjectListViewInte
         titleTextView = view.findViewById(R.id.object_list_title_text_view);
         descriptionTextView = view.findViewById(R.id.object_list_description_text_view);
         imageView = view.findViewById(R.id.object_list_image_view);
+        this.view = view;
         return view;
     }
 
@@ -79,12 +82,14 @@ public class ObjectListController extends Fragment implements ObjectListViewInte
 
     @Override public void onStart() {
 
-        for (int i = 0; i < arrayList.size(); i++){
-            if (arrayList.get(i).rules == 7){
-                arrayList.add(0, arrayList.get(i));
-                arrayList.remove(i+1);
-            }
-        }
+//        if(type.equals("User")) {
+//            for (int i = 0; i < arrayList.size(); i++) {
+//                if (arrayList.get(i).admin.equals(QueryPreferences.getUserIdPreferences(getContext()))) {
+//                    arrayList.add(0, arrayList.get(i));
+//                    arrayList.remove(i + 1);
+//                }
+//            }
+//        }
         adapter = new ObjectListAdapter(arrayList);
         adapter.objectDataArrayList = arrayList;
         objectRecyclerView.setAdapter(adapter);
@@ -106,9 +111,9 @@ public class ObjectListController extends Fragment implements ObjectListViewInte
 
     private void getImage(ArrayList<ObjectData> arrayList){
         for(int i = 0; i < arrayList.size(); i++){
-            if (arrayList.get(i).imageData == (null) && (arrayList.get(i).image != (null))){
-                objectListPresenter.getImage(arrayList.get(i).id, arrayList.get(i).image);
-            }
+
+            objectListPresenter.getImage(arrayList.get(i).id, type);
+
         }
     }
 
@@ -124,10 +129,10 @@ public class ObjectListController extends Fragment implements ObjectListViewInte
         String title = null;
         String description  = null;
         if (t instanceof SocketTimeoutException) {
-            title = getResources().getString(R.string.error_connecting_to_server);
-            description = getResources().getString(R.string.check_the_connection_to_the_internet);
+            title = view.getResources().getString(R.string.error_connecting_to_server);
+            description = view.getResources().getString(R.string.check_the_connection_to_the_internet);
         }else if (t instanceof NullPointerException) {
-            title = Resources.getSystem().getString(R.string.object_not_found);
+            title = view.getResources().getString(R.string.object_not_found);
             description = "";
         }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();

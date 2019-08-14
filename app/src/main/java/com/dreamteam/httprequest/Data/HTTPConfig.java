@@ -1,10 +1,12 @@
 package com.dreamteam.httprequest.Data;
 
 public class HTTPConfig {
-    public final String serverURL = "http://89.189.159.160:";//"http://89.189.159.160:" - j,obq cthdth
-    public final String SERVER_GETTER = "9001";
-    public final String SERVER_SETTER = "9001";
-    public final String SERVER_AUTH = "9001";
+//    public final String serverURL = "http://89.189.159.160:";
+//    public final String serverURL = "http://192.168.1.105:";
+    public final String serverURL = "http://192.168.1.177:";
+    public final String SERVER_GETTER = "80/api";
+    public final String SERVER_SETTER = "80/api";
+    public final String SERVER_AUTH = "80/api";
 
     // REQUEST TYPE PATH
     public final String reqUser = "/user";
@@ -15,6 +17,7 @@ public class HTTPConfig {
     public final String MAIN_USER = "/mainuser";
     public final String CREATOR_GROUP  = "/creatorgroup";
     public final String GROUP = "/group";
+    public final String IMAGE = "/image";
     public final String VOITED = "/voited";
     public final String GROUPS = "/groups";
     public final String RULES = "/rules";
@@ -30,6 +33,10 @@ public class HTTPConfig {
     public final String SMS_KEY = "/smskey";
     public final String REFRESH = "/refresh";
     public final String CREATE = "/create";
+    public final String INVITATION = "/invitation";
+    public final String SUBSCRIPTION = "/subscription";
+    public final String STATUS = "/status";
+    public final String RESPONSE = "/response";
 
     public final String ENABLE = "/enable";
     public final String DISABLE = "/disable";
@@ -51,4 +58,6 @@ public class HTTPConfig {
     public final String ADD = "/add";
 
     public final String RATING = "/rating";
+    public final String UNANSWERED = "/unanswered";
+    public final String NOTIFICATION = "/notification";
 }

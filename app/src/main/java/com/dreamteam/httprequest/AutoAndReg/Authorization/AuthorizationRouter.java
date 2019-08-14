@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.InfoAndTokenData;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.Service.EventService;
@@ -26,7 +27,6 @@ public class AuthorizationRouter {
 
     public void getKeyLogin(AuthDataObject authDataObject){
         activity.openKeyRegistration();
-
         //сохраняем в Активности данные с логином и паролем(Активность постоянно работает, так что данные не уйдут)
         activity.authDataObject = authDataObject;
     }
@@ -45,9 +45,10 @@ public class AuthorizationRouter {
         activity.authDataObject = authDataObject;
     }
 
-    public void getUserID(String userID){
-        activity.userID = userID;
-        activity.saveSharedPreferences(userID);
+    public void getUserID(InfoAndTokenData infoAndTokenData){
+        activity.userID = infoAndTokenData.id;
+        activity.saveSharedPreferences(infoAndTokenData.id, infoAndTokenData.token);
+        //activity.saveTokenSharedPreferences(infoAndTokenData.token);
         activity.bottomNavigationView.setVisibility(View.VISIBLE);
         activity.showBottomNavigationView(activity.bottomNavigationView);
 
@@ -56,7 +57,7 @@ public class AuthorizationRouter {
         PendingIntent pi = activity.createPendingResult(1, intent, 0);
         // Создаем Intent для вызова сервиса, кладем туда параметр времени
         // и созданный PendingIntent
-        intent.putExtra("userID", userID)
+        intent.putExtra("userID", infoAndTokenData.id)
                 .putExtra("Pending", pi);
         // стартуем сервис
 //        activity.startService(intent);

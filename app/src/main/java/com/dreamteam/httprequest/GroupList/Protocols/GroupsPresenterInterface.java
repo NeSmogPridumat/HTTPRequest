@@ -17,5 +17,5 @@ public interface GroupsPresenterInterface extends PresenterInterface {
 
     void error (Throwable t);
 
-    void answerAddGroup();
+    void answerAddGroup(Group group);
 }

@@ -5,22 +5,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.internal.BottomNavigationItemView;
-import android.support.design.internal.BottomNavigationMenuView;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
+import com.dreamteam.httprequest.AddOrEditInfoGroup.View.EditInfoGroupController;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.View.EditInfoProfileController;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
@@ -35,15 +34,25 @@ import com.dreamteam.httprequest.EventList.View.EventListController;
 import com.dreamteam.httprequest.Group.Protocols.ActivityAction;
 import com.dreamteam.httprequest.Group.View.GroupController;
 import com.dreamteam.httprequest.GroupList.View.GroupsListFragment;
+import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.OnBackPressedListener;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.ObjectList.ObjectData;
 import com.dreamteam.httprequest.ObjectList.View.ObjectListController;
-import com.dreamteam.httprequest.SelectedList.SelectData;
+import com.dreamteam.httprequest.SelectList.View.SelectedView;
+import com.dreamteam.httprequest.SelectedList.Data.SelectData;
 import com.dreamteam.httprequest.SelectedList.View.SelectedListController;
 import com.dreamteam.httprequest.Service.EventService;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.dreamteam.httprequest.User.View.UserFragment;
+import com.dreamteam.httprequest.VoitingView.View.VoitingFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
 
@@ -52,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     public BottomNavigationView bottomNavigationView;
     public TextView bottomNavigationTextView;
     public Toolbar toolbar;
+
+    private HTTPManager httpManager = HTTPManager.get();
 
     public String userID;
 
@@ -66,6 +77,48 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         authDataObject = new AuthDataObject();
+
+
+
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    //База данных, которая могёт!!!
+                    //UserDB userDB = user.initUserDB();
+                    //userDao.update(userDB);
+
+                    Log.i("TAG", FirebaseInstanceId.getInstance().getId());
+                } catch (Exception error) {
+
+                }
+            }
+        }).start();
+
+        FirebaseInstanceId firebaseInstanceId;
+
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("TAG", "getInstanceId failed", task.getException());
+                            return;
+                        }
+
+                        // Get new Instance ID token
+                        String token = task.getResult().getToken();
+
+                        // Log and toast
+                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d("TAAAAG", msg);
+                        //Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         toolbar = findViewById(R.id.toolbar);
 
@@ -105,19 +158,23 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
                                 .commit();
                         break;
 
-                    case R.id.profile2:
-                        clearMainActivity();
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, ChuvakEtoRepchik.newInstance(userID))
-                                .commit();
-                        break;
+
                 }
                 return true;
                 }
             });
-        userID = QueryPreferences.getUserIdPreferences(getBaseContext());
+
+
+
+
+        String token = QueryPreferences.getToken(this);
+//        if(!(token.equals(""))){
+//
+//        }
+        userID = QueryPreferences.getUserIdPreferences(this);
         if (!(userID.equals(""))) {
             bottomNavigationView.setSelectedItemId(R.id.profile);
+            httpManager.token = token;
 
         } else {
             bottomNavigationView.setVisibility(View.GONE);
@@ -125,10 +182,13 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
                     new AuthorizationController(this)).commit();
         }
 
-        EventService.setServiceAlarm(getBaseContext()); }
+        EventService.setServiceAlarm(getBaseContext());
+    }
 
     @Override
     protected void onStart() {
+
+
 
 //        // Создаем PendingIntent для Task1
 //        Intent intent = new Intent(this, EventService.class);
@@ -191,8 +251,8 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
                 .addToBackStack(null).commit();
     }
 
-    public void openGroup(String id, int rules) {
-        changeFragmentWitchBackstack(GroupController.newInstance(id, rules), "");
+    public void openGroup(String id) {
+        changeFragmentWitchBackstack(GroupController.newInstance(id), "");
     }
 
     public void openGroupAfterSelect(String id, int rules) {
@@ -201,11 +261,11 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         for (int i = 0; i < 20; ++i) {
             fm.popBackStack();
         }
-        changeFragmentWitchBackstack(GroupController.newInstance(id, rules), null);
+        changeFragmentWitchBackstack(GroupController.newInstance(id), null);
     }
 
-    public void getGroup(String id, int rules) {
-        changeFragmentWitchBackstack(GroupController.newInstance(id, rules), null);
+    public void getGroup(String id) {
+        changeFragmentWitchBackstack(GroupController.newInstance(id), null);
     }
 
     @Override
@@ -241,9 +301,19 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         changeFragmentWitchBackstack(new SelectedListController(selectData, delegate, TYPE), null);
     }
 
+    public void openSelectList(PresenterInterface delegate) {
+        changeFragmentWitchBackstack(new SelectedView(delegate), null);
+    }
+
     public void openEditProfile(InfoProfileData infoProfileData, RequestInfo requestInfo,
                                 PresenterInterface delegate, String type) {
         changeFragmentWitchBackstack(new EditInfoProfileController(infoProfileData, requestInfo,
+                delegate, type), null);
+    }
+
+    public void openEditGroup(InfoProfileData infoProfileData, RequestInfo requestInfo,
+                                PresenterInterface delegate, String type) {
+        changeFragmentWitchBackstack(new EditInfoGroupController(infoProfileData, requestInfo,
                 delegate, type), null);
     }
 
@@ -298,6 +368,10 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         changeFragmentWitchBackstack(new RegistrationController(), null);
     }
 
+    public void openVoting (String idRatingEvent){
+        changeFragmentWitchBackstack(VoitingFragment.newInstance(idRatingEvent), null);
+    }
+
     //открытие контроллера для ввода ключа регистрации
     public void openKeyRegistration() {
         changeFragment(new KeyRegistrationController(), null);
@@ -306,10 +380,9 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
     //метод для получения к заголовку ActionBar'a
     public void setActionBarTitle(String title) {
         toolbar.setTitle(title);
-
     }
 
-    public void saveSharedPreferences(String userID) {//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public void saveSharedPreferences(String userID, String token) {//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         //с помощью метода getPreferences получаем объект sPref класса SharedPreferences, который позволяет работать с данными (читать и писать).Константа MODE_PRIVATE используется для настройки доступа и означает, что после сохранения, данные будут видны только этому приложению
 //        sharedPreferences = getPreferences(MODE_PRIVATE);
@@ -319,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 //        editor.putString("userID", userID);
 //        editor.apply();
 
-        QueryPreferences.saveSharedPreferences(userID, this);
+        QueryPreferences.saveSharedPreferences(userID, this, token);
     }
 
     public void exitLogin() {
@@ -340,19 +413,19 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
         changeFragment(EventListController.newInstance(userID), null);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-//        if (requestCode == 1) {
-//            String event = data.getStringExtra("Events");
-//            if (event.equals("0")) {
-//                bottomNavigationTextView.setVisibility(View.GONE);
-//            } else {
-//                bottomNavigationTextView.setText(event);
-//                bottomNavigationTextView.setVisibility(View.VISIBLE);
-//            }
-//        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+////        if (requestCode == 1) {
+////            String event = data.getStringExtra("Events");
+////            if (event.equals("0")) {
+////                bottomNavigationTextView.setVisibility(View.GONE);
+////            } else {
+////                bottomNavigationTextView.setText(event);
+////                bottomNavigationTextView.setVisibility(View.VISIBLE);
+////            }
+////        }
+//    }
 
     public void showImage (Drawable drawable){
         getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new BlankFragment(drawable, this), null)
@@ -381,4 +454,5 @@ public class MainActivity extends AppCompatActivity implements ActivityAction {
 
 //        unbindService(serviceConnection);
     }
+
 }

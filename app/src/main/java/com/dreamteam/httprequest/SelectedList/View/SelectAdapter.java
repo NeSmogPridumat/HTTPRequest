@@ -1,8 +1,6 @@
 package com.dreamteam.httprequest.SelectedList.View;
 
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +8,11 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.dreamteam.httprequest.R;
-import com.dreamteam.httprequest.SelectedList.SelectData;
+import com.dreamteam.httprequest.SelectedList.Data.SelectData;
 
 import java.util.ArrayList;
 

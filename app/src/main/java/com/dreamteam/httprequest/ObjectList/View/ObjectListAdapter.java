@@ -1,11 +1,13 @@
 package com.dreamteam.httprequest.ObjectList.View;
 
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.dreamteam.httprequest.ObjectList.ObjectData;
 import com.dreamteam.httprequest.R;
 import java.util.ArrayList;
@@ -19,7 +21,8 @@ public class ObjectListAdapter extends RecyclerView.Adapter<ObjectListHolder>  {
     this.objectDataArrayList = objectDataArrayList;
   }
 
-  @NonNull @Override
+  @NonNull
+  @Override
   public ObjectListHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
     LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
     View view = layoutInflater.inflate(R.layout.object_list_item, viewGroup, false);

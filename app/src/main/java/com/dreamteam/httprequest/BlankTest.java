@@ -10,11 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +17,18 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
 import com.dreamteam.httprequest.EventList.Protocols.EventListFromHTTPManagerInterface;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
+import com.dreamteam.httprequest.Invation.Entity.Invitation.Invitation;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -178,6 +180,11 @@ public class BlankTest extends Fragment implements EventListFromHTTPManagerInter
             }
         }
         return events;
+    }
+
+    @Override
+    public void answerGetterInvitation(Invitation invitation) {
+
     }
 }
 

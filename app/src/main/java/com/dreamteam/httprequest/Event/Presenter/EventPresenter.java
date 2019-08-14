@@ -1,6 +1,7 @@
 package com.dreamteam.httprequest.Event.Presenter;
 
 import com.dreamteam.httprequest.Event.Entity.AnswerQuestion.AnswerQuestion;
+import com.dreamteam.httprequest.Event.Entity.AnswersVoting.AnswersVoting;
 import com.dreamteam.httprequest.Event.EventRouter;
 import com.dreamteam.httprequest.Event.Interactor.EventInteractor;
 import com.dreamteam.httprequest.Event.Protocols.EventPresenterInterface;

@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,10 +20,15 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 
 import com.dreamteam.httprequest.Data.QuestionRating.QuestionRating;
 import com.dreamteam.httprequest.Service.EventService;
+import com.dreamteam.httprequest.User.Entity.UserData.RatingData.RatingData;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.dreamteam.httprequest.User.Presenter.PresenterUser;
 import com.dreamteam.httprequest.User.Protocols.ViewUserInterface;
@@ -50,7 +52,7 @@ public class ChuvakEtoRepchik extends Fragment implements ViewUserInterface {
 //    private RadioButton groupsRadioButton;
     private MainActivity activity;
     private LinearLayout userLinear;
-    android.support.v7.widget.Toolbar toolbar;
+    private Toolbar toolbar;
 
     public PresenterUser presenterUser;
 
@@ -145,11 +147,11 @@ public class ChuvakEtoRepchik extends Fragment implements ViewUserInterface {
     @Override
     public void View(User user) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.setTitle(user.content.simpleData.name + " " + user.content.simpleData.surname);
+            toolbar.setTitle(user.personal.descriptive.name + " ");
         }
 //        userSurName.setText(user.content.simpleData.surname);
         this.user = user;
-        activity.setActionBarTitle(user.content.simpleData.name + " " + user.content.simpleData.surname);
+        activity.setActionBarTitle(user.personal.descriptive.name + " "  + user.personal.descriptive.surname);
 //        activity.getActionBar().hide();
 //        progressBarOverlay.setVisibility(View.GONE);
     }
@@ -176,33 +178,33 @@ public class ChuvakEtoRepchik extends Fragment implements ViewUserInterface {
     }
 
     @Override
-    public void answerGetRating(ArrayList<QuestionRating> questionRatings) {
+    public void answerGetRating(RatingData questionRatings) {
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
         layoutParams.setMargins(24,30,0,0);
         LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
         DecimalFormat df= new DecimalFormat("#.##");
         layoutParams1.setMarginStart(48);
         float j = 0;
-        for (int i = 0; i < questionRatings.get(0).question.size(); i++){
-            j = j + questionRatings.get(0).question.get(i).middleValue;
-        }
-        TextView textView = new TextView(getContext());
-        String text = getResources().getText(R.string.overall_rating) + df.format(j/questionRatings.get(0).question.size());
-        textView.setText(text);
-        textView.setTextSize(36f);
-        textView.setTextColor(getResources().getColor(android.R.color.white));
-        textView.setLayoutParams(layoutParams);
-        userLinear.addView(textView);
-        for (int i = 0; i < questionRatings.get(0).question.size(); i++) {
-            TextView textView1 = new TextView(getContext());
-            textView1.setTextColor(getResources().getColor(android.R.color.white));
-            textView.setTextSize(18f);
-            text = questionRatings.get(0).question.get(i).title + ": "
-                    + df.format(questionRatings.get(0).question.get(i).middleValue);
-            textView1.setText(text);
-            textView1.setLayoutParams(layoutParams1);
-            userLinear.addView(textView1);
-        }
+//        for (int i = 0; i < questionRatings.get(0).question.size(); i++){
+//            j = j + questionRatings.get(0).question.get(i).middleValue;
+//        }
+//        TextView textView = new TextView(getContext());
+//        String text = getResources().getText(R.string.overall_rating) + df.format(j/questionRatings.get(0).question.size());
+//        textView.setText(text);
+//        textView.setTextSize(36f);
+//        textView.setTextColor(getResources().getColor(android.R.color.white));
+//        textView.setLayoutParams(layoutParams);
+//        userLinear.addView(textView);
+//        for (int i = 0; i < questionRatings.get(0).question.size(); i++) {
+//            TextView textView1 = new TextView(getContext());
+//            textView1.setTextColor(getResources().getColor(android.R.color.white));
+//            textView.setTextSize(18f);
+//            text = questionRatings.get(0).question.get(i).title + ": "
+//                    + df.format(questionRatings.get(0).question.get(i).middleValue);
+//            textView1.setText(text);
+//            textView1.setLayoutParams(layoutParams1);
+//            userLinear.addView(textView1);
+//        }
     }
 
     @Override

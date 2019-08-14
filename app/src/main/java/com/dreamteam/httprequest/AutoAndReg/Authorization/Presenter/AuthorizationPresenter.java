@@ -4,15 +4,15 @@ import android.graphics.Bitmap;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.AuthorizationRouter;
-import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthData;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
-import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.Token;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.InfoAndTokenData;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.NewAuth;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Interactor.AuthorizationInteractor;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationPresenterInterface;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationViewInterface;
 import com.dreamteam.httprequest.Data.RequestInfo;
 import com.dreamteam.httprequest.MainActivity;
-import com.dreamteam.httprequest.SelectedList.SelectData;
+import com.dreamteam.httprequest.SelectedList.Data.SelectData;
 
 import java.util.ArrayList;
 
@@ -30,17 +30,21 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
     }
 
     //создание логина
-    public void createLogin(String login, String password){
-        authorizationInteractor.createLogin(login, password);
+    public void createLogin(String login, String password, String name, String surname){
+        authorizationInteractor.createLogin(login, password, name, surname);
     }
 
     public void enterUser(String login, String password){
-        authDataObject = new AuthDataObject();
-        authDataObject.authData = new AuthData();
-        authDataObject.authData.login = login;
-        authDataObject.authData.pass = password;
-        authDataObject.authData.key = null;
-        authorizationInteractor.getUserToken(authDataObject);
+//        authDataObject = new AuthDataObject();
+//        authDataObject.authData = new AuthData();
+//        authDataObject.authData.login = login;
+//        authDataObject.authData.pass = password;
+//        authDataObject.authData.key = null;
+
+        NewAuth newAuth = new NewAuth();
+        newAuth.phone = login;
+        newAuth.password = password;
+        authorizationInteractor.getUserToken(newAuth);
     }
 
     //открытие контроллера для регистрации
@@ -60,9 +64,9 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
 
     //ответ создания логина, если true, открываем контроллер для ввода ключа
     @Override
-    public void answerCreateLogin(boolean answer, AuthDataObject authDataObject) {
+    public void answerCreateLogin(String answer, AuthDataObject authDataObject) {
 
-        if (answer) {
+        if (answer != null) {
             router.getKeyLogin(authDataObject);
         }
     }
@@ -81,7 +85,7 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
     }
 
     @Override
-    public void answerDialog(int i) {
+    public void answerDialog(int i, String title, String message, String priority) {
 
     }
 
@@ -105,21 +109,21 @@ public class AuthorizationPresenter implements AuthorizationPresenterInterface {
     @Override
     public void answerCreateUserToAuth(boolean answer){
         if (answer){
-            authorizationInteractor.getUserToken(router.getAuthDataObject());
+            authorizationInteractor.getUserToken(/*router.getAuthDataObject()*/ null);
         }
     }
 
     @Override
-    public void answerGetUserToken(Token token) {
-        router.getUserID(token.id);
+    public void answerGetUserToken(InfoAndTokenData infoAndTokenData) {
+        router.getUserID(infoAndTokenData);
     }
 
     @Override
     public void errorHanding(int responseCode) {
         if(responseCode == 409){
-            router.createUserToAuth(router.getAuthDataObject(), this);
+            delegate.showNotFound();
         }
-        if (responseCode == 404){
+        if (responseCode == 401){
             delegate.showNotFound();
         }
     }
