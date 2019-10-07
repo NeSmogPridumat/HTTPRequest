@@ -1,14 +1,7 @@
 package com.dreamteam.httprequest.GroupList.View;
 
-import android.annotation.SuppressLint;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +14,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.GroupList.Presenter.GroupsPresenter;
@@ -35,7 +34,6 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-@SuppressLint("ValidFragment")
 public class GroupsListFragment extends Fragment implements GroupsViewInterface {
 
     //TODO: не забудь перенести обработчик клика в проект (class RecyclerItemClickListener и обработка outputGroupsView)
@@ -46,24 +44,31 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
     public GroupsPresenter groupsPresenter;
     private RelativeLayout progressBarOverlay;
     private ProgressBar progressBar;
-    MenuInflater inflater;
-    Menu menu;
+    private View view;
 
     private String userID;
     private boolean deleteOn;
     private ArrayList<Group> groups = new ArrayList<>();
 
-    public GroupsListFragment(String userID) {
-        this.userID = userID;
+    public GroupsListFragment() {
+
+    }
+
+    public static GroupsListFragment newInstance(String userID){
+        Bundle args = new Bundle();
+        args.putString("userID", userID);
+        GroupsListFragment fragment = new GroupsListFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_groups_list, container, false);
+        view = inflater.inflate(R.layout.fragment_groups_list, container, false);
         groupsRecyclerView = view.findViewById(R.id.groups_recycler_view);
         groupsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        groupsRecyclerView.setAdapter(adapter);
+//        groupsRecyclerView.setAdapter(adapter);
         progressBarOverlay = view.findViewById(R.id.progressBarOverlay);
         progressBar = view.findViewById(R.id.progressBar);
         return view;
@@ -72,16 +77,18 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-        activity = (MainActivity) getActivity();
-        groupsPresenter = new GroupsPresenter(this, activity);
         deleteOn = false;
-        adapter = new GroupAdapter(groups);
+        this.userID = getArguments().getString("userID");
+        setHasOptionsMenu(true);
     }
 
     @Override
     public void onStart() {
+        activity = (MainActivity) getActivity();
+        groupsPresenter = new GroupsPresenter(this, activity);
+
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.progress_rotate);
+        activity.setSupportActionBar(activity.toolbar);
         progressBar.startAnimation(animation);
         progressBarOverlay.setVisibility(View.VISIBLE);
         groupsPresenter.getGroups(userID);//здесь ID User'а
@@ -91,8 +98,6 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        this.inflater = inflater;
-        this.menu = menu;
         super.onCreateOptionsMenu(menu, inflater);
         if (!deleteOn) {
             inflater.inflate(R.menu.group_list_controller, menu);
@@ -133,18 +138,21 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
     @Override
     public void outputGroupsView(final ArrayList<Group> groupCollection) {//отправка полученного списка групп на отображение в адаптере
         groups = groupCollection;
+        adapter = new GroupAdapter(groups, userID);
+        groupsPresenter.getImage(groupCollection);
         adapter.allGroup = groupCollection;
         adapter.groupCollection = groupCollection;
         groupsRecyclerView.setAdapter(adapter);
+
         progressBarOverlay.setVisibility(View.GONE);
 
         groupsRecyclerView.addOnItemTouchListener(new RecyclerItemClickListener(getContext(), groupsRecyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if(adapter.mFilteredList != null && adapter.mFilteredList.size() != 0) {
-                    groupsPresenter.openGroup(adapter.mFilteredList.get(position).id, adapter.mFilteredList.get(position).rules);
+                if(adapter.mFilteredList != null && adapter.mFilteredList.size() != 0 && adapter.mFilteredList.size() != groups.size()) {
+                    groupsPresenter.openGroup(adapter.mFilteredList.get(position).id);
                 }else{
-                    groupsPresenter.openGroup(adapter.allGroup.get(position).id, adapter.allGroup.get(position).rules);
+                    groupsPresenter.openGroup(adapter.allGroup.get(position).id);
                 }
             }
 
@@ -159,19 +167,25 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
     public void error(Throwable t) {
         String title = null;
         String description = null;
+        //TODO: БАЗА ДАННЫХ МАТЬ ЕЁ!
         if (t instanceof SocketTimeoutException || t instanceof ConnectException) {
-            title = getResources().getString(R.string.error_connecting_to_server);
-            description = getResources().getString(R.string.check_the_connection_to_the_internet);
+            title = view.getResources().getString(R.string.error_connecting_to_server);
+            description = view.getResources().getString(R.string.check_the_connection_to_the_internet);
+            Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
+            progressBarOverlay.setVisibility(View.GONE);
         }else if (t instanceof NullPointerException){
-            title = getResources().getString(R.string.object_not_found);
+            title = view.getResources().getString(R.string.object_not_found);
             description = "";
+//            Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
+            progressBarOverlay.setVisibility(View.GONE);
+        } else if (t instanceof android.database.sqlite.SQLiteConstraintException){
+
         }
-        Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
-        progressBarOverlay.setVisibility(View.GONE);
+
     }
 
     public void redrawAdapter(String groupID, Bitmap bitmap){//presenter отправляет bitmap/картинку в этот метод, он отправляет их на отображение в адаптере
-        if (bitmap != null) {
+        if (bitmap != null && adapter != null) {
             adapter.changeItem(groupID, bitmap);
         }
     }
@@ -181,10 +195,4 @@ public class GroupsListFragment extends Fragment implements GroupsViewInterface 
 //        groupsRecyclerView.setAdapter(adapter);
     }
 
-    @Override
-    public void onDestroy() {
-        groupsPresenter = null;
-        groups = null;
-        super.onDestroy();
-    }
 }

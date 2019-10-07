@@ -3,12 +3,15 @@ package com.dreamteam.httprequest.Group.Protocols;
 import android.graphics.Bitmap;
 
 import com.dreamteam.httprequest.Event.Entity.EventType4.EventType4;
+import com.dreamteam.httprequest.Event.Entity.Events.EventsKinds.DataEvents.Event;
+import com.dreamteam.httprequest.Event.Entity.Events.EventsObject;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.ObjectList.ObjectData;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 
 import java.util.ArrayList;
+import java.util.EventObject;
 
 public interface GroupPresenterInterface extends PresenterInterface {
     void error(Throwable t);
@@ -19,9 +22,9 @@ public interface GroupPresenterInterface extends PresenterInterface {
 
     void answerGetImage(Bitmap bitmap);
 
-    void answerGetMembers(ArrayList<User> members, String type);
+//    void answerGetMembers(ArrayList<User> members, String type);
 
-    void answerGetMembersForList (ArrayList<ObjectData> arrayList);
+    void answerGetMembersForList (ArrayList<User> arrayList);
 
     void answerGetUsersForSelectAdmin (ArrayList<User> users);
 
@@ -31,7 +34,7 @@ public interface GroupPresenterInterface extends PresenterInterface {
 
     void openGroupsList();
 
-    void answerAddGroup(EventType4 event);
+    void answerAddGroup(String groupId);
 
     void openGroupAfterSelect();
 
@@ -44,4 +47,10 @@ public interface GroupPresenterInterface extends PresenterInterface {
     void answerGetSubgroup (ArrayList<Group> subgroups);
 
     void backPressAfterSelectAdmin();
+
+    void answerGetEvents (EventsObject eventsObject);
+
+    void answerGetterEvent(Event event, String type);
+
+    void answerStartDiscussion();
 }

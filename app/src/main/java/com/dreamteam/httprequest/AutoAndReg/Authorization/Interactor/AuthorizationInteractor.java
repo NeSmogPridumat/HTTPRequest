@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.AutoAndReg.Authorization.Interactor;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,6 +11,9 @@ import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AnswerAuth;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthData;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.AuthDataObject;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.Content;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.InfoAndTokenData;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.NewAuth;
+import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.NewAuthData;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.Token;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationHTTPManagerInterface;
 import com.dreamteam.httprequest.AutoAndReg.Authorization.Protocols.AuthorizationPresenterInterface;
@@ -19,14 +21,11 @@ import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
-import com.dreamteam.httprequest.R;
+import com.dreamteam.httprequest.QueryPreferences;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
-
-import static android.support.constraint.Constraints.TAG;
 
 public class AuthorizationInteractor implements AuthorizationHTTPManagerInterface {
 
@@ -35,13 +34,10 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
     private HTTPConfig httpConfig = new HTTPConfig();
     private ConstantConfig constantConfig = new ConstantConfig();
 
+    NewAuthData authData = new NewAuthData();
+
+
     private AuthorizationPresenterInterface delegate;
-
-    private final String CREATE_LOGIN = "create login";
-    private final String ENABLE_USER_AUTH = "enable user auth";
-    private final String GET_USER_TOKEN = "get user token";
-
-    private final String ADD_USER_AUTH = "add user auth";
 
     public AuthorizationInteractor(AuthorizationPresenterInterface delegate){
         this.delegate = delegate;
@@ -50,20 +46,27 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
     //===================================REQUESTS========================================//
 
     //создание логина
-    public void createLogin (String login, String password){
-        authDataObject.authData = new AuthData();
-        authDataObject.authData.login = login;
-        authDataObject.authData.pass = password;
-        final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH + httpConfig.CREATE;
+    public void createLogin (String login, String password, String name, String surname){
 
-        startPostRequest(path, authDataObject, CREATE_LOGIN, AuthorizationInteractor.this);
+        authData.auth.phone = login;
+        authData.auth.password = password;
+        authData.descriptive.name = name;
+        authData.descriptive.surname = surname;
+//        authDataObject.authData = new AuthData();
+//        authDataObject.authData.login = login;
+//        authDataObject.authData.pass = password;
+        //final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH + httpConfig.CREATE;
+
+        final String path = httpConfig.serverURL + "9003" + httpConfig.reqUser;
+
+        startPutRequest(path, authData, constantConfig.CREATE_LOGIN, AuthorizationInteractor.this);
     }
 
     public void enableUserAuth (String key, final AuthDataObject authDataObject){
         authDataObject.authData.key = key;
         final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH + httpConfig.ENABLE;
 
-        startPostRequest(path, authDataObject, ENABLE_USER_AUTH, AuthorizationInteractor.this);
+        //startPostRequest(path, authDataObject, constantConfig.ENABLE_USER_AUTH, AuthorizationInteractor.this);
     }
 
     //создание User'a
@@ -74,18 +77,18 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
         if (infoProfileData.imageData != null) {
             authDataObject.content.mediaData.image = decodeBitmapInBase64(infoProfileData.imageData);
         }
-        authDataObject.authData.key = null;
+        //authDataObject.authData.key = null;
 
         final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH + httpConfig.USER;
 
-        startPostRequest(path, authDataObject, ADD_USER_AUTH, AuthorizationInteractor.this);
+        //startPostRequest(path, authDataObject, constantConfig.ADD_USER_AUTH, AuthorizationInteractor.this);
     }
 
-    public void getUserToken (AuthDataObject authDataObject){
-        authDataObject.authData.key = null;
-        final String path = httpConfig.serverURL + httpConfig.SERVER_AUTH + httpConfig.AUTH;
+    public void getUserToken (NewAuth authDataObject){
+        //authDataObject.authData.key = null;
+        final String path = httpConfig.serverURL + "9003" + httpConfig.AUTH;
 
-        startPostRequest(path, authDataObject, GET_USER_TOKEN, AuthorizationInteractor.this);
+        startPostRequest(path, authDataObject, constantConfig.GET_USER_TOKEN, AuthorizationInteractor.this);
     }
 
     //============================================ANSWERS===================================//
@@ -93,19 +96,14 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
     @Override
     public void response(byte[] byteArray, String type) {
         if (byteArray != null){
-            switch (type) {
-                case CREATE_LOGIN:
-                    answerCreateLogin(byteArray);
-                    break;
-                case ENABLE_USER_AUTH:
-                    answerEnableUserAuth(byteArray);
-                    break;
-                case ADD_USER_AUTH:
-                    answerCreateUserToAuth(byteArray);
-                    break;
-                case GET_USER_TOKEN:
-                    answerGetUserToken(byteArray);
-                    break;
+            if (type.equals(constantConfig.CREATE_LOGIN)){
+                answerCreateLogin(byteArray);
+            } else if (type.equals(constantConfig.ENABLE_USER_AUTH)){
+                answerEnableUserAuth(byteArray);
+            }else if (type.equals(constantConfig.ADD_USER_AUTH)){
+                answerCreateUserToAuth(byteArray);
+            }else if (type.equals(constantConfig.GET_USER_TOKEN)){
+                answerGetUserToken(byteArray);
             }
         }else {
             Log.i("Error", "NOT TRUE");
@@ -124,7 +122,6 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
             }
         };
         mainHandler.post(myRunnable);
-        Log.e(TAG, "Failed server" + t.toString());
     }
 
     @Override
@@ -143,13 +140,15 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
     private void answerGetUserToken(byte[] byteArray){
         Gson gson = new Gson();
         String jsonString = new String(byteArray);
-        final Token token = gson.fromJson(jsonString, Token.class);
+        final InfoAndTokenData infoAndTokenData = gson.fromJson(jsonString, InfoAndTokenData.class);
+        httpManager.token = infoAndTokenData.token;
+//        Token token = new Token();
+//        token.token = infoAndTokenData.token;
         Handler mainHandler = new Handler(Looper.getMainLooper());
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                delegate.answerGetUserToken(token);
-                httpManager.token = token;
+                delegate.answerGetUserToken(infoAndTokenData);
             }
         };
         mainHandler.post(myRunnable);
@@ -157,12 +156,19 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
 
     //ответ от создания логина, получаем boolean
     private void answerCreateLogin (byte[] byteArray){
-        final boolean answer = createBooleanOfBytes(byteArray);
+        //final boolean answer = createBooleanOfBytes(byteArray);
         Handler mainHandler = new Handler(Looper.getMainLooper());
+
+
+        Gson gson = new Gson();
+        final String jsonString = new String(byteArray);
+        //String id =  gson.fromJson(jsonString, String.class);
+        getUserToken(authData.auth);
+
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
-                delegate.answerCreateLogin(answer, authDataObject);
+                //delegate.answerCreateLogin(jsonString, authDataObject);
             }
         };
         mainHandler.post(myRunnable);
@@ -214,7 +220,23 @@ public class AuthorizationInteractor implements AuthorizationHTTPManagerInterfac
         return constantConfig.PREFIX + Base64.encodeToString(bytes, Base64.DEFAULT);
     }
 
-    private void startPostRequest (final String path, final AuthDataObject authDataObject,
+    private void startPutRequest (final String path, final NewAuthData authDataObject,
+                                   final String type, final OutputHTTPManagerInterface delegate){
+        new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
+            @Override
+            public void run() {
+                try {
+                    Gson gson = new Gson();
+                    final String jsonObject = gson.toJson(authDataObject);
+                    httpManager.putRequest(path, jsonObject, type, delegate);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void startPostRequest (final String path, final NewAuth authDataObject,
                                    final String type, final OutputHTTPManagerInterface delegate){
         new Thread(new Runnable() {//---------------------------------------------------------------запуск в фоновом потоке
             @Override

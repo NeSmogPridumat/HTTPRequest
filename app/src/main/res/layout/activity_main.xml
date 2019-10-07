@@ -7,6 +7,11 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        app:titleTextColor="@color/colorDarkBlue"
+        style="@style/Toolbar"/>
+
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
@@ -15,16 +20,18 @@
 
     </FrameLayout>
 
-    <android.support.design.widget.BottomNavigationView
+    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="fill_vertical"
         android:layout_weight="1"
-        android:background="@android:color/darker_gray"
+        style="@style/MyBottomNavigation"
         android:foregroundGravity="bottom"
-        app:menu="@menu/menu_bottom_navigation">
+        app:itemIconSize="21dp"
+        app:menu="@menu/menu_bottom_navigation"
+        app:itemIconTint="@drawable/selector_bottom_view">
 
-    </android.support.design.widget.BottomNavigationView>
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 </LinearLayout>

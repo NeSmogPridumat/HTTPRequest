@@ -1,12 +1,9 @@
 package com.dreamteam.httprequest.AddOrEditInfoProfile.View;
 
-
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +13,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Presenter.EditInfoProfilePresenter;
@@ -47,7 +47,8 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
     private RequestInfo requestInfo;
     private ConstantConfig constantConfig = new ConstantConfig();
 
-    public EditInfoProfileController(InfoProfileData infoProfileData, RequestInfo requestInfo, PresenterInterface delegate, String type) {
+    public EditInfoProfileController(InfoProfileData infoProfileData, RequestInfo requestInfo,
+                                     PresenterInterface delegate, String type) {
         // Required empty public constructor
         this.delegate = delegate;
         this.infoProfileData = infoProfileData;
@@ -59,7 +60,8 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_edit_info_profile_controller, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit_info_profile_controller, container,
+                false);
         titleTextView = view.findViewById(R.id.title_edit_info_profile_text_view);
         titleEditTextView = view.findViewById(R.id.title_edit_info_profile_edit_text);
         descriptionTextView = view.findViewById(R.id.description_edit_info_profile_text_view);
@@ -88,7 +90,9 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
         //если идет изменение чего-то и мы данные изменяем, выставляем их
         if(infoProfileData != null) {
             titleEditTextView.setText(infoProfileData.title);
+            titleEditTextView.setSelection(titleEditTextView.getText().length());
             descriptionEditTextView.setText(infoProfileData.description);
+            descriptionEditTextView.setSelection(descriptionEditTextView.getText().length());
             editImageView.setImageBitmap(infoProfileData.imageData);
         }else {
             infoProfileData = new InfoProfileData();
@@ -132,7 +136,7 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
                     infoProfileData.description = descriptionEditTextView.getText().toString();
                     if (checkImage) {
                         if (((BitmapDrawable)editImageView.getDrawable()).getBitmap() == null) {
-                            //TODO: поставить какую-нибудь зашлушку, а-ля картинка по дэфолту
+                            //TODO: поставить какую-нибудь заглушку, а-ля картинка по дэфолту
                         }else{
                             infoProfileData.imageData = ((BitmapDrawable)editImageView.getDrawable()).getBitmap();
                         }
@@ -150,5 +154,10 @@ public class EditInfoProfileController extends Fragment implements EditInfoProfi
     @Override
     public void forResult(Bitmap bitmap) {
         editImageView.setImageBitmap(bitmap);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.Data.RequestInfo;
-import com.dreamteam.httprequest.SelectedList.SelectData;
+import com.dreamteam.httprequest.SelectedList.Data.SelectData;
 
 import java.util.ArrayList;
 
@@ -12,7 +12,7 @@ public interface PresenterInterface  {
 
     void showDialog();
 
-    void answerDialog(int i);
+    void answerDialog(int i, String title, String message, String priority);
 
     void forResult(Bitmap bitmap);
 

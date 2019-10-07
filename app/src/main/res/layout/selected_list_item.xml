@@ -5,8 +5,10 @@
     android:id="@+id/select_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="20dp"
-    android:orientation="horizontal">
+    android:layout_marginBottom="10dp"
+    android:orientation="horizontal"
+    android:background="@drawable/button_background"
+    android:padding="8dp">
 
     <CheckBox
         android:id="@+id/select_list_checkbox"
@@ -14,32 +16,32 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         tools:ignore="MissingConstraints"
-        app:buttonTint="@android:color/white"/>
+        app:buttonTint="@color/colorDarkBlue"/>
 
     <FrameLayout
-        android:layout_width="80dp"
+        android:layout_width="40dp"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/view2"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:innerRadius="0dp"
             android:shape="ring"
-            app:cardCornerRadius="40dp"
-            android:layout_gravity="center">
+            app:cardCornerRadius="20dp"
+            android:layout_gravity="center"
+            >
 
             <ImageView
                 android:id="@+id/select_list_image_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:background="@drawable/noimage">
+                android:layout_centerHorizontal="true">
 
             </ImageView>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
     </FrameLayout>
 
@@ -53,19 +55,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="4dp"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
             android:textStyle="normal"
             tools:text="Group Title" />
 
-        <TextView
-            android:id="@+id/select_list_description_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:padding="4dp"
-            android:textColor="@color/colorGray"
-            tools:text="Group Description"
-            />
+
     </LinearLayout>
 
 </LinearLayout>

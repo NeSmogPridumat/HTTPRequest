@@ -14,4 +14,8 @@ public class EventListRouter {
     public void openEvent(EventType4 event){
             activity.openEventType4(event);
     }
+
+    public void openGroupList(){
+//        activity.openGroupList();
+    }
 }

@@ -1,12 +1,14 @@
 package com.dreamteam.httprequest.ObjectList.View;
 
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.dreamteam.httprequest.ObjectList.ObjectData;
 import com.dreamteam.httprequest.R;
 
@@ -14,6 +16,7 @@ public class ObjectListHolder extends RecyclerView.ViewHolder {
 
   private TextView titleTextView, descriptionTextView;
   private ImageView imageView;
+  private LinearLayout linearLayout;
 
   private ObjectData objectData = new ObjectData();
 
@@ -22,6 +25,7 @@ public class ObjectListHolder extends RecyclerView.ViewHolder {
     titleTextView = item.findViewById(R.id.object_list_title_text_view);
     descriptionTextView = item.findViewById(R.id.object_list_description_text_view);
     imageView = item.findViewById(R.id.object_list_image_view);
+    linearLayout = item.findViewById(R.id.linear_layout_object_item);
   }
 
   public void bindGroup(ObjectData objectData){
@@ -31,5 +35,9 @@ public class ObjectListHolder extends RecyclerView.ViewHolder {
 
     Bitmap imageData = objectData.imageData;
     imageView.setImageBitmap(imageData);
+
+//    if (objectData.rules == 7){
+//      linearLayout.setBackgroundResource(R.drawable.gradient_main);
+//    }
   }
 }

@@ -3,7 +3,7 @@ package com.dreamteam.httprequest.GroupList;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
-import com.dreamteam.httprequest.SelectedList.SelectData;
+import com.dreamteam.httprequest.SelectedList.Data.SelectData;
 
 import java.util.ArrayList;
 
@@ -24,8 +24,8 @@ public class RouterGroupList {
         activity.openSelectList(selectData,delegate, type);
     }
 
-    public void openGroup(String id, int rules){
-        activity.openGroup(id, rules);
+    public void openGroup(String id){
+        activity.openGroup(id);
     }
 
     public void showAddGroup(InfoProfileData infoProfileData, PresenterInterface delegate, String type){

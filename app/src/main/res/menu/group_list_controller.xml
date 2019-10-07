@@ -9,9 +9,8 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/add_item_edit"
+        android:icon="@drawable/ic_add_blue"
         android:title="@string/add_group"
-        android:icon="@drawable/add"
-        app:showAsAction="ifRoom"
-        />
+        app:showAsAction="ifRoom" />
 
 </menu>

@@ -14,7 +14,7 @@ public class ObjectListRouter {
     activity.openUser(id);
   }
 
-  public void showGroup(String id, int rules){
-    activity.openGroup(id, rules);
+  public void showGroup(String id){
+    activity.openGroup(id);
   }
 }

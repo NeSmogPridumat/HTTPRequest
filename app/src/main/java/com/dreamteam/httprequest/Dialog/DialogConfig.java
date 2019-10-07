@@ -33,7 +33,7 @@ public class DialogConfig {
         array.put(OK_CODE, context.getResources().getString(R.string.ok));
         array.put(DELETE_PHOTO_REQUEST_CODE, context.getResources().getString(R.string.delete));
         ArrayList<String> stringArrayList = new ArrayList<>();
-        for (int i = 0; i<intArray.length; i++ ){
+        for (int i = 0; i < intArray.length; i++){//TODO какая-то хрень с ForEach, изучить и разобраться!!!
             for (int j = 0; j<array.size(); j++){
                 if (intArray[i] == array.keyAt(j)){
                     stringArrayList.add(array.valueAt(j).toString());
@@ -44,7 +44,6 @@ public class DialogConfig {
     }
 
     int getAnswer(String answer){
-
         int requestCode = 0;
             for (int i = 0; i < array.size(); i++){
                 if (answer.equals(array.valueAt(i))){

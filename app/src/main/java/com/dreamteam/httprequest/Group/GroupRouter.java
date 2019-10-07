@@ -5,10 +5,12 @@ import android.os.Bundle;
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.RequestInfo;
+import com.dreamteam.httprequest.Group.Presenter.GroupPresenter;
+import com.dreamteam.httprequest.Group.Protocols.GroupPresenterInterface;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.ObjectList.ObjectData;
-import com.dreamteam.httprequest.SelectedList.SelectData;
+import com.dreamteam.httprequest.SelectedList.Data.SelectData;
 
 import java.util.ArrayList;
 
@@ -25,8 +27,12 @@ public class GroupRouter {
         activity.openSelectList(selectData, delegate, type);
     }
 
-    public void openGroup(String id, int rules){
-        activity.getGroup(id, rules);
+    public void  showSelectList(PresenterInterface delegate){
+        activity.openSelectList(delegate);
+    }
+
+    public void openGroup(String id){
+        activity.getGroup(id);
     }
 
     public void openGroupsList(){
@@ -34,7 +40,7 @@ public class GroupRouter {
     }
 
     public void showAddGroup(InfoProfileData infoProfileData, RequestInfo requestInfo, PresenterInterface delegate, String type){
-        activity.openEditProfile(infoProfileData, requestInfo, delegate, type);
+        activity.openEditGroup(infoProfileData, requestInfo, delegate, type);
     }
 
     public void showMembersList(ArrayList<ObjectData> objectDataArrayList, PresenterInterface delegate, String type){
@@ -63,5 +69,17 @@ public class GroupRouter {
         // в Bundle закидываем список вариантов
         bundle.putIntArray("array", photoActionArray);
         activity.showDialog(bundle, delegate);
+    }
+
+    public void openCreateDiscussionFragment(PresenterInterface delegate){
+        Bundle bundle = new Bundle();
+        bundle.putString("type", "discussion");
+        int[] actionArray = {0b1000};
+        bundle.putIntArray("array", actionArray);
+        activity.showDialog(bundle, delegate);
+    }
+
+    public void openVoting (String idRatingEvent){
+        activity.openVoting(idRatingEvent);
     }
 }

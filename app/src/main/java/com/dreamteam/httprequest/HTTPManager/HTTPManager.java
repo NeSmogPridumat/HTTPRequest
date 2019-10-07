@@ -2,7 +2,6 @@ package com.dreamteam.httprequest.HTTPManager;
 
 import android.util.Log;
 
-import com.dreamteam.httprequest.AutoAndReg.Authorization.Entity.Token;
 import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
 
 import java.io.ByteArrayOutputStream;
@@ -17,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 public class HTTPManager {
 
     private static HTTPManager httpManager;
-    public Token token;
+    public String token = null;
 
     public static HTTPManager get(){
         if (httpManager == null){
@@ -62,6 +61,15 @@ public class HTTPManager {
         settingResponsePut(urlConnection);
 
         setBodyRequest(object, urlConnection);
+        prepareResponce(urlConnection, type, delegate);
+    }
+
+    public void delRequest(String urlPath, String type, OutputHTTPManagerInterface delegate) throws IOException {
+        HttpURLConnection urlConnection = createUrlConnection(urlPath);
+
+        settingResponseGeneral(urlConnection);
+        settingResponseDel(urlConnection);
+
         prepareResponce(urlConnection, type, delegate);
     }
 
@@ -158,20 +166,23 @@ public class HTTPManager {
         httpURLConnection.setRequestProperty ("Cache-Control", "no-cache");
         httpURLConnection.setUseCaches(false);//если true, то соединению разоешается использовать любой доступный кэш. Если false, кэши должны игнорироваться. По умолчанию стоит true
         if(token != null) {
-            httpURLConnection.setRequestProperty("Authorizaction", "Jwt" + token.token);
+            httpURLConnection.setRequestProperty("Authorization", "Bearer " + token);
         }
+        //httpURLConnection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
         httpURLConnection.setDefaultUseCaches(false);
+        httpURLConnection.setRequestProperty("User-Agent", "AndroidDreamTeam");
     }
 
     private void settingResponseGet(HttpURLConnection httpURLConnection){
         //httpURLConnection.setRequestProperty();
+        httpURLConnection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
     }
 
     private void settingResponsePost(HttpURLConnection httpURLConnection) throws ProtocolException {
         httpURLConnection.setDoOutput(true);//true если надо использовать соединеие URL для вывода, и false, если нет. По умолчанию false
         httpURLConnection.setRequestMethod("POST");
         httpURLConnection.setChunkedStreamingMode(0);//если неизвестна длина тела вызывается метод setChunkedStreamingMode(0), противном случае HTTPUrlConnection будет вынужден буферизовать полное тело увеличивая задержку
-        httpURLConnection.setRequestProperty("Content-Type", "application/json");//устанавливает общее свойство запроса <Ключ(String) - ключевое слово, по которому известен запрос, значение(String) - значение, связанное с ключом>
+        httpURLConnection.setRequestProperty("Content-Type", "application/json;charset=utf-8");//устанавливает общее свойство запроса <Ключ(String) - ключевое слово, по которому известен запрос, значение(String) - значение, связанное с ключом>
         //httpURLConnection.setDoInput(true);//true если надо соединение для ввода, и false, если нет. По умолчанию true
     }
 
@@ -180,7 +191,14 @@ public class HTTPManager {
         httpURLConnection.setRequestMethod("PUT");
         httpURLConnection.setChunkedStreamingMode(0);
 //        httpURLConnection.setDoInput(true);
-        httpURLConnection.setRequestProperty("Content-Type", "application/json");
+        httpURLConnection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
+    }
+
+    private void settingResponseDel (HttpURLConnection httpURLConnection) throws ProtocolException {
+        httpURLConnection.setDoOutput(true);
+        httpURLConnection.setRequestMethod("DELETE");
+        httpURLConnection.setChunkedStreamingMode(0);
+        httpURLConnection.setRequestProperty("Content-Type", "application/json;charset=utf-8");
     }
 
     private void setBodyRequest(String object, HttpURLConnection httpURLConnection) throws IOException {

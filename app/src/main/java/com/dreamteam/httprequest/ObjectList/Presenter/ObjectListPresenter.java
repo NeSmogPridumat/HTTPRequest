@@ -24,8 +24,8 @@ public class ObjectListPresenter implements ObjectListPresenterInterface {
     router = new ObjectListRouter(activity);
   }
 
-  public void getImage (String id, String imageURL){
-    objectListInteractor.getImage(id, imageURL);
+  public void getImage (String id, String type){
+    objectListInteractor.getImage(id, type);
   }
 
   @Override public void answerGetImageGroups(String id, Bitmap bitmap) {
@@ -41,7 +41,7 @@ public class ObjectListPresenter implements ObjectListPresenterInterface {
     if (type.equals(constantConfig.USER_TYPE)){
       router.showUserObjectList(objectData.id);
     }else if (type.equals(constantConfig.GROUP_TYPE)){
-      router.showGroup(objectData.id, objectData.rules);
+      router.showGroup(objectData.id);
     }
   }
 }

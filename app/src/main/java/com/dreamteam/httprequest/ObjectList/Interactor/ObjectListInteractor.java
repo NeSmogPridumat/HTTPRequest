@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.ObjectList.Interactor;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
@@ -10,10 +9,8 @@ import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.HTTPConfig;
 import com.dreamteam.httprequest.HTTPManager.HTTPManager;
 import com.dreamteam.httprequest.Interfaces.ObjectListFromHTTPManagerInterface;
+import com.dreamteam.httprequest.Interfaces.OutputHTTPManagerInterface;
 import com.dreamteam.httprequest.ObjectList.Protocols.ObjectListPresenterInterface;
-import com.dreamteam.httprequest.R;
-
-import java.net.SocketTimeoutException;
 
 public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface {
 
@@ -28,15 +25,22 @@ public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface 
     this.delegate = delegate;
   }
 
-  public void getImage (final String id, final String imageURL){
-    new Thread(new Runnable() {
-      @Override
-      public void run() {
-        String pathImage = httpConfig.serverURL + httpConfig.SERVER_GETTER + imageURL;
-        httpManager.getRequest(pathImage,constantConfig.IMAGE_TYPE + ":" + id,
-                ObjectListInteractor.this);
-      }
-    }).start();
+  public void getImage (final String id, String type) {
+    if (type.equals(constantConfig.GROUP_TYPE)) {
+      String pathImage = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqGroup + "/" + id + httpConfig.IMAGE;
+      startGetRequest(pathImage,  constantConfig.IMAGE_TYPE + ":" + id, this);
+//      new Thread(new Runnable() {
+//        @Override
+//        public void run() {
+//          String pathImage = httpConfig.serverURL + httpConfig.SERVER_GETTER + imageURL;
+//          httpManager.getRequest(pathImage, constantConfig.IMAGE_TYPE + ":" + id,
+//                  ObjectListInteractor.this);
+//        }
+//      }).start();
+    } else if (type.equals(constantConfig.USER_TYPE)){
+      String pathImage = httpConfig.serverURL + httpConfig.SERVER_GETTER + httpConfig.reqUser + "/" + id + httpConfig.IMAGE;
+      startGetRequest(pathImage, constantConfig.IMAGE_TYPE + ":" + id, this);
+    }
   }
 
   @Override public void response(byte[] byteArray, String type) {
@@ -76,8 +80,7 @@ public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface 
   }
 
   @Override
-  public void errorHanding(int resposeCode, String type) {
-
+  public void errorHanding(int responseCode, String type) {
 
   }
 
@@ -86,4 +89,17 @@ public class ObjectListInteractor implements ObjectListFromHTTPManagerInterface 
         return string.split(delimiter);
     }
 
+  private void startGetRequest(final String path, final String type,
+                               final ObjectListFromHTTPManagerInterface delegate){
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          httpManager.getRequest(path, type, delegate);
+        } catch (Exception error) {
+          error(error);
+        }
+      }
+    }).start();
+  }
 }

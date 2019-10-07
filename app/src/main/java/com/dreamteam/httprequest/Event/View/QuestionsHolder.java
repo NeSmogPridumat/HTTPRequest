@@ -1,10 +1,11 @@
 package com.dreamteam.httprequest.Event.View;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.dreamteam.httprequest.Event.Entity.EventType4.Questions;
 import com.dreamteam.httprequest.R;

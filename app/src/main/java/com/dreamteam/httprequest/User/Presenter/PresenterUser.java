@@ -1,25 +1,27 @@
 package com.dreamteam.httprequest.User.Presenter;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import com.dreamteam.httprequest.AddOrEditInfoProfile.Data.InfoProfileData;
 import com.dreamteam.httprequest.Data.ConstantConfig;
 import com.dreamteam.httprequest.Data.QuestionRating.QuestionRating;
 import com.dreamteam.httprequest.Data.RequestInfo;
+import com.dreamteam.httprequest.Event.Entity.Events.EventsKinds.Rating;
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.ObjectList.ObjectData;
-import com.dreamteam.httprequest.R;
+import com.dreamteam.httprequest.User.Entity.UserData.RatingData.RatingData;
 import com.dreamteam.httprequest.User.Protocols.PresenterUserInterface;
 import com.dreamteam.httprequest.User.Router;
-import com.dreamteam.httprequest.SelectedList.SelectData;
+import com.dreamteam.httprequest.SelectedList.Data.SelectData;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.dreamteam.httprequest.User.Interactor.UserInteractor;
 import com.dreamteam.httprequest.User.Protocols.ViewUserInterface;
 
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 public class PresenterUser implements PresenterUserInterface {
@@ -53,11 +55,6 @@ public class PresenterUser implements PresenterUserInterface {
     }
 
     @Override
-    public void answerGetGroups(int groups) {
-        delegate.answerGetGroups(groups);
-    }
-
-    @Override
     public void openUser() {
         router.openProfile();
     }
@@ -70,25 +67,29 @@ public class PresenterUser implements PresenterUserInterface {
 
     @Override public void answerGetGroupsForList(ArrayList<Group> groups) {
         ArrayList<ObjectData> objectDataArrayList = new ArrayList<>();
-        for (int i = 0; i < groups.size(); i++){
-            ObjectData objectData = new ObjectData();
-            objectData.id = groups.get(i).id;
-            objectData.title = groups.get(i).content.simpleData.title;
-            objectData.description = groups.get(i).content.simpleData.description;
-            objectData.image = groups.get(i).content.mediaData.image;
-            objectDataArrayList.add(objectData);
+        for (Group group : groups){
+            objectDataArrayList.add(setObjectOfGroup(group));
         }
         router.openGroupList(objectDataArrayList, this,constantConfig.GROUP_TYPE);
+    }
 
+    private ObjectData setObjectOfGroup(Group group){
+        ObjectData objectData = new ObjectData();
+        objectData.id = group.id;
+        objectData.title = group.personal.descriptive.title;
+//        objectData.description = group.content.simpleData.description;
+//        objectData.image = group.content.mediaData.image;
+        return objectData;
     }
 
     @Override
-    public void answerGetRating(ArrayList<QuestionRating> questionRatings) {
-        delegate.answerGetRating(questionRatings);
+    public void answerGetRating(RatingData rating) {
+        delegate.answerGetRating(rating);
     }
 
     public void getUser(String id){
         userInteractor.getUser(id);
+        userInteractor.getImageThis(id);
     }
 
     public void postUser(String name, String surname){
@@ -99,8 +100,8 @@ public class PresenterUser implements PresenterUserInterface {
     public void showEditProfile(User user, Bitmap bitmap){
         InfoProfileData infoProfileData = new InfoProfileData();
         infoProfileData.id = user.id;
-        infoProfileData.title = user.content.simpleData.name;
-        infoProfileData.description = user.content.simpleData.surname;
+        infoProfileData.title = user.personal.descriptive.name;
+        infoProfileData.description = user.personal.descriptive.surname;
         infoProfileData.imageData = bitmap;
         router.showEditInfoProfile(infoProfileData,this, constantConfig.USER_TYPE);
      }
@@ -111,7 +112,7 @@ public class PresenterUser implements PresenterUserInterface {
     }
 
     @Override
-    public void answerDialog(int i) {
+    public void answerDialog(int i, String title, String message, String priority) {
 
     }
 
@@ -129,13 +130,29 @@ public class PresenterUser implements PresenterUserInterface {
     @Override
     public void editInfo(InfoProfileData infoProfileData, RequestInfo requestInfo, String type) {
         User user = new User();
+        File filesDir = activity.getFilesDir();
+        File imageFile = new File(filesDir, "file" + ".jpg");
         user.id = infoProfileData.id;
-        user.content.simpleData.name = infoProfileData.title;
-        user.content.simpleData.surname = infoProfileData.description;
+        user.personal.descriptive.name = infoProfileData.title;
+        user.personal.descriptive.surname = infoProfileData.description;
         Bitmap bitmap = infoProfileData.imageData;
 
-        userInteractor.putUser(user, bitmap);
+
+        OutputStream os;
+        try {
+            os = new FileOutputStream(imageFile);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), "Error writing bitmap", e);
+        }
+
+
+        userInteractor.postEditUser(user, imageFile);
     }
+
+
 
     public void getGroups(String userID){
         userInteractor.getGroupForList(userID);

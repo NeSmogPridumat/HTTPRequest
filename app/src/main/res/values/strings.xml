@@ -25,6 +25,7 @@
     <string name="surname">Surname:</string>
     <string name="enter_new_surname">Enter new surname</string>
     <string name="save">Save</string>
+    <string name="msg_token_fmt" translatable="false">InstanceID Token: %s</string>
     <string name="add_user">Add User</string>
     <string name="delete_user">Delete User</string>
     <string name="add_subgroup">Add Subgroup</string>
@@ -45,11 +46,12 @@
     <string name="edit_profile">Edit profile</string>
     <string name="group_name">Group Name</string>
     <string name="members">" members"</string>
-    <string name="subgroups">  subgroups</string>
+    <string name="subgroups">" subgroups"</string>
     <string name="user">User</string>
     <string name="rating">Rating</string>
     <string name="fill_in_the_field">Fill in the field.</string>
     <string name="user_not_registered">User not registered.</string>
+    <string name="user_with_this_login_already_exists">User with this login already exists.</string>
     <string name="voting_started">Voting started.</string>
     <string name="overall_rating">Overall rating: </string>
     <string name="groups">"  groups"</string>
@@ -67,4 +69,61 @@
     <string name="object_does_not_exist">Object does not exist</string>
     <string name="select_an_action">Select an action</string>
     <string name="thank_you_for_the_answers">Thank you for the answers.</string>
+    <string name="add_to_group">Add to group</string>
+    <string name="create_discussion">Create discussion</string>
+    <string name="Start_poll">Start poll</string>
+
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="сonfirm_the_creation_of_a_subgroup">Confirm the creation of a subgroup</string>
+    <string name="was_he_late_for_work">Was he late for work?</string>
+    <string name="yes">Yes</string>
+    <string name="No">No</string>
+    <string name="several_times_a_month">Several times a month</string>
+    <string name="few_times_a_week">Few times a week</string>
+    <string name="сommunicates_on_extraneous_topics">Communicates on extraneous topics?</string>
+    <string name="seldom">Seldom</string>
+    <string name="often">Often</string>
+    <string name="was_seen_intoxicated">Was seen intoxicated?</string>
+    <string name="leaving_work_for_personal_reasons">Leaving work for personal reasons?</string>
+    <string name="yes_warns">Yes, warns</string>
+    <string name="yes_does_not_warn">Yes, does not warn</string>
+    <string name="how_often">How often?</string>
+    <string name="observes_courtesy_in_communication_with_colleagues">Observes courtesy in communication with colleagues?</string>
+    <string name="yes_with_everyone">Yes, with everyone</string>
+    <string name="No_not_with_everyone">No not with everyone</string>
+    <string name="allows_for_provocative_situations">Allows for provocative situations?</string>
+    <string name="partially">Partially</string>
+    <string name="has_enough_knowledge_to_complete_the_tasks">Has enough knowledge to complete the tasks?</string>
+    <string name="interested_in_gaining_new_knowledge">Interested in gaining new knowledge?</string>
+    <string name="currently_upgrading_skills">Currently upgrading skills?</string>
+    <string name="high_interest_in_work">High interest in work?</string>
+    <string name="сhoose_your_options">"Choose your options "</string>
+    <string name="criticizing_the_company_in_public">Criticizing the company in public</string>
+    <string name="he_knows_the_organization_well">He knows the organization well</string>
+    <string name="negatively_responding_to_requests_from_colleagues">Negatively responding to requests from colleagues</string>
+    <string name="proud_of_his_work">Proud of his work</string>
+    <string name="pursues_personal_selfish_goals">Pursues personal/selfish goals</string>
+    <string name="puts_company_interests_above_own">Puts company interests above own</string>
+    <string name="showing_initiative">Showing initiative</string>
+    <string name="shows_aggression_in_communication">Shows aggression in communication</string>
+    <string name="spoils_a_positive_work_environment">Spoils a positive work environment</string>
+    <string name="supports_colleagues_initiative">Supports colleagues initiative</string>
+    <string name="low">Low</string>
+    <string name="normal">Normal</string>
+    <string name="high">High</string>
+    <string name="discipline">Discipline</string>
+    <string name="professionalism">Professionalism</string>
+    <string name="efficiency">Efficiency</string>
+    <string name="loyalty">Loyalty</string>
+    <string name="fulfills_the_instructions_of_the_head">Fulfills the instructions of the head?</string>
+    <string name="how_many_tasks_does_he_perform">How many tasks does he perform?</string>
+    <string name="how_well_does_the_order_fulfill">How well does the order fulfill?</string>
+    <string name="how_fast_does_it_work">How fast does it work?</string>
+    <string name="takes_over_duty">Takes over-duty?</string>
 </resources>

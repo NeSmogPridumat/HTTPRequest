@@ -1,13 +1,9 @@
 package com.dreamteam.httprequest.User.View;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -25,10 +20,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.dreamteam.httprequest.Data.QuestionRating.Question;
 import com.dreamteam.httprequest.Data.QuestionRating.QuestionRating;
+import com.dreamteam.httprequest.Event.Entity.Events.EventsKinds.Rating;
 import com.dreamteam.httprequest.MainActivity;
+import com.dreamteam.httprequest.QueryPreferences;
 import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.Service.EventService;
+import com.dreamteam.httprequest.User.Entity.UserData.RatingData.RatingData;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
 import com.dreamteam.httprequest.User.Presenter.PresenterUser;
 import com.dreamteam.httprequest.User.Protocols.ViewUserInterface;
@@ -41,76 +44,100 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-@SuppressLint("ValidFragment")
 public class UserFragment extends Fragment implements ViewUserInterface {
 
     private ImageView userImage;
-    private TextView userName, userSurName, mail, call;
+    private TextView userName, userSurName, mail, call, ratingTextView, efficiencyTextView, loyaltyTextView, professionalismTextView, disciplineTextView;
     private RelativeLayout progressBarOverlay;
-    private ProgressBar progressBar;
-    private RadioButton groupsRadioButton;
+    private ProgressBar progressBar, efficiencyProgressBar, loyaltyProgressBar,professionalismProgressBar, disciplineProgressBar;
     private MainActivity activity;
     private LinearLayout userLinear;
-    private ExpandableListView expandableListView;
+    private View view;
 
     public PresenterUser presenterUser;
 
     private User user = new User();
     private Bitmap bitmapU;
     private String userID;
+    private boolean count = false;
 
-    public UserFragment(String userID) {
-        this.userID = userID;
+    public UserFragment() {
+    }
+
+    public static UserFragment newInstance(String userID){
+        Bundle args = new Bundle();
+        args.putString("userID", userID);
+        UserFragment fragment = new UserFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_user, container, false);
+        view = inflater.inflate(R.layout.fragment_user, container, false);
         userName = view.findViewById(R.id.user_name_text_view);
         userSurName = view.findViewById(R.id.user_surname_text_view);
-        mail = view.findViewById(R.id.mail_text_view);
+        mail = view.findViewById(R.id.description_profile_text_view);
         call = view.findViewById(R.id.call_number_text_view);
         userImage = view.findViewById(R.id.user_image);
-        groupsRadioButton = view.findViewById(R.id.radio_button_groups);
         progressBarOverlay = view.findViewById(R.id.progressBarOverlay);
         progressBar = view.findViewById(R.id.progressBar);
         userLinear = view.findViewById(R.id.user_fragment);
-        expandableListView = view.findViewById(R.id.expListView);
+        ratingTextView = view.findViewById(R.id.textView2);
+        disciplineTextView = view.findViewById(R.id.disciplineTextView);
+        loyaltyTextView = view.findViewById(R.id.loyaltyTextView);
+        professionalismTextView = view.findViewById(R.id.professionalismTextView);
+        efficiencyTextView = view.findViewById(R.id.efficiencyTextView);
+        disciplineProgressBar = view.findViewById(R.id.disciplineProgressBar);
+        loyaltyProgressBar = view.findViewById(R.id.loyaltyProgressBar);
+        professionalismTextView = view.findViewById(R.id.professionalismTextView);
+        efficiencyProgressBar = view.findViewById(R.id.efficiencyProgressBar);
+        professionalismProgressBar = view.findViewById(R.id.professionalismProgressBar);
+        if(!count){
+            count = true;
+            progressBarOverlay.setVisibility(View.VISIBLE);
+        }
+
         return view;
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+        userID = getArguments().getString("userID");
         activity = (MainActivity) getActivity();
-        if (userID.equals(activity.userID)) {
+        if (userID.equals(QueryPreferences.getUserIdPreferences(getContext()))) {
             setHasOptionsMenu(true);
         }
         presenterUser = new PresenterUser(this, activity);
-        presenterUser.getRating(userID);
+
+        super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onStart() {
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.progress_rotate);
         progressBar.startAnimation(animation);
-        progressBarOverlay.setVisibility(View.VISIBLE);
         presenterUser.getUser(userID);
         super.onStart();
-        groupsRadioButton.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-            if (activity.userID.equals(userID)) {
-               activity.bottomNavigationView.setSelectedItemId(R.id.groups);
-            }else {
-                presenterUser.getGroups(userID);
+
+        presenterUser.getRating(userID);
+
+        userImage.setOnClickListener(new View.OnClickListener() {
+                                         @Override
+                                         public void onClick(View v) {
+            if(userImage.getDrawable() != null){
+                //TODO сделать через презентер, либо другой способ отображения!!!
+                activity.showImage(userImage.getDrawable());
             }
-            groupsRadioButton.setChecked(false);
             }
         });
+
+        activity.setSupportActionBar(activity.toolbar);
+        ratingTextView.setText("N");
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -120,10 +147,10 @@ public class UserFragment extends Fragment implements ViewUserInterface {
 
     @Override
     public void View(User user) {
-        userName.setText(user.content.simpleData.name);
-        userSurName.setText(user.content.simpleData.surname);
+        userName.setText(user.personal.descriptive.name);
+        userSurName.setText(user.personal.descriptive.surname);
         this.user = user;
-        activity.setActionBarTitle(user.content.simpleData.name);
+        activity.setActionBarTitle("Профиль");
         progressBarOverlay.setVisibility(View.GONE);
     }
 
@@ -138,10 +165,10 @@ public class UserFragment extends Fragment implements ViewUserInterface {
         String title = null;
         String description = null;
         if (t instanceof SocketTimeoutException || t instanceof ConnectException) {
-            title = getResources().getString(R.string.error_connecting_to_server);
-            description = getResources().getString(R.string.check_the_connection_to_the_internet);
+            title = view.getResources().getString(R.string.error_connecting_to_server);
+            description = view.getResources().getString(R.string.check_the_connection_to_the_internet);
         }else if (t instanceof NullPointerException) {
-            title = getResources().getString(R.string.object_not_found);
+            title = view.getResources().getString(R.string.object_not_found);
             description = "";
         }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
@@ -149,37 +176,81 @@ public class UserFragment extends Fragment implements ViewUserInterface {
     }
 
     @Override
-    public void answerGetGroups(int groupsint) {
-        if(isAdded()) {
-            groupsRadioButton.setText(String.valueOf(groupsint) + getResources().getString(R.string.groups));
-        }
+    public void answerGetRating(RatingData rating) {
+        int overallRating = (rating.discipline + rating.efficiency + rating.loyalty + rating.professionalism)/4;
+        String ratingChar = ratingChar(overallRating*10);
+        ratingTextView.setText(ratingChar);
+        String discipline = view.getResources().getString(R.string.discipline) + ": " + rating.discipline;
+        disciplineTextView.setText(discipline);
+        disciplineProgressBar.setProgress(rating.discipline * 10);
+        String professionalism = view.getResources().getString(R.string.professionalism) + ": " + rating.professionalism;
+        professionalismTextView.setText(professionalism);
+        professionalismProgressBar.setProgress(rating.professionalism * 10);
+        String efficiency = view.getResources().getString(R.string.efficiency) + ": " + rating.efficiency;
+        efficiencyTextView.setText(efficiency);
+        efficiencyProgressBar.setProgress(rating.efficiency * 10);
+        String loyalty = view.getResources().getString(R.string.loyalty) + ": " + rating.loyalty;
+        loyaltyTextView.setText(loyalty);
+        loyaltyProgressBar.setProgress(rating.loyalty * 10);
+//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
+//        layoutParams.setMargins(24,30,0,0);
+//        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
+//        DecimalFormat df = new DecimalFormat("#.##");
+//        layoutParams1.setMarginStart(48);
+//        float j = 0;
+//        for (Question i : questionRatings.get(0).question){//TODO: вроде понятный ForEach
+//            j = j + i.middleValue;
+//        }
+//
+//        //TODO: возможно надо убрать в метод
+//        TextView textView = new TextView(view.getContext());
+//        String text =view.getResources().getText(R.string.overall_rating) + " "
+//                + df.format(j/questionRatings.get(0).question.size());
+//        int overRating = (int)((j/questionRatings.get(0).question.size()/3)*100);
+//        ratingBar.setProgress(overRating);
+//        rating.setText(ratingChar(overRating));
+//
+//        textView.setText(text);
+//        textView.setTextSize(18f);
+//        if(getContext() != null) {
+//            textView.setTextColor(getResources().getColor(android.R.color.black));
+//        }//TODO: возможно надо обернуть в getContext() != null
+//        textView.setLayoutParams(layoutParams);
+//        userLinear.addView(textView);
+//        for (Question i : questionRatings.get(0).question) {
+//            userLinear.addView(createTextView(i, df, layoutParams1));
+//        }
     }
 
-    @Override
-    public void answerGetRating(ArrayList<QuestionRating> questionRatings) {
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
-        layoutParams.setMargins(24,30,0,0);
-        LinearLayout.LayoutParams layoutParams1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 1f);
-        DecimalFormat df= new DecimalFormat("#.##");
-        layoutParams1.setMarginStart(48);
-        float j = 0;
-        for (int i = 0; i < questionRatings.get(0).question.size(); i++){
-            j = j + questionRatings.get(0).question.get(i).middleValue;
-        }
-        TextView textView = new TextView(getContext());
-        textView.setText(getResources().getText(R.string.overall_rating) + df.format(j/questionRatings.get(0).question.size()));
-        textView.setTextSize(36f);
-        textView.setTextColor( getResources().getColor(android.R.color.white));
+    private String ratingChar (int overRating){
+        String rating;
+        if (overRating >= 90){
+            rating = "A+";
+        }else if (overRating >= 80){
+            rating = "A";
+        } else if (overRating >= 70) {
+            rating = "B+";
+        }else if (overRating >= 60){
+            rating = "B";
+        } else if (overRating >= 50){
+            rating = "C+";
+        }else if (overRating >= 40){
+            rating = "C";
+        } else if (overRating >= 30) {
+            rating = "E+";
+        } else rating = "E";
+        return rating;
+    }
+
+    private TextView createTextView(Question question, DecimalFormat df, LinearLayout.LayoutParams layoutParams){
+        TextView textView = new TextView(view.getContext());
+        textView.setTextColor(view.getResources().getColor(android.R.color.black));
+        textView.setTextSize(18f);
+        String text = question.title + ": "
+                + df.format(question.middleValue);
+        textView.setText(text);
         textView.setLayoutParams(layoutParams);
-        userLinear.addView(textView);
-        for (int i = 0; i < questionRatings.get(0).question.size(); i++) {
-            TextView textView1 = new TextView(getContext());
-            textView1.setTextColor( getResources().getColor(android.R.color.white));
-            textView.setTextSize(18f);
-            textView1.setText(questionRatings.get(0).question.get(i).title + ": " + df.format(questionRatings.get(0).question.get(i).middleValue));
-            textView1.setLayoutParams(layoutParams1);
-            userLinear.addView(textView1);
-        }
+        return textView;
     }
 
     @Override

@@ -2,18 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <item
-        android:id="@+id/change_admin"
-        android:title="@string/change_admin"
+        android:id="@+id/add_subgroup"
+        android:title="@string/add_subgroup"
         app:showAsAction="never"
         />
 
     <item
-        android:id="@+id/delete_group"
-        android:title="@string/delete_group"
+        android:id="@+id/exit_group"
+        android:title="@string/exit_the_group"
         app:showAsAction="never"
         />
-
 
 </menu>

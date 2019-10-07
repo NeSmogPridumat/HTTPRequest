@@ -6,5 +6,5 @@ public interface OutputHTTPManagerInterface {
 
     void error(Throwable t);
 
-    void errorHanding(int resposeCode, String type);
+    void errorHanding(int responseCode, String type);
 }

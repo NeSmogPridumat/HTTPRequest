@@ -2,13 +2,14 @@ package com.dreamteam.httprequest.GroupList.View;
 
 import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.dreamteam.httprequest.Group.Entity.GroupData.Group;
 import com.dreamteam.httprequest.R;
@@ -18,24 +19,27 @@ import java.util.ArrayList;
 public class GroupAdapter extends RecyclerView.Adapter<GroupHolder> implements Filterable {
     ArrayList<Group> groupCollection;
     private ArrayList<GroupHolder> groupHolders = new ArrayList<>();
+    private String userId;
 
     ArrayList<Group> mFilteredList;
     ArrayList<Group> allGroup;
 
-    GroupAdapter(ArrayList<Group> groupCollection){
+    GroupAdapter(ArrayList<Group> groupCollection, String userId){
         this.groupCollection = groupCollection;
         mFilteredList = groupCollection;
-
+        this.userId = userId;
     }
 
     //приходящие позже картинки сравниваются по id группы и присваиваются
     void changeItem(String groupID, Bitmap bitmap){
-        for (int i = 0; i < groupCollection.size(); i ++){
-            Group group = groupCollection.get(i);
-            if (group.id.equals(groupID)){
-                group.content.mediaData.imageData = bitmap;
+        if (groupCollection != null){
+            for (int i = 0; i < groupCollection.size(); i ++) {
+                Group group = groupCollection.get(i);
+                if (group.id.equals(groupID)) {
+                    group.bitmap = bitmap;
+                }
+                notifyDataSetChanged();
             }
-            notifyItemChanged(i);
         }
     }
 
@@ -44,7 +48,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder> implements F
     public GroupHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, final int i) {
         LayoutInflater layoutInflater = LayoutInflater.from(viewGroup.getContext());
         View view = layoutInflater.inflate(R.layout.list_item_group, viewGroup, false);
-        GroupHolder newGroupHolder = new GroupHolder(view);
+        GroupHolder newGroupHolder = new GroupHolder(view, userId);
         groupHolders.add(newGroupHolder);
         return newGroupHolder;
     }
@@ -77,7 +81,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder> implements F
                 } else {
                     ArrayList<Group> filteredList = new ArrayList<>();
                     for (int i = 0; i < allGroup.size(); i++) {
-                        if (allGroup.get(i).content.simpleData.title.toLowerCase().contains(charString)) { // Сортируем по тексту из Formula
+                        if (allGroup.get(i).personal.descriptive.title.toLowerCase().contains(charString)) { // Сортируем по тексту из Formula
                             filteredList.add(allGroup.get(i));
                         }
                     }
@@ -95,6 +99,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupHolder> implements F
             }
         };
     }
+
     //анимация сдвига holder'ов вправо
     public void animationOn(){
         for (int i = 0; i < groupHolders.size(); i++) {

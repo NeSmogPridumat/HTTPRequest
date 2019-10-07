@@ -1,6 +1,5 @@
 package com.dreamteam.httprequest.AddOrEditInfoProfile.Presenter;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
@@ -12,7 +11,7 @@ import com.dreamteam.httprequest.Dialog.DialogConfig;
 import com.dreamteam.httprequest.Interfaces.PresenterInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
-import com.dreamteam.httprequest.SelectedList.SelectData;
+import com.dreamteam.httprequest.SelectedList.Data.SelectData;
 
 import java.util.ArrayList;
 
@@ -55,7 +54,7 @@ public class EditInfoProfilePresenter implements PresenterInterface {
 
     //обработка ответа от диалога
     @Override
-    public void answerDialog(int i) {
+    public void answerDialog(int i, String title, String message, String priority) {
         if ((i & dialogConfig.CAMERA_REQUEST_CODE) != 0){
             router.answerDialogCamera(i, this);
         }else if ((i & dialogConfig.GALLERY_REQUEST_CODE) != 0){

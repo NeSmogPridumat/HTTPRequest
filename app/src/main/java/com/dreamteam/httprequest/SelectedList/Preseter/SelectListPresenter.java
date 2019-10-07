@@ -7,7 +7,7 @@ import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.SelectedList.Interactor.SelectListInteractor;
 import com.dreamteam.httprequest.SelectedList.Protocols.SelectListPresenterInterface;
 import com.dreamteam.httprequest.SelectedList.Protocols.SelectListViewController;
-import com.dreamteam.httprequest.SelectedList.SelectData;
+import com.dreamteam.httprequest.SelectedList.Data.SelectData;
 import com.dreamteam.httprequest.SelectedList.SelectListRouter;
 
 import java.util.ArrayList;
@@ -18,7 +18,6 @@ public class SelectListPresenter implements SelectListPresenterInterface {
     private MainActivity activity;
     private SelectListRouter selectListRouter;
     private SelectListViewController delegate;
-
 
     public SelectListPresenter(SelectListViewController delegate, MainActivity activity){
         this.activity = activity;

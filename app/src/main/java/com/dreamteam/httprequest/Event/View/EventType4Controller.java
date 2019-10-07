@@ -4,17 +4,18 @@ package com.dreamteam.httprequest.Event.View;
 import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.dreamteam.httprequest.Event.Entity.AnswerQuestion.AnswerQuestion;
 import com.dreamteam.httprequest.Event.Entity.AnswerQuestion.AnswerQuestionResult;
@@ -25,6 +26,10 @@ import com.dreamteam.httprequest.Event.Protocols.EventViewInterface;
 import com.dreamteam.httprequest.MainActivity;
 import com.dreamteam.httprequest.R;
 import com.dreamteam.httprequest.User.Entity.UserData.User;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
@@ -85,12 +90,12 @@ public class EventType4Controller extends Fragment implements EventViewInterface
 
     private boolean checkUser(User user){
         boolean check = false;
-        for(int i = 0; i < user.questions.size(); i++){
-            if (user.questions.get(i).active){
-                check = true;
-                break;
-            }
-        }
+        //for(int i = 0; i < user.questions.size(); i++){
+        //    if (user.questions.get(i).active){
+        //        check = true;
+        //        break;
+        //    }
+        //}
         return check;
     }
 
@@ -111,13 +116,13 @@ public class EventType4Controller extends Fragment implements EventViewInterface
                 if (checkUser(event.response.users.get(i))) {
                     ArrayList<Questions> questions = new ArrayList<>();
                     userID = event.response.users.get(i).id;
-                    userTextView.setText(getResources().getText(R.string.user) + ": " + event.response.users.get(i).content.simpleData.name + " " + event.response.users.get(i).content.simpleData.surname);
-                    for (int j = 0; j < event.response.users.get(i).questions.size(); j++) {
-                        if (event.response.users.get(i).questions.get(j).active) {
-                            questions.add(event.response.questions.get(j));
-                            counter++;
-                        }
-                    }
+                    userTextView.setText(getResources().getText(R.string.user) + ": " + event.response.users.get(i).personal.descriptive.name + " " + event.response.users.get(i).personal.descriptive.surname);// + event.response.users.get(i).content.simpleData.surname);
+                    //for (int j = 0; j < event.response.users.get(i).questions.size(); j++) {
+                    //    if (event.response.users.get(i).questions.get(j).active) {
+                    //        questions.add(event.response.questions.get(j));
+                    //        counter++;
+                    //    }
+                    //}
                     adapter = new QuestionsAdapter(questions, event.response.users.get(i).id, this);
                     questionsRecyclerView.setAdapter(adapter);
                     break;
@@ -149,14 +154,14 @@ public class EventType4Controller extends Fragment implements EventViewInterface
         if (event.response.type != 4){
            eventPresenter.openEventList();
         }else {
-            for (int i = 0; i < event.response.users.size(); i++) {
-                for (int j = 0; j < event.response.users.get(i).questions.size(); j++) {
-                    if (event.response.users.get(i).id.equals(userID)
-                            && event.response.users.get(i).questions.get(j).id == position) {
-                        event.response.users.get(i).questions.get(j).active = false;
-                    }
-                }
-            }
+        //    for (int i = 0; i < event.response.users.size(); i++) {
+        //        for (int j = 0; j < event.response.users.get(i).questions.size(); j++) {
+        //            if (event.response.users.get(i).id.equals(userID)
+        //                    && event.response.users.get(i).questions.get(j).id == position) {
+        //                event.response.users.get(i).questions.get(j).active = false;
+        //            }
+        //        }
+        //    }
         }
         createListForUser(event);
         adapter.notifyDataSetChanged();
@@ -176,4 +181,6 @@ public class EventType4Controller extends Fragment implements EventViewInterface
         }
         Toast.makeText(activity, title + "\n" + description, Toast.LENGTH_LONG).show();
     }
+
+
 }
